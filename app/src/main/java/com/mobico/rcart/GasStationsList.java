@@ -1,12 +1,20 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class GasStationsList extends Activity {
+
+    LinearLayout gasStationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,5 +40,29 @@ public class GasStationsList extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void fillList(View view){
+        for(int i = 0 ; i < 5 ; i++){
+            pushListItemToLayoutView();
+        }
+    }
+
+    private void pushListItemToLayoutView(){
+        gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View listItem = inflater.inflate(R.layout.gas_station_row, null);
+
+        //TextView listNameTV = (TextView) listItem.findViewById(R.id.listNameTV);
+        //listNameTV.setText(s);
+
+        gasStationList.addView(listItem);
+    }
+
+    public void goToStationDetail(View view){
+        Intent i = new Intent(GasStationsList.this, StationDetail.class);
+        startActivity(i);
+        finish();
     }
 }

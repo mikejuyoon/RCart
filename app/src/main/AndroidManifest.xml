@@ -24,6 +24,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobico.rcart.SplashScreen" />
         </activity>
+        <activity
+            android:name=".StationDetail"
+            android:label="@string/title_activity_station_detail" >
+        </activity>
     </application>
 
 </manifest>
