@@ -54,7 +54,7 @@ public class GasStationsList extends Activity {
         setContentView(R.layout.activity_gas_stations_list);
 
         // get reference to the views
-        etResponse = (EditText) findViewById(R.id.etResponse);
+        //etResponse = (EditText) findViewById(R.id.etResponse);
         tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 
         // check if you are connected or not
@@ -68,7 +68,7 @@ public class GasStationsList extends Activity {
         }
 
         // call AsynTask to perform network operation on separate thread
-        new HttpAsyncTask().execute("https://mobibuddy.herokuapp.com/nearby_gas.json?lat=33.971&long=-117.35&dist=1");
+        new HttpAsyncTask().execute("https://mobibuddy.herokuapp.com/nearby_gas.json?lat=33.971&long=-117.35&dist=2");
     }
 
     public static String GET(String url){
@@ -177,19 +177,25 @@ public class GasStationsList extends Activity {
         //View newStockRow = inflater.inflate(R.layout.stock_quote_row, null);
 
         // Create the TextView for the ScrollView Row
-        TextView newStockTextView = (TextView) listItem.findViewById(R.id.stockSymbolTextView);
-
-        // Add the stock symbol to the TextView
-        newStockTextView.setText(stock);
-
+        try {
+            TextView gasStationName = (TextView) listItem.findViewById(R.id.gasStationName);
+            gasStationName.setText(gasArray.getJSONObject(i).getString("station"));
+            TextView gasDistance = (TextView) listItem.findViewById(R.id.gasDistance);
+            gasDistance.setText(gasArray.getJSONObject(i).getString("distance"));
+            TextView gasAddress = (TextView) listItem.findViewById(R.id.gasAddress);
+            gasAddress.setText(gasArray.getJSONObject(i).getString("address"));
+            TextView gasPrice = (TextView) listItem.findViewById(R.id.gasPrice);
+            gasPrice.setText(gasArray.getJSONObject(i).getString("mid_price"));
+        }catch(JSONException e){}
+        /*
         Button stockQuoteButton = (Button) newStockRow.findViewById(R.id.stockQuoteButton);
         stockQuoteButton.setOnClickListener(getStockActivityListener);
 
         Button quoteFromWebButton = (Button) newStockRow.findViewById(R.id.quoteFromWebButton);
-        quoteFromWebButton.setOnClickListener(getStockFromWebsiteListener);
+        quoteFromWebButton.setOnClickListener(getStockFromWebsiteListener);*/
 
         // Add the new components for the stock to the TableLayout
-        stockTableScrollView.addView(newStockRow, arrayIndex);
+        //stockTableScrollView.addView(newStockRow, arrayIndex);
 
         //TextView listNameTV = (TextView) listItem.findViewById(R.id.listNameTV);
         //listNameTV.setText(s);

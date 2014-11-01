@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Gas Near Me"
-            android:id="@+id/stationName"
+            android:id="@+id/gasStationName"
             android:layout_marginLeft="5dp" />
     </TableRow>
 
@@ -71,15 +71,6 @@
         android:textSize="18dp"
         android:layout_marginBottom="5dp"
         android:id="@+id/tvIsConnected"
-        android:layout_gravity="center_horizontal" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:ems="10"
-        android:layout_marginTop="10dp"
-        android:inputType="textMultiLine"
-        android:id="@+id/etResponse"
         android:layout_gravity="center_horizontal" />
 
     <ScrollView

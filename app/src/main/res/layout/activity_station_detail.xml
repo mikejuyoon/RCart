@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Arco"
-            android:id="@+id/stationName"
+            android:id="@+id/gasStationName"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/imageView"
             android:layout_toEndOf="@+id/imageView"
@@ -68,7 +68,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="123 Something Avenue\nRiverside, CA 92508"
             android:id="@+id/textView3"
-            android:layout_below="@+id/stationName"
+            android:layout_below="@+id/gasStationName"
             android:layout_toRightOf="@+id/imageView"
             android:layout_toEndOf="@+id/imageView" />
 
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Unleaded"
-            android:id="@+id/textView4"
+            android:id="@+id/gasDistance"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
