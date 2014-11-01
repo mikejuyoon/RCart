@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="$3.33"
-        android:id="@+id/textView"
+        android:id="@+id/gasPrice"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Chevron"
-        android:id="@+id/textView2"
+        android:id="@+id/stationName"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -36,10 +36,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
         android:id="@+id/textView4"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_alignBaseline="@+id/textView2"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/stationName"
+        android:layout_alignBaseline="@+id/stationName"
+        android:layout_alignBottom="@+id/stationName"
+        android:layout_toRightOf="@+id/stationName"
         android:layout_marginLeft="3dp" />
 
     <TextView
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="123 Something Avenue\nRiverside, CA 92507"
-        android:id="@+id/textView3"
+        android:id="@+id/gasAddress"
         android:layout_below="@+id/textView4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

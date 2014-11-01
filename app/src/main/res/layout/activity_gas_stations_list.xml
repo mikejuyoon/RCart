@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="Filter"
         android:id="@+id/button"
-        android:layout_alignTop="@+id/textView"
+        android:layout_alignTop="@+id/gasPrice"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginLeft="5dp"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="R'Cart"
-        android:id="@+id/textView"
+        android:id="@+id/gasPrice"
         android:width="120dp"
         android:gravity="center"
         android:layout_centerVertical="true"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:text="Map"
         android:id="@+id/button2"
-        android:layout_alignTop="@+id/textView"
+        android:layout_alignTop="@+id/gasPrice"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="5dp"
@@ -59,9 +59,28 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Gas Near Me"
-            android:id="@+id/textView2"
+            android:id="@+id/stationName"
             android:layout_marginLeft="5dp" />
     </TableRow>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FF0000"
+        android:textColor="#FFF"
+        android:textSize="18dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/tvIsConnected"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:ems="10"
+        android:layout_marginTop="10dp"
+        android:inputType="textMultiLine"
+        android:id="@+id/etResponse"
+        android:layout_gravity="center_horizontal" />
 
     <ScrollView
         android:layout_width="match_parent"

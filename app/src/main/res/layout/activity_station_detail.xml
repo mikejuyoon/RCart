@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:text="Filter"
             android:id="@+id/button"
-            android:layout_alignTop="@+id/textView"
+            android:layout_alignTop="@+id/gasPrice"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="5dp" />
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Arco On Magnolia"
-            android:id="@+id/textView"
+            android:id="@+id/gasPrice"
             android:width="200dp"
             android:gravity="center"
             android:layout_centerVertical="true"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Arco"
-            android:id="@+id/textView2"
+            android:id="@+id/stationName"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/imageView"
             android:layout_toEndOf="@+id/imageView"
@@ -68,7 +68,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="123 Something Avenue\nRiverside, CA 92508"
             android:id="@+id/textView3"
-            android:layout_below="@+id/textView2"
+            android:layout_below="@+id/stationName"
             android:layout_toRightOf="@+id/imageView"
             android:layout_toEndOf="@+id/imageView" />
 
