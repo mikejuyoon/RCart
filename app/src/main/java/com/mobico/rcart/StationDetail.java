@@ -14,7 +14,6 @@ public class StationDetail extends Activity {
         setContentView(R.layout.activity_station_detail);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
