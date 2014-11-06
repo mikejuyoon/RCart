@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_gas_stations_list">GasStationsList</string>
     <string name="title_activity_station_detail">StationDetail</string>
+    <string name="title_activity_update_gas">UpdateGas</string>
 
 </resources>

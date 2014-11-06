@@ -1,26 +1,24 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 
-public class StationDetail extends Activity {
+public class UpdateGas extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_station_detail);
+        setContentView(R.layout.activity_update_gas);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.station_detail, menu);
+        getMenuInflater().inflate(R.menu.update_gas, menu);
         return true;
     }
 
@@ -34,19 +32,5 @@ public class StationDetail extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void goBack(View view)
-    {
-        Intent i = new Intent(StationDetail.this, GasStationsList.class);
-        startActivity(i);
-        finish();
-    }
-
-    public void goToUpdateGas(View view)
-    {
-        Intent i = new Intent(StationDetail.this, UpdateGas.class);
-        startActivity(i);
-        finish();
     }
 }
