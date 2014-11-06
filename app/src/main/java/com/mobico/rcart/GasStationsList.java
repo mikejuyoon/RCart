@@ -46,12 +46,18 @@ public class GasStationsList extends Activity {
 
     EditText etResponse;
     TextView tvIsConnected;
-
+    TextView txtLong,txtLat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gas_stations_list);
+        txtLong = (TextView) findViewById(R.id.txtLong);
+        txtLat = (TextView) findViewById(R.id.txtLat);
+
+        Intent intent1 = getIntent();
+        Double latitude = intent1.getDoubleExtra("lati", 1.0);
+        Double longitude = intent1.getDoubleExtra("longi", 1.0);
 
         // get reference to the views
         //etResponse = (EditText) findViewById(R.id.etResponse);
@@ -59,6 +65,8 @@ public class GasStationsList extends Activity {
 
         // check if you are connected or not
 
+        txtLat.setText(latitude+ "");
+        txtLong.setText(longitude+"");
         if(isConnected()){
             tvIsConnected.setBackgroundColor(0xFF00CC00);
             tvIsConnected.setText("You are conncted");
@@ -66,9 +74,11 @@ public class GasStationsList extends Activity {
         else{
             tvIsConnected.setText("You are NOT conncted");
         }
-
         // call AsynTask to perform network operation on separate thread
-        new HttpAsyncTask().execute("https://mobibuddy.herokuapp.com/nearby_gas.json?lat=33.971&long=-117.35&dist=2");
+        String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
+        tvIsConnected.setText(url1);
+
+        new HttpAsyncTask().execute(url1);
     }
 
     public static String GET(String url){
