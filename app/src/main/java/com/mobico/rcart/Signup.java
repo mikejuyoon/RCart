@@ -1,31 +1,25 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 
-public class SplashScreen extends Activity {
-
-    Button gasListButton;
+public class Signup extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
-
-        gasListButton = (Button) findViewById(R.id.gas_list_btn);
+        setContentView(R.layout.activity_signup);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.spash_screen, menu);
+        getMenuInflater().inflate(R.menu.signup, menu);
         return true;
     }
 
@@ -41,15 +35,7 @@ public class SplashScreen extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void openLoginActivity(View view){
-        Intent i = new Intent(SplashScreen.this, Login.class);
-        startActivity(i);
-        finish();
-    }
+    public void signupNewAccount(View view){
 
-    public void goToGasList(View view){
-        Intent i = new Intent(SplashScreen.this, GasStationsList.class);
-        startActivity(i);
-        finish();
     }
 }
