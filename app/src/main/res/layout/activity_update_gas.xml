@@ -123,7 +123,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:hint="Update plus"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="3" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -140,7 +141,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:hint="Update premium"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="3" />
 
     </RelativeLayout>
 

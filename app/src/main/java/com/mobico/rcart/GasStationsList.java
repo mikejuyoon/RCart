@@ -75,16 +75,12 @@ public class GasStationsList extends Activity {
             tvIsConnected.setText("You are NOT conncted");
         }
         // call AsynTask to perform network operation on separate thread
-<<<<<<< HEAD
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
         //String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
 
         tvIsConnected.setText(url1);
 
         new HttpAsyncTask().execute(url1);
-=======
-        new HttpAsyncTask().execute("https://mobibuddy.herokuapp.com/nearby_gas.json?lat=33.971&long=-117.35&dist=2&sortBy=price");
->>>>>>> working
     }
 
     public static String GET(String url){
@@ -201,7 +197,6 @@ public class GasStationsList extends Activity {
 
             TextView gasPrice = (TextView) listItem.findViewById(R.id.gasPrice);
             gasPrice.setText(gasArray.getJSONObject(i).getString("mid_price"));
-<<<<<<< HEAD
         } catch(JSONException e){}
         /*
         Button stockQuoteButton = (Button) newStockRow.findViewById(R.id.stockQuoteButton);
@@ -215,9 +210,6 @@ public class GasStationsList extends Activity {
 
         //TextView listNameTV = (TextView) listItem.findViewById(R.id.listNameTV);
         //listNameTV.setText(s);
-=======
-        }catch(JSONException e){}
->>>>>>> working
 
         gasStationList.addView(listItem);
     }

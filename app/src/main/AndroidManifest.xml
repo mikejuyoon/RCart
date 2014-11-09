@@ -2,10 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mobico.rcart" >
 
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-=======
->>>>>>> working
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -35,7 +32,6 @@
             android:name=".StationDetail"
             android:label="@string/title_activity_station_detail" >
         </activity>
-<<<<<<< HEAD
 
         <activity
             android:name=".UpdateGas"
@@ -46,7 +42,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-=======
         <activity
             android:name=".Login"
             android:label="@string/title_activity_login"
@@ -59,7 +54,6 @@
             android:name=".Signup"
             android:label="@string/title_activity_signup" >
         </activity>
->>>>>>> working
     </application>
 
 </manifest>
