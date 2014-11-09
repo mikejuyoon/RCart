@@ -167,9 +167,18 @@ public class SplashScreen extends Activity implements
         return super.onOptionsItemSelected(item);
     }
 
+<<<<<<< HEAD
     /***********************************************************************************************
      *
      **********************************************************************************************/
+=======
+    public void openLoginActivity(View view){
+        Intent i = new Intent(SplashScreen.this, Login.class);
+        startActivity(i);
+        finish();
+    }
+
+>>>>>>> working
     public void goToGasList(View view){
         Intent i = new Intent(SplashScreen.this, GasStationsList.class);
         i.putExtra("lati", mCurrentLocation.getLatitude());
