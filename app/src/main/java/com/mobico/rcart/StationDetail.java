@@ -36,17 +36,19 @@ public class StationDetail extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Transitioning from Station Detail Activity to Gas Stations List
     public void goBack(View view)
     {
         Intent i = new Intent(StationDetail.this, GasStationsList.class);
         startActivity(i);
-        finish();
+        //finish();
     }
 
+    //Transitioning from Station Detail Activity to Update Gas
     public void goToUpdateGas(View view)
     {
         Intent i = new Intent(StationDetail.this, UpdateGas.class);
         startActivity(i);
-        finish();
+        //finish();
     }
 }

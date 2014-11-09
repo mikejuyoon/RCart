@@ -22,6 +22,7 @@ public class SplashScreen extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener,
         LocationListener {
+
     // locations objects
     LocationClient mLocationClient;
     Location mCurrentLocation;
@@ -30,6 +31,10 @@ public class SplashScreen extends Activity implements
     TextView txtLong,txtLat;
     Button gasListButton;
 
+    /***********************************************************************************************
+     *Initializes certain variables to use throughout the Android programs
+     *
+     **********************************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +58,9 @@ public class SplashScreen extends Activity implements
         gasListButton = (Button) findViewById(R.id.gas_list_btn);
     }
 
-
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -61,12 +68,19 @@ public class SplashScreen extends Activity implements
         return true;
     }
 
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     @Override
     protected void onStart() {
         super.onStart();
         // 1. connect the client.
         mLocationClient.connect();
     }
+
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     @Override
     protected void onStop() {
         super.onStop();
@@ -74,13 +88,18 @@ public class SplashScreen extends Activity implements
         mLocationClient.disconnect();
     }
 
-
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     // GooglePlayServicesClient.OnConnectionFailedListener
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
     }
 
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     // GooglePlayServicesClient.ConnectionCallbacks
     @Override
     public void onConnected(Bundle arg0) {
@@ -110,12 +129,19 @@ public class SplashScreen extends Activity implements
         }
 
     }
+
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     @Override
     public void onDisconnected() {
         Toast.makeText(this, "Disconnected.", Toast.LENGTH_SHORT).show();
 
     }
 
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     // LocationListener
     @Override
     public void onLocationChanged(Location location) {
@@ -126,6 +152,9 @@ public class SplashScreen extends Activity implements
         txtLong.setText(mCurrentLocation.getLongitude()+"");
     }
 
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -138,6 +167,9 @@ public class SplashScreen extends Activity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /***********************************************************************************************
+     *
+     **********************************************************************************************/
     public void goToGasList(View view){
         Intent i = new Intent(SplashScreen.this, GasStationsList.class);
         i.putExtra("lati", mCurrentLocation.getLatitude());

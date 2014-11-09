@@ -76,6 +76,8 @@ public class GasStationsList extends Activity {
         }
         // call AsynTask to perform network operation on separate thread
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
+        //String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
+
         tvIsConnected.setText(url1);
 
         new HttpAsyncTask().execute(url1);
@@ -190,13 +192,16 @@ public class GasStationsList extends Activity {
         try {
             TextView gasStationName = (TextView) listItem.findViewById(R.id.gasStationName);
             gasStationName.setText(gasArray.getJSONObject(i).getString("station"));
+
             TextView gasDistance = (TextView) listItem.findViewById(R.id.gasDistance);
             gasDistance.setText(gasArray.getJSONObject(i).getString("distance"));
+
             TextView gasAddress = (TextView) listItem.findViewById(R.id.gasAddress);
             gasAddress.setText(gasArray.getJSONObject(i).getString("address"));
+
             TextView gasPrice = (TextView) listItem.findViewById(R.id.gasPrice);
             gasPrice.setText(gasArray.getJSONObject(i).getString("mid_price"));
-        }catch(JSONException e){}
+        } catch(JSONException e){}
         /*
         Button stockQuoteButton = (Button) newStockRow.findViewById(R.id.stockQuoteButton);
         stockQuoteButton.setOnClickListener(getStockActivityListener);
@@ -216,6 +221,6 @@ public class GasStationsList extends Activity {
     public void goToStationDetail(View view){
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
         startActivity(i);
-        finish();
+        //finish();
     }
 }

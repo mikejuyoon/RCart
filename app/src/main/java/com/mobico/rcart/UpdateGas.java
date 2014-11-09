@@ -1,9 +1,11 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class UpdateGas extends Activity {
@@ -32,5 +34,13 @@ public class UpdateGas extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //Transitioning from Station Detail Activity to Gas Stations List
+    public void goBack(View view)
+    {
+        Intent i = new Intent(UpdateGas.this, StationDetail.class);
+        startActivity(i);
+        //finish();
     }
 }
