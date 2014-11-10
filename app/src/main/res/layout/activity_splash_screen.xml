@@ -48,7 +48,8 @@
         android:id="@+id/login_btn"
         android:layout_above="@+id/gas_list_btn"
         android:layout_centerHorizontal="true"
-        android:width="120dp" />
+        android:width="120dp"
+        android:onClick="openLoginActivity" />
 
     <TextView
         android:id="@+id/txtLong"

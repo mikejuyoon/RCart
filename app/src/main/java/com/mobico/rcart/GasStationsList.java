@@ -3,6 +3,7 @@ package com.mobico.rcart;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +78,8 @@ public class GasStationsList extends Activity {
         }
         // call AsynTask to perform network operation on separate thread
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
+        //String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
+
         tvIsConnected.setText(url1);
 
         new HttpAsyncTask().execute(url1);
@@ -85,7 +89,6 @@ public class GasStationsList extends Activity {
         InputStream inputStream = null;
         String result = "";
         try {
-
             // create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
 
@@ -128,12 +131,13 @@ public class GasStationsList extends Activity {
         else
             return false;
     }
+
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-
             return GET(urls[0]);
         }
+
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
@@ -148,7 +152,6 @@ public class GasStationsList extends Activity {
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -169,8 +172,6 @@ public class GasStationsList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     public void fillList(View view){
         gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
         for(int i = 0 ; i < gasArray.length() ; i++){
@@ -179,24 +180,30 @@ public class GasStationsList extends Activity {
     }
 
     private void pushListItemToLayoutView(int i){
-        //gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View listItem = inflater.inflate(R.layout.gas_station_row, null);
 
-        //View newStockRow = inflater.inflate(R.layout.stock_quote_row, null);
-
         // Create the TextView for the ScrollView Row
         try {
+       //     RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+       //     gasStationRow.
+
+            RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+            gasStationRow.setBackgroundColor(Color.WHITE);
+
             TextView gasStationName = (TextView) listItem.findViewById(R.id.gasStationName);
             gasStationName.setText(gasArray.getJSONObject(i).getString("station"));
+
             TextView gasDistance = (TextView) listItem.findViewById(R.id.gasDistance);
             gasDistance.setText(gasArray.getJSONObject(i).getString("distance"));
+
             TextView gasAddress = (TextView) listItem.findViewById(R.id.gasAddress);
             gasAddress.setText(gasArray.getJSONObject(i).getString("address"));
+
             TextView gasPrice = (TextView) listItem.findViewById(R.id.gasPrice);
             gasPrice.setText(gasArray.getJSONObject(i).getString("mid_price"));
-        }catch(JSONException e){}
+        } catch(JSONException e){}
         /*
         Button stockQuoteButton = (Button) newStockRow.findViewById(R.id.stockQuoteButton);
         stockQuoteButton.setOnClickListener(getStockActivityListener);
@@ -214,8 +221,16 @@ public class GasStationsList extends Activity {
     }
 
     public void goToStationDetail(View view){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View listItem = inflater.inflate(R.layout.gas_station_row, null);
+        RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+        gasStationRow.setBackgroundColor(Color.WHITE);
+
+        //gasStationList.addView(listIt);
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
         startActivity(i);
-        finish();
+
+        //i.putExtra("istation_id", );
+        //finish();
     }
 }
