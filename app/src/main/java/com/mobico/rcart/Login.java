@@ -180,6 +180,6 @@ public class Login extends Activity {
     public void openSignupActivity(View view){
         Intent i = new Intent(Login.this, Signup.class);
         startActivity(i);
-        finish();
+        //finish();
     }
 }

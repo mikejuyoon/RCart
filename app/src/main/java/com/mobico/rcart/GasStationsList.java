@@ -3,6 +3,7 @@ package com.mobico.rcart;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,6 +131,7 @@ public class GasStationsList extends Activity {
         else
             return false;
     }
+
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -150,7 +153,6 @@ public class GasStationsList extends Activity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -170,8 +172,6 @@ public class GasStationsList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     public void fillList(View view){
         gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
         for(int i = 0 ; i < gasArray.length() ; i++){
@@ -186,6 +186,12 @@ public class GasStationsList extends Activity {
 
         // Create the TextView for the ScrollView Row
         try {
+       //     RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+       //     gasStationRow.
+
+            RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+            gasStationRow.setBackgroundColor(Color.WHITE);
+
             TextView gasStationName = (TextView) listItem.findViewById(R.id.gasStationName);
             gasStationName.setText(gasArray.getJSONObject(i).getString("station"));
 
@@ -214,10 +220,17 @@ public class GasStationsList extends Activity {
         gasStationList.addView(listItem);
     }
 
-
     public void goToStationDetail(View view){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View listItem = inflater.inflate(R.layout.gas_station_row, null);
+        RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+        gasStationRow.setBackgroundColor(Color.WHITE);
+
+        //gasStationList.addView(listIt);
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
         startActivity(i);
+
+        //i.putExtra("istation_id", );
         //finish();
     }
 }
