@@ -65,6 +65,8 @@ import android.os.StrictMode;
 
 public class UpdateGas extends Activity {
 
+    int station_id;
+
     /***********************************************************************************************
      * function onCreate
      *
@@ -98,7 +100,6 @@ public class UpdateGas extends Activity {
 
     /***********************************************************************************************
      * class HttpPostAsyncTask
-     *
      *
      * protected String doInBackground(String)
      * publiv void POST(String)
@@ -159,27 +160,20 @@ public class UpdateGas extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void clickUnleaded()
-    {
+    public void clickUnleaded() {
 
     }
 
-    public void clickPlus()
-    {
+    public void clickPlus() {
 
     }
 
-    public void clickPremium()
-    {
+    public void clickPremium() {
 
     }
 
     //Transitioning from Station Detail Activity to Gas Stations List
-    public void goBack(View view)
-    {
-        Intent i = new Intent(UpdateGas.this, StationDetail.class);
-
-        startActivity(i);
-        //finish();
+    public void goBack(View view) {
+        finish();
     }
 }
