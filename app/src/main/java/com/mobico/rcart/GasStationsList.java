@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,13 +37,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class GasStationsList extends Activity {
 
-    LinearLayout gasStationList;
+    ListView gasStationList;
     JSONObject gasJson;
     JSONArray gasArray;
 
@@ -50,12 +54,19 @@ public class GasStationsList extends Activity {
     TextView tvIsConnected;
     TextView txtLong,txtLat;
 
+    GasStationListAdapter listAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gas_stations_list);
         txtLong = (TextView) findViewById(R.id.txtLong);
         txtLat = (TextView) findViewById(R.id.txtLat);
+
+        gasStationList = (ListView) findViewById(R.id.myListView);
+        listAdapter = new GasStationListAdapter(this);
+
+        gasStationList.setAdapter(listAdapter);
 
         Intent intent1 = getIntent();
         Double latitude = intent1.getDoubleExtra("lati", 1.0);
@@ -71,10 +82,10 @@ public class GasStationsList extends Activity {
         txtLong.setText(longitude+"");
         if(isConnected()){
             tvIsConnected.setBackgroundColor(0xFF00CC00);
-            tvIsConnected.setText("You are conncted");
+            tvIsConnected.setText("You are connected");
         }
         else{
-            tvIsConnected.setText("You are NOT conncted");
+            tvIsConnected.setText("You are NOT connected");
         }
         // call AsynTask to perform network operation on separate thread
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
@@ -173,58 +184,36 @@ public class GasStationsList extends Activity {
     }
 
     public void fillList(View view){
-        gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
+        ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String, String>>();
         for(int i = 0 ; i < gasArray.length() ; i++){
-            pushListItemToLayoutView(i);
+            ListOfRows.add(pushListItemToLayoutView(i));
+            Log.d("add rows: ", Integer.toString(i));
         }
+        listAdapter.insertList(ListOfRows);
+        gasStationList.setAdapter(listAdapter);
     }
 
-    private void pushListItemToLayoutView(int i){
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private HashMap<String,String> pushListItemToLayoutView(int i) {
+        HashMap<String,String> hash = new HashMap<String, String>();
 
-        View listItem = inflater.inflate(R.layout.gas_station_row, null);
-
-        // Create the TextView for the ScrollView Row
         try {
-       //     RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
-       //     gasStationRow.
-
-            RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
-            gasStationRow.setBackgroundColor(Color.WHITE);
-
-            TextView gasStationName = (TextView) listItem.findViewById(R.id.gasStationName);
-            gasStationName.setText(gasArray.getJSONObject(i).getString("station"));
-
-            TextView gasDistance = (TextView) listItem.findViewById(R.id.gasDistance);
-            gasDistance.setText(gasArray.getJSONObject(i).getString("distance"));
-
-            TextView gasAddress = (TextView) listItem.findViewById(R.id.gasAddress);
-            gasAddress.setText(gasArray.getJSONObject(i).getString("address"));
-
-            TextView gasPrice = (TextView) listItem.findViewById(R.id.gasPrice);
-            gasPrice.setText(gasArray.getJSONObject(i).getString("mid_price"));
-        } catch(JSONException e){}
-        /*
-        Button stockQuoteButton = (Button) newStockRow.findViewById(R.id.stockQuoteButton);
-        stockQuoteButton.setOnClickListener(getStockActivityListener);
-
-        Button quoteFromWebButton = (Button) newStockRow.findViewById(R.id.quoteFromWebButton);
-        quoteFromWebButton.setOnClickListener(getStockFromWebsiteListener);*/
-
-        // Add the new components for the stock to the TableLayout
-        //stockTableScrollView.addView(newStockRow, arrayIndex);
-
-        //TextView listNameTV = (TextView) listItem.findViewById(R.id.listNameTV);
-        //listNameTV.setText(s);
-
-        gasStationList.addView(listItem);
+            hash.put("station",gasArray.getJSONObject(i).getString("station"));
+            hash.put("distance",gasArray.getJSONObject(i).getString("distance"));
+            hash.put("address",gasArray.getJSONObject(i).getString("address"));
+            hash.put("reg_price",gasArray.getJSONObject(i).getString("reg_price"));
+            hash.put("station_id",gasArray.getJSONObject(i).getString("id"));
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return hash;
     }
 
     public void goToStationDetail(View view){
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View listItem = inflater.inflate(R.layout.gas_station_row, null);
-        RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
-        gasStationRow.setBackgroundColor(Color.WHITE);
+    //    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    //    View listItem = inflater.inflate(R.layout.gas_station_row, null);
+    //    RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
+    //    gasStationRow.setBackgroundColor(Color.WHITE);
 
         //gasStationList.addView(listIt);
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
