@@ -2,14 +2,18 @@ package com.mobico.rcart;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +44,9 @@ public class Login extends Activity {
 
     private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
     public static SharedPreferences savedData;
+
+    private EditText inputEmail;
+    private EditText inputPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,19 +80,20 @@ public class Login extends Activity {
 
     public void loginButtonPress(View view) {
 
-        EditText inputEmail = (EditText) findViewById(R.id.inputEmail);
-        EditText inputPassword = (EditText) findViewById(R.id.inputPassword);
+        inputEmail = (EditText) findViewById(R.id.inputEmail);
+        inputPassword = (EditText) findViewById(R.id.inputPassword);
+
+        //Hides keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(inputEmail.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(inputPassword.getWindowToken(), 0);
 
         postLoginData(inputEmail.getText().toString(), inputPassword.getText().toString());
     }
 
     private void postLoginData(String inputEmail, String inputPassword) {
-        // Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users/sign_in.json");
 
-        InputStream inputStream = null;
-        String result;
+        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users/sign_in.json");
 
         try {
             // Add your data
@@ -94,29 +102,51 @@ public class Login extends Activity {
             nameValuePairs.add(new BasicNameValuePair("password", inputPassword));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-            new HttpAsyncLogin().execute(httppost);
+            if(isConnected()){
+                Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
+                new MyHttpPost().execute(httppost);
+            }
+            else{
+                Toast.makeText(getBaseContext(), "NOT CONNECTED!", Toast.LENGTH_LONG).show();
+            }
+            //new MyHttpPost().execute(httppost);
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
         }
     }
 
-    private class HttpAsyncLogin extends AsyncTask<HttpPost, Void, String> {
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
+
         @Override
         protected String doInBackground(HttpPost... postUrl) {
+
             return POST(postUrl[0]);
         }
 
-        // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
             try{
                 JSONObject jsonLoginResult = new JSONObject(result);
                 if( jsonLoginResult.getBoolean("success") ){
-                    //will save our auth_token in our SharedPreferences
+                    // Saves received "auth_token" in SharedPreferences
                     SharedPreferences.Editor preferencesEditor = savedData.edit();
                     preferencesEditor.putString("auth_token", jsonLoginResult.getJSONObject("user").getString("auth_token"));
+
+                    // Clears the input EditTexts
+                    inputEmail.setText(null);
+                    inputPassword.setText(null);
+
+                    Toast.makeText(getBaseContext(), "Signed in!", Toast.LENGTH_LONG).show();
                 }
                 else{
                     invalidEntryAlert("Invalid username or password. Please try again.");
@@ -126,32 +156,42 @@ public class Login extends Activity {
                 //do nothing
             }
         }
-    }
 
-    public static String POST(HttpPost postUrl){
-        InputStream inputStream = null;
-        String result = "";
-        try {
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
+        public String POST(HttpPost postUrl){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
 
-            // make POST request to the given URL
-            HttpResponse httpResponse = httpclient.execute(postUrl);
+                // make POST request to the given URL
+                HttpResponse httpResponse = httpclient.execute(postUrl);
 
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
 
-            // convert inputstream to string
-            if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else
+                    result = "Did not work!";
 
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+
+            return result;
         }
 
-        return result;
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+            inputStream.close();
+            return result;
+        }
     }
 
     private void invalidEntryAlert(String message) {
@@ -163,18 +203,6 @@ public class Login extends Activity {
 
         AlertDialog theAlertDialog = builder.create();
         theAlertDialog.show();
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
     }
 
     public void openSignupActivity(View view){
