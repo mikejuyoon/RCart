@@ -41,6 +41,7 @@
         android:width="120dp"
         android:onClick="goToGasList" />
 
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,20 +50,5 @@
         android:layout_above="@+id/gas_list_btn"
         android:layout_centerHorizontal="true"
         android:width="120dp" />
-
-    <TextView
-        android:id="@+id/txtLong"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Long"
-        android:textSize="24dp" />
-
-    <TextView
-        android:id="@+id/txtLat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txtLong"
-        android:text="Lat"
-        android:textSize="24dp" />
 
 </RelativeLayout>

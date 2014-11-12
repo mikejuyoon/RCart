@@ -47,36 +47,37 @@ public class GasStationsList extends Activity {
     EditText etResponse;
     TextView tvIsConnected;
     TextView txtLong,txtLat;
-
+    //int returnbool;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gas_stations_list);
-        txtLong = (TextView) findViewById(R.id.txtLong);
-        txtLat = (TextView) findViewById(R.id.txtLat);
-
+        //txtLong = (TextView) findViewById(R.id.txtLong);  testing for the long and lat passing
+        //txtLat = (TextView) findViewById(R.id.txtLat);
+        //super.onRestoreInstanceState(savedInstanceState);
         Intent intent1 = getIntent();
         Double latitude = intent1.getDoubleExtra("lati", 1.0);
         Double longitude = intent1.getDoubleExtra("longi", 1.0);
+       // returnbool = intent1.getIntExtra("returnbool", 1);
 
         // get reference to the views
         //etResponse = (EditText) findViewById(R.id.etResponse);
-        tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
+        //tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 
         // check if you are connected or not
 
-        txtLat.setText(latitude+ "");
-        txtLong.setText(longitude+"");
-        if(isConnected()){
+        //txtLat.setText(latitude+ "");
+        //txtLong.setText(longitude+"");
+        /*if(isConnected()){
             tvIsConnected.setBackgroundColor(0xFF00CC00);
             tvIsConnected.setText("You are conncted");
         }
         else{
             tvIsConnected.setText("You are NOT conncted");
-        }
+        } */
         // call AsynTask to perform network operation on separate thread
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
-        tvIsConnected.setText(url1);
+        //tvIsConnected.setText(url1);   testing whether the URL is correct
 
         new HttpAsyncTask().execute(url1);
     }
@@ -146,6 +147,7 @@ public class GasStationsList extends Activity {
             catch(JSONException e){
                 //do nothing
             }
+            fillList();
         }
     }
 
@@ -171,7 +173,7 @@ public class GasStationsList extends Activity {
 
 
 
-    public void fillList(View view){
+    public void fillList(){
         gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
         for(int i = 0 ; i < gasArray.length() ; i++){
             pushListItemToLayoutView(i);
@@ -215,6 +217,11 @@ public class GasStationsList extends Activity {
 
     public void goToStationDetail(View view){
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
+        startActivity(i);
+        finish();
+    }
+    public void goToFilterFromGasStation(View view){
+        Intent i = new Intent(GasStationsList.this, filter.class);
         startActivity(i);
         finish();
     }

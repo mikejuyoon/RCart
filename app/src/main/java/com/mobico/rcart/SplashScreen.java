@@ -27,7 +27,6 @@ public class SplashScreen extends Activity implements
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
 
-    TextView txtLong,txtLat;
     Button gasListButton;
 
     @Override
@@ -35,9 +34,6 @@ public class SplashScreen extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-
-        txtLong = (TextView) findViewById(R.id.txtLong);
-        txtLat = (TextView) findViewById(R.id.txtLat);
 
         // 3. create LocationClient
         mLocationClient = new LocationClient(this, this, this);
@@ -94,10 +90,6 @@ public class SplashScreen extends Activity implements
             // get location
             mCurrentLocation = mLocationClient.getLastLocation();
             try{
-
-                // set TextView(s)
-                txtLat.setText(mCurrentLocation.getLatitude()+"");
-                txtLong.setText(mCurrentLocation.getLongitude()+"");
 
             }catch(NullPointerException npe){
 

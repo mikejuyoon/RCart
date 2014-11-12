@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mobico.rcart" >
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar" >
         <activity
-            android:name=".SplashScreen"
+            android:name="com.mobico.rcart.SplashScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,19 +21,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GasStationsList"
+            android:name="com.mobico.rcart.GasStationsList"
             android:label="@string/title_activity_gas_stations_list"
-            android:parentActivityName=".SplashScreen" >
+            android:parentActivityName="com.mobico.rcart.SplashScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobico.rcart.SplashScreen" />
         </activity>
         <activity
-            android:name=".StationDetail"
+            android:name="com.mobico.rcart.StationDetail"
             android:label="@string/title_activity_station_detail" >
         </activity>
-        <meta-data android:name="com.google.android.gms.version"
+
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.mobico.rcart.filter"
+            android:label="@string/title_activity_filter" >
+        </activity>
     </application>
 
 </manifest>
