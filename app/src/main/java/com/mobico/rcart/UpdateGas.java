@@ -65,7 +65,18 @@ import android.os.StrictMode;
 
 public class UpdateGas extends Activity {
 
-    int station_id;
+    TextView Details;
+    String station;
+    String distance;
+    String address;
+    String reg_price;
+    String mid_price;
+    String pre_price;
+    String city;
+    String region;
+    String zip;
+    String country;
+    String station_id;
 
     /***********************************************************************************************
      * function onCreate
@@ -78,24 +89,53 @@ public class UpdateGas extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_gas);
 
-        //Used for later
-        boolean if_login;
-        int station_id;
+        //Receiving the inputs of the gas station informations.
+        Intent row_intent = getIntent();
+        station = row_intent.getStringExtra("istation");
+        distance = row_intent.getStringExtra("idistance");
+        address = row_intent.getStringExtra("iaddress");
+        reg_price = row_intent.getStringExtra("ireg_price");
+        mid_price = row_intent.getStringExtra("imid_price");
+        pre_price = row_intent.getStringExtra("ipre_price");
+        city = row_intent.getStringExtra("icity");
+        region = row_intent.getStringExtra("iregion");
+        zip = row_intent.getStringExtra("izip");
+        country = row_intent.getStringExtra("icountry");
+        station_id = row_intent.getStringExtra("istation_id");
+
+        //Layouts information for the Gas Detail Activity with the specific inputs
+        Details = (TextView) findViewById(R.id.gasStationName);
+        Details.setText(station);
+        Details = (TextView) findViewById(R.id.address);
+        Details.setText(address + "\n" + city + ", " + region + " " + zip + "\n" + country);
+        //Details = (TextView) findViewById(R.id.reg_price);
+        //Details.setText(reg_price);
+        //Details = (TextView) findViewById(R.id.mid_price);
+        //Details.setText(mid_price);
+        //Details = (TextView) findViewById(R.id.pre_price);
+        //Details.setText(pre_price);
+
+        //Logs each information of the station
+        Log.d("Station", station);
+        Log.d("Distance", distance);
+        Log.d("Address", address);
+        Log.d("Reg_price", reg_price);
+        Log.d("Mid_Price", mid_price);
+        Log.d("Pre_price", pre_price);
+        Log.d("City:", city);
+        Log.d("Region:", region);
+        Log.d("Zip:", zip);
+        Log.d("Country:", country);
+        Log.d("Station_ID", station_id);
 
         //Dunno why to use this, it makes the POSTING work
         if (android.os.Build.VERSION.SDK_INT > 9) {
-
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-
-                    .permitAll().build();
-
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-
         }
 
-        String url1 = "http://api.mygasfeed.com/locations/price/xfakzg0s3n.json";
-        //POST(url1);
-        new HttpPOSTAsyncTask().execute(url1);
+        String url = "http://api.mygasfeed.com/locations/price/xfakzg0s3n.json";
+        new HttpPOSTAsyncTask().execute(url);
     }
 
     /***********************************************************************************************
