@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -60,24 +61,22 @@ public class GasStationsList extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gas_stations_list);
+
         txtLong = (TextView) findViewById(R.id.txtLong);
         txtLat = (TextView) findViewById(R.id.txtLat);
 
         gasStationList = (ListView) findViewById(R.id.myListView);
-        listAdapter = new GasStationListAdapter(this);
 
+        listAdapter = new GasStationListAdapter(this);
         gasStationList.setAdapter(listAdapter);
 
         Intent intent1 = getIntent();
         Double latitude = intent1.getDoubleExtra("lati", 1.0);
         Double longitude = intent1.getDoubleExtra("longi", 1.0);
 
-        // get reference to the views
-        //etResponse = (EditText) findViewById(R.id.etResponse);
         tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 
         // check if you are connected or not
-
         txtLat.setText(latitude+ "");
         txtLong.setText(longitude+"");
         if(isConnected()){
@@ -89,11 +88,23 @@ public class GasStationsList extends Activity {
         }
         // call AsynTask to perform network operation on separate thread
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) + "&long=" + String.valueOf(longitude) + "&dist=2&sortBy=price";
-        //String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
+        // String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
 
         tvIsConnected.setText(url1);
 
         new HttpAsyncTask().execute(url1);
+
+        /***********************************************************************************************
+         * Main point is to go to the station details whenever a row is clicked, bringing element with it
+         **********************************************************************************************/
+        //Detects clicks on the ListView and returns the position of the click
+        gasStationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("indexxxxxx: ", Integer.toString(i));
+                goToStationDetail(view, i);
+            }
+        });
     }
 
     public static String GET(String url){
@@ -184,7 +195,7 @@ public class GasStationsList extends Activity {
     }
 
     public void fillList(View view){
-        ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String,String>>();
         for(int i = 0 ; i < gasArray.length() ; i++){
             ListOfRows.add(pushListItemToLayoutView(i));
             Log.d("add rows: ", Integer.toString(i));
@@ -209,17 +220,24 @@ public class GasStationsList extends Activity {
         return hash;
     }
 
-    public void goToStationDetail(View view){
-    //    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    //    View listItem = inflater.inflate(R.layout.gas_station_row, null);
-    //    RelativeLayout gasStationRow = (RelativeLayout) listItem.findViewById(R.id.gasBackground);
-    //    gasStationRow.setBackgroundColor(Color.WHITE);
-
-        //gasStationList.addView(listIt);
+    public void goToStationDetail(View view, int specific_row){
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
-        startActivity(i);
+        try {
+            i.putExtra("istation", gasArray.getJSONObject(specific_row).getString("station"));
+            i.putExtra("idistance", gasArray.getJSONObject(specific_row).getString("distance"));
+            i.putExtra("iaddress", gasArray.getJSONObject(specific_row).getString("address"));
+            i.putExtra("ireg_price", gasArray.getJSONObject(specific_row).getString("reg_price"));
+            i.putExtra("imid_price", gasArray.getJSONObject(specific_row).getString("mid_price"));
+            i.putExtra("ipre_price", gasArray.getJSONObject(specific_row).getString("pre_price"));
+            i.putExtra("icity", gasArray.getJSONObject(specific_row).getString("city"));
+            i.putExtra("iregion", gasArray.getJSONObject(specific_row).getString("region"));
+            i.putExtra("izip", gasArray.getJSONObject(specific_row).getString("zip"));
+            i.putExtra("icountry", gasArray.getJSONObject(specific_row).getString("country"));
+            i.putExtra("istation_id", gasArray.getJSONObject(specific_row).getString("id"));
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
 
-        //i.putExtra("istation_id", );
-        //finish();
+        startActivity(i);
     }
 }

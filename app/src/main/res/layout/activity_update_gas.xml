@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="123 Something Avenue\nRiverside, CA 92508"
-            android:id="@+id/textView3"
+            android:id="@+id/address"
             android:layout_below="@+id/gasStationName"
             android:layout_toRightOf="@+id/imageView"
             android:layout_toEndOf="@+id/imageView" />

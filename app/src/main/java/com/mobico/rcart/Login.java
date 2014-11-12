@@ -50,7 +50,6 @@ public class Login extends Activity {
         savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -69,7 +68,6 @@ public class Login extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     public void loginButtonPress(View view) {
 
