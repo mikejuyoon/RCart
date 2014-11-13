@@ -152,9 +152,12 @@
 
     <Button
         android:id="@+id/btnSubmit"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Submit"
         android:layout_gravity="center_horizontal"
-        android:onClick="goToGasListFromFilter" />
+        android:onClick="goToGasListFromFilter"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp" />
 </LinearLayout>
