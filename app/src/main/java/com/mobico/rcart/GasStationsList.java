@@ -38,39 +38,147 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
 public class GasStationsList extends Activity {
 
-    LinearLayout gasStationList;
+    ListView gasStationList;
     JSONObject gasJson;
     JSONArray gasArray;
 
     EditText etResponse;
     TextView tvIsConnected;
+    TextView txtLong,txtLat;
 
+    Double latitude;
+    Double longitude;
 
+    GasStationListAdapter listAdapter;
+    private String distance = "2";
+    private String sortby = "price";
+    private String brand = "";
+    private String gastype = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gas_stations_list);
 
-        // get reference to the views
-        //etResponse = (EditText) findViewById(R.id.etResponse);
-        tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
+        gasStationList = (ListView) findViewById(R.id.myListView);
+
+        listAdapter = new GasStationListAdapter(this);
+        gasStationList.setAdapter(listAdapter);
+
+        Intent intent1 = getIntent();
+        latitude = intent1.getDoubleExtra("lati", 1.0);
+        longitude = intent1.getDoubleExtra("longi", 1.0);
+
+        Intent intent2 = getIntent();
+        onActivityResult(0, RESULT_OK, intent2);
+        if(distance == null) distance = "2";
+        if(sortby == null) sortby = "price";
+
+        //tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 
         // check if you are connected or not
-
+        /*txtLat.setText(latitude+ "");
+        txtLong.setText(longitude+"");
         if(isConnected()){
             tvIsConnected.setBackgroundColor(0xFF00CC00);
-            tvIsConnected.setText("You are conncted");
+            tvIsConnected.setText("You are connected");
         }
         else{
-            tvIsConnected.setText("You are NOT conncted");
-        }
-
+            tvIsConnected.setText("You are NOT connected");
+        }*/
         // call AsynTask to perform network operation on separate thread
-        new HttpAsyncTask().execute("https://mobibuddy.herokuapp.com/nearby_gas.json?lat=33.971&long=-117.35&dist=2&sortBy=price");
+        String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
+                "&long=" + String.valueOf(longitude) +
+                "&dist="+ distance + "&sortBy=" + sortby;
+        //String url2 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
+                //"&long=" + String.valueOf(longitude) +
+                //"&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
+        // String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
+
+        //tvIsConnected.setText(url2);
+
+        new HttpAsyncTask().execute(url1);
+
+        /***********************************************************************************************
+         * Main point is to go to the station details whenever a row is clicked, bringing element with it
+         **********************************************************************************************/
+        //Detects clicks on the ListView and returns the position of the click
+        gasStationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("indexxxxxx: ", Integer.toString(i));
+                goToStationDetail(view, i);
+            }
+        });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            distance = data.getStringExtra("distance");
+            brand = data.getStringExtra("brand");
+            gastype = data.getStringExtra("gastype");
+            sortby = data.getStringExtra("sortby");
+
+            //String url2 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
+                    //"&long=" + String.valueOf(longitude) +
+                    //"&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
+
+            //tvIsConnected.setText(url2);
+
+            String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
+                    "&long=" + String.valueOf(longitude) +
+                    "&dist="+ distance + "&sortBy=" + sortby;
+            new HttpAsyncTask().execute(url1);
+
+        }
+    }
     public static String GET(String url){
         InputStream inputStream = null;
         String result = "";
@@ -117,6 +225,7 @@ public class GasStationsList extends Activity {
         else
             return false;
     }
+
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -135,9 +244,9 @@ public class GasStationsList extends Activity {
             catch(JSONException e){
                 //do nothing
             }
+            fillList();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,39 +267,60 @@ public class GasStationsList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    public void fillList(View view){
-        gasStationList = (LinearLayout) findViewById(R.id.gasStationList);
+    public void fillList(){
+        ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String,String>>();
         for(int i = 0 ; i < gasArray.length() ; i++){
-            pushListItemToLayoutView(i);
+            ListOfRows.add(pushListItemToLayoutView(i));
+            Log.d("add rows: ", Integer.toString(i));
         }
+        listAdapter.insertList(ListOfRows);
+        gasStationList.setAdapter(listAdapter);
+        listAdapter.notifyDataSetChanged();
     }
 
-    private void pushListItemToLayoutView(int i){
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private HashMap<String,String> pushListItemToLayoutView(int i) {
+       // LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View listItem = inflater.inflate(R.layout.gas_station_row, null);
+        //iew listItem = inflater.inflate(R.layout.gas_station_row, null);
+        HashMap<String,String> hash = new HashMap<String, String>();
 
-        // Create the TextView for the ScrollView Row
         try {
-            TextView gasStationName = (TextView) listItem.findViewById(R.id.gasStationName);
-            gasStationName.setText(gasArray.getJSONObject(i).getString("station"));
-            TextView gasDistance = (TextView) listItem.findViewById(R.id.gasDistance);
-            gasDistance.setText(gasArray.getJSONObject(i).getString("distance"));
-            TextView gasAddress = (TextView) listItem.findViewById(R.id.gasAddress);
-            gasAddress.setText(gasArray.getJSONObject(i).getString("address"));
-            TextView gasPrice = (TextView) listItem.findViewById(R.id.gasPrice);
-            gasPrice.setText(gasArray.getJSONObject(i).getString("mid_price"));
-        }catch(JSONException e){}
-
-        gasStationList.addView(listItem);
+            hash.put("station",gasArray.getJSONObject(i).getString("station"));
+            hash.put("distance",gasArray.getJSONObject(i).getString("distance"));
+            hash.put("address",gasArray.getJSONObject(i).getString("address"));
+            hash.put("reg_price",gasArray.getJSONObject(i).getString("reg_price"));
+            hash.put("station_id",gasArray.getJSONObject(i).getString("id"));
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return hash;
     }
 
-
-    public void goToStationDetail(View view){
+    public void goToStationDetail(View view, int specific_row){
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
+        try {
+            i.putExtra("istation", gasArray.getJSONObject(specific_row).getString("station"));
+            i.putExtra("idistance", gasArray.getJSONObject(specific_row).getString("distance"));
+            i.putExtra("iaddress", gasArray.getJSONObject(specific_row).getString("address"));
+            i.putExtra("ireg_price", gasArray.getJSONObject(specific_row).getString("reg_price"));
+            i.putExtra("imid_price", gasArray.getJSONObject(specific_row).getString("mid_price"));
+            i.putExtra("ipre_price", gasArray.getJSONObject(specific_row).getString("pre_price"));
+            i.putExtra("icity", gasArray.getJSONObject(specific_row).getString("city"));
+            i.putExtra("iregion", gasArray.getJSONObject(specific_row).getString("region"));
+            i.putExtra("izip", gasArray.getJSONObject(specific_row).getString("zip"));
+            i.putExtra("icountry", gasArray.getJSONObject(specific_row).getString("country"));
+            i.putExtra("istation_id", gasArray.getJSONObject(specific_row).getString("id"));
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
         startActivity(i);
-        finish();
+    }
+
+    public void goToFilterFromGasStation(View view){
+        Intent i = new Intent(GasStationsList.this, Filter.class);
+        startActivityForResult(i, 1);
+        //startActivity(i);
+        //finish();
     }
 }

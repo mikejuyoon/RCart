@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class StationDetail extends Activity {
@@ -31,5 +32,17 @@ public class StationDetail extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goBack(View view){
+        onBackPressed();
+    }
+
+    public void getDirections(View view){
+
+    }
+
+    public void updateGasButton(View view){
+
     }
 }

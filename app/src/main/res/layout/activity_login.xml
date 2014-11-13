@@ -61,7 +61,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Sign Up Now"
-        android:id="@+id/button2"
+        android:id="@+id/getDirections"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
@@ -74,8 +74,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Need an Account?"
-        android:id="@+id/textView"
-        android:layout_above="@+id/button2"
+        android:id="@+id/txtLat"
+        android:layout_above="@+id/getDirections"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="7dp" />
 

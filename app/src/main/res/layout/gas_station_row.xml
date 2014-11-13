@@ -7,7 +7,12 @@
     android:paddingRight="10dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:focusable="false"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/gasRow"
+    >
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,5 +56,6 @@
         android:layout_below="@+id/gasDistance"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>

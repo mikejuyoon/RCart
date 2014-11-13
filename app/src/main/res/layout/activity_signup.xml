@@ -87,7 +87,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="New Account"
-        android:id="@+id/textView"
+        android:id="@+id/txtLat"
         android:layout_above="@+id/inputNewFirstname"
         android:layout_alignRight="@+id/inputNewFirstname"
         android:layout_alignEnd="@+id/inputNewFirstname" />
