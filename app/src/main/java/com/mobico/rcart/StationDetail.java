@@ -15,6 +15,7 @@ import org.json.JSONException;
 
 public class StationDetail extends Activity {
 
+    //Public variables of StationDetail
     TextView Details;
     String station;
     String distance;
@@ -28,6 +29,12 @@ public class StationDetail extends Activity {
     String country;
     String station_id;
 
+    /***********************************************************************************************
+     * function onCreate
+     *
+     * Provides the initial variables used for the station details. Calls the Async to Post the
+     * updated gas prices.
+     **********************************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,12 +136,24 @@ public class StationDetail extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Transitioning from Station Detail Activity to Gas Stations List
+    /***********************************************************************************************
+     * function goBack
+     * Returns to previous activity, finishing current one
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
     public void goBack(View view) {
         finish();
     }
 
-    //Transitioning from Station Detail Activity to Update Gas
+    /***********************************************************************************************
+     * function goToUpdateGas
+     * Goes to the UpdateGas activity, pushing every needed variable
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
     public void goToUpdateGas(View view) {
         Intent i = new Intent(StationDetail.this, UpdateGas.class);
         i.putExtra("istation", station);

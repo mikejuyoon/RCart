@@ -185,7 +185,8 @@
                 android:id="@+id/UpdateMid"
                 android:layout_below="@+id/mid_price"
                 android:layout_alignRight="@+id/mid_price"
-                android:layout_alignEnd="@+id/mid_price" />
+                android:layout_alignEnd="@+id/mid_price"
+                android:onClick="clickPlus"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -234,7 +235,8 @@
                 android:id="@+id/UpdatePre"
                 android:layout_below="@+id/pre_price"
                 android:layout_alignRight="@+id/pre_price"
-                android:layout_alignEnd="@+id/pre_price" />
+                android:layout_alignEnd="@+id/pre_price"
+                android:onClick="clickPremium" />
         </RelativeLayout>
 
     </RelativeLayout>

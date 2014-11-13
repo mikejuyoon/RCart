@@ -1,6 +1,7 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -66,6 +67,7 @@ import android.os.StrictMode;
 
 public class UpdateGas extends Activity {
 
+    //Public variables of UpdateGas
     TextView UpdateGas;
     String station;
     String distance;
@@ -132,7 +134,6 @@ public class UpdateGas extends Activity {
         //setting the correct logo for the gas station
         ImageView my_image;
         my_image = (ImageView) findViewById(R.id.imageView);
-
         if(station.equals("Shell")) {
             my_image.setImageResource(R.drawable.shell_logo);
         }
@@ -166,13 +167,6 @@ public class UpdateGas extends Activity {
         else {
             my_image.setImageResource(R.drawable.splashscreen);
         }
-
-        //Dunno why we use this, it makes the POSTING work
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
     }
 
     @Override
@@ -194,30 +188,112 @@ public class UpdateGas extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void clickRegular() {
+    /***********************************************************************************************
+    * function invalidEntryAlert
+    * Displays an invalid message
+    *
+    * @param   String
+    * @return  NONE
+    **********************************************************************************************/
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(UpdateGas.this);
 
+        builder.setTitle("Invalid Username or Password");
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
     }
 
-    public void clickPlus() {
-
+    /***********************************************************************************************
+     * function clickRegular
+     * On click function when clicking on Update Regular
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
+    public void clickRegular(View view) {
+        String fuelType = "reg";
+        EditText priceText = (EditText) findViewById(R.id.editRegular);
+        String priceTemp = priceText.getText().toString();
+        if (priceTemp.length() == 3) {
+            String newPrice = priceTemp.substring(0, 1) + "." + priceTemp.substring(1, 3);
+            postGasPrice(newPrice, fuelType, station_id);
+            finish();
+        }
+        else {
+            invalidEntryAlert("Please enter 3 digit Regular price");
+        }
     }
 
-    public void clickPremium() {
-
+    /***********************************************************************************************
+     * function clickPlus
+     * On click function when clicking on Update Plus
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
+    public void clickPlus(View view) {
+        String fuelType = "mid";
+        EditText priceText = (EditText) findViewById(R.id.editPlus);
+        String priceTemp = priceText.getText().toString();
+        if (priceTemp.length() == 3) {
+            String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
+            postGasPrice(newPrice, fuelType, station_id);
+            finish();
+        }
+        else {
+            invalidEntryAlert("Please enter 3 digit Plus price");
+        }
     }
 
-    //Transitioning from Station Detail Activity to Gas Stations List
+    /***********************************************************************************************
+     * function clickPremium
+     * On click function when clicking on Update Premium
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
+    public void clickPremium(View view) {
+        String fuelType = "pre";
+        EditText priceText = (EditText) findViewById(R.id.editPremium);
+        String priceTemp = priceText.getText().toString();
+        if (priceTemp.length() == 3) {
+            String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
+            postGasPrice(newPrice, fuelType, station_id);
+            finish();
+        }
+        else {
+            invalidEntryAlert("Please enter 3 digit Premium price");
+        }
+    }
+
+    /***********************************************************************************************
+     * function goBack
+     * Returns to previous activity, finishing current one
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
     public void goBack(View view) {
         finish();
     }
 
-
-    public void postGasPrice(String price, String fuelType, String stationId){
+    /***********************************************************************************************
+     * function postGasPrice
+     * Updates the given gas price with the given parameters to POST request to the gas API
+     *
+     * @param   price
+     * @param   fuelType
+     * @param   stationID
+     * @return  NONE
+     **********************************************************************************************/
+    public void postGasPrice(String price, String fuelType, String stationId) {
         HttpPost httppost = new HttpPost("http://api.mygasfeed.com/locations/price/xfakzg0s3n.json");
-
         try {
             // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             nameValuePairs.add(new BasicNameValuePair("price", price));
             nameValuePairs.add(new BasicNameValuePair("fueltype", fuelType));
             nameValuePairs.add(new BasicNameValuePair("stationid", stationId));
@@ -226,10 +302,15 @@ public class UpdateGas extends Activity {
             new MyHttpPost().execute(httppost);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            Log.d("POSTINGFAILURE", e.getLocalizedMessage());
         }
     }
 
+    /***********************************************************************************************
+     * class MyHttpPost
+     *
+     * Extends the AsyncTask, used to send POST requests to the Gas API
+     **********************************************************************************************/
     private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
 
         @Override

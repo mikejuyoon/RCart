@@ -97,17 +97,4 @@
         android:layout_gravity="center_horizontal"
         android:focusable="false"
         android:clickable="false" />
-
-
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/scrollView"-->
-        <!--android:layout_gravity="center_horizontal" >-->
-
-        <!--<TableLayout-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:id="@+id/gasStationList"></TableLayout>-->
-    <!--</ScrollView>-->
 </LinearLayout>
