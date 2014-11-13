@@ -1,7 +1,9 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +16,9 @@ import org.json.JSONException;
 
 
 public class StationDetail extends Activity {
+
+    private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+    public static SharedPreferences savedData;
 
     //Public variables of StationDetail
     TextView Details;
@@ -29,6 +34,7 @@ public class StationDetail extends Activity {
     String country;
     String station_id;
 
+
     /***********************************************************************************************
      * function onCreate
      *
@@ -39,6 +45,8 @@ public class StationDetail extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_detail);
+
+
 
         //Receiving the inputs of the gas station informations.
         Intent row_intent = getIntent();
@@ -144,7 +152,8 @@ public class StationDetail extends Activity {
      * @return  NONE
      **********************************************************************************************/
     public void goBack(View view) {
-        finish();
+        //finish();
+        onBackPressed();
     }
 
     /***********************************************************************************************
@@ -155,19 +164,41 @@ public class StationDetail extends Activity {
      * @return  NONE
      **********************************************************************************************/
     public void goToUpdateGas(View view) {
-        Intent i = new Intent(StationDetail.this, UpdateGas.class);
-        i.putExtra("istation", station);
-        i.putExtra("idistance", distance);
-        i.putExtra("iaddress", address);
-        i.putExtra("ireg_price", reg_price);
-        i.putExtra("imid_price", mid_price);
-        i.putExtra("ipre_price", pre_price);
-        i.putExtra("icity", city);
-        i.putExtra("iregion", region);
-        i.putExtra("izip", zip);
-        i.putExtra("icountry", country);
-        i.putExtra("istation_id", station_id);
-        startActivityForResult(i, 2);
+
+        savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+
+        String authToken = savedData.getString("auth_token", "0");
+        if( ! authToken.equals("0") ){
+            Intent i = new Intent(StationDetail.this, UpdateGas.class);
+            i.putExtra("istation", station);
+            i.putExtra("idistance", distance);
+            i.putExtra("iaddress", address);
+            i.putExtra("ireg_price", reg_price);
+            i.putExtra("imid_price", mid_price);
+            i.putExtra("ipre_price", pre_price);
+            i.putExtra("icity", city);
+            i.putExtra("iregion", region);
+            i.putExtra("izip", zip);
+            i.putExtra("icountry", country);
+            i.putExtra("istation_id", station_id);
+            startActivityForResult(i, 2);
+        }else{
+            errorAlert("Please login before updating gas.");
+            errorAlert(authToken);
+
+        }
+    }
+
+    private void errorAlert(String message) {
+        /// change to current class
+        AlertDialog.Builder builder = new AlertDialog.Builder(StationDetail.this);
+
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
     }
 
     /***********************************************************************************************

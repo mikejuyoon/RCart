@@ -144,6 +144,7 @@ public class Login extends Activity {
                     // Saves received "auth_token" in SharedPreferences
                     SharedPreferences.Editor preferencesEditor = savedData.edit();
                     preferencesEditor.putString("auth_token", jsonLoginResult.getJSONObject("user").getString("auth_token"));
+                    preferencesEditor.apply();
 
                     // Clears the input EditTexts
                     inputEmail.setText(null);

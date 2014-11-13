@@ -271,7 +271,7 @@ public class UpdateGas extends Activity {
             String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
             postGasPrice(newPrice, fuelType, station_id);
             Intent return_intent = new Intent();
-            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("new_gas_price", newPrice);
             return_intent.putExtra("gas_type", fuelType);
             setResult(RESULT_OK,return_intent);
             finish();

@@ -1,7 +1,9 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +31,9 @@ public class SplashScreen extends Activity implements
     LocationRequest mLocationRequest;
     //TextView txtLong,txtLat;
 
+    String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+    SharedPreferences savedData;
+
     /***********************************************************************************************
      *Initializes certain variables to use throughout the Android programs
      *
@@ -47,6 +52,8 @@ public class SplashScreen extends Activity implements
         mLocationRequest.setInterval(1000 * 5);
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(1000 * 1);
+
+        savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
     }
 
     /***********************************************************************************************
@@ -69,6 +76,18 @@ public class SplashScreen extends Activity implements
         mLocationClient.connect();
     }
 
+    private void invalidEntryAlert(String message) {
+        /// change to current class
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
+
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
     /***********************************************************************************************
      *
      **********************************************************************************************/
@@ -77,6 +96,19 @@ public class SplashScreen extends Activity implements
         super.onStop();
         // 1. disconnecting the client invalidates it.
         mLocationClient.disconnect();
+    }
+
+    @Override
+    protected void onDestroy (){
+        //String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+        //SharedPreferences savedData;
+        //savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+
+        SharedPreferences.Editor preferencesEditor = savedData.edit();
+        preferencesEditor.putString("auth_token", "0");
+        preferencesEditor.apply();
+
+        super.onDestroy();
     }
 
     /***********************************************************************************************
@@ -171,6 +203,6 @@ public class SplashScreen extends Activity implements
         i.putExtra("lati", mCurrentLocation.getLatitude());
         i.putExtra("longi", mCurrentLocation.getLongitude());
         startActivity(i);
-        finish();
+        //finish();
     }
 }
