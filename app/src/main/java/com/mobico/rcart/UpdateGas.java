@@ -1,6 +1,7 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,12 +67,24 @@ import android.os.StrictMode;
 
 public class UpdateGas extends Activity {
 
-    int station_id;
+    //Public variables of UpdateGas
+    TextView UpdateGas;
+    String station;
+    String distance;
+    String address;
+    String reg_price;
+    String mid_price;
+    String pre_price;
+    String city;
+    String region;
+    String zip;
+    String country;
+    String station_id;
 
     /***********************************************************************************************
      * function onCreate
      *
-     * Provides the initial variables used to update the gas. Cals the Async to Post the
+     * Provides the initial variables used to update the gas. Calls the Async to Post the
      * updated gas prices.
      **********************************************************************************************/
     @Override
@@ -78,66 +92,80 @@ public class UpdateGas extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_gas);
 
-        //Used for later
-        boolean if_login;
-        int station_id;
+        //Receiving the inputs of the gas station informations.
+        Intent row_intent = getIntent();
+        station = row_intent.getStringExtra("istation");
+        distance = row_intent.getStringExtra("idistance");
+        address = row_intent.getStringExtra("iaddress");
+        reg_price = row_intent.getStringExtra("ireg_price");
+        mid_price = row_intent.getStringExtra("imid_price");
+        pre_price = row_intent.getStringExtra("ipre_price");
+        city = row_intent.getStringExtra("icity");
+        region = row_intent.getStringExtra("iregion");
+        zip = row_intent.getStringExtra("izip");
+        country = row_intent.getStringExtra("icountry");
+        station_id = row_intent.getStringExtra("istation_id");
 
-        //Dunno why to use this, it makes the POSTING work
-        if (android.os.Build.VERSION.SDK_INT > 9) {
+        //Layouts information for the Gas Detail Activity with the specific inputs
+        UpdateGas = (TextView) findViewById(R.id.gasStationName);
+        UpdateGas.setText(station);
+        UpdateGas = (TextView) findViewById(R.id.address);
+        UpdateGas.setText(address + "\n" + city + ", " + region + " " + zip + "\n" + country);
+        UpdateGas = (TextView) findViewById(R.id.reg_price);
+        UpdateGas.setText(reg_price);
+        UpdateGas = (TextView) findViewById(R.id.mid_price);
+        UpdateGas.setText(mid_price);
+        UpdateGas = (TextView) findViewById(R.id.pre_price);
+        UpdateGas.setText(pre_price);
 
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+        //Logs each information of the station
+        Log.d("Station", station);
+        Log.d("Distance", distance);
+        Log.d("Address", address);
+        Log.d("Reg_price", reg_price);
+        Log.d("Mid_Price", mid_price);
+        Log.d("Pre_price", pre_price);
+        Log.d("City:", city);
+        Log.d("Region:", region);
+        Log.d("Zip:", zip);
+        Log.d("Country:", country);
+        Log.d("Station_ID", station_id);
 
-                    .permitAll().build();
-
-            StrictMode.setThreadPolicy(policy);
-
+        //setting the correct logo for the gas station
+        ImageView my_image;
+        my_image = (ImageView) findViewById(R.id.imageView);
+        if(station.equals("Shell")) {
+            my_image.setImageResource(R.drawable.shell_logo);
         }
-
-        String url1 = "http://api.mygasfeed.com/locations/price/xfakzg0s3n.json";
-        //POST(url1);
-        new HttpPOSTAsyncTask().execute(url1);
-    }
-
-    /***********************************************************************************************
-     * class HttpPostAsyncTask
-     *
-     * protected String doInBackground(String)
-     * publiv void POST(String)
-     **********************************************************************************************/
-    private class HttpPOSTAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            POST(urls[0]);
-            return null;
+        else if(station.equals("BP")) {
+            my_image.setImageResource(R.drawable.bp_logo);
         }
-
-        public void POST(String url) {
-            //Prints if Post request sent
-            // Toast.makeText(getBaseContext(), "Sent!", Toast.LENGTH_LONG).show();
-
-            // Create a new HttpClient and Post Header
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://api.mygasfeed.com/locations/price/xfakzg0s3n.json");
-
-            try {
-                // The key and Value pairs for the Post
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                nameValuePairs.add(new BasicNameValuePair("price", "6.00"));
-                nameValuePairs.add(new BasicNameValuePair("fueltype", "reg"));
-                nameValuePairs.add(new BasicNameValuePair("stationid", "1"));
-
-                // Sets the pairs and sends them to the Post request
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-                // As well send in stream in response
-                HttpResponse response = httpClient.execute(httpPost);
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        else if(station.equals("Mobil")) {
+            my_image.setImageResource(R.drawable.mobil_logo);
+        }
+        else if(station.equals("Costco")) {
+            my_image.setImageResource(R.drawable.costco_logo);
+        }
+        else if(station.equals("7-Eleven")) {
+            my_image.setImageResource(R.drawable.seven_eleven_logo);
+        }
+        else if(station.equals("Arco")) {
+            my_image.setImageResource(R.drawable.arco_logo);
+        }
+        else if(station.equals("Sam's Club")) {
+            my_image.setImageResource(R.drawable.sams_club_logo);
+        }
+        else if(station.equals("Valero")) {
+            my_image.setImageResource(R.drawable.valero_logo);
+        }
+        else if(station.equals("Chevron")) {
+            my_image.setImageResource(R.drawable.chevron_logo);
+        }
+        else if(station.equals("76")) {
+            my_image.setImageResource(R.drawable.union_76_logo);
+        }
+        else {
+            my_image.setImageResource(R.drawable.splashscreen);
         }
     }
 
@@ -160,20 +188,190 @@ public class UpdateGas extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void clickUnleaded() {
+    /***********************************************************************************************
+    * function invalidEntryAlert
+    * Displays an invalid message
+    *
+    * @param   String
+    * @return  NONE
+    **********************************************************************************************/
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(UpdateGas.this);
 
+        builder.setTitle("Invalid Gas Price");
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
     }
 
-    public void clickPlus() {
-
+    /***********************************************************************************************
+     * function clickRegular
+     * On click function when clicking on Update Regular
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
+    public void clickRegular(View view) {
+        String fuelType = "reg";
+        EditText priceText = (EditText) findViewById(R.id.editRegular);
+        String priceTemp = priceText.getText().toString();
+        if (priceTemp.length() == 3) {
+            String newPrice = priceTemp.substring(0, 1) + "." + priceTemp.substring(1, 3);
+            postGasPrice(newPrice, fuelType, station_id);
+            Intent return_intent = new Intent();
+            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("gas_type", fuelType);
+            setResult(RESULT_OK,return_intent);
+            finish();
+        }
+        else {
+            invalidEntryAlert("Please enter 3 digit Regular price");
+        }
     }
 
-    public void clickPremium() {
-
+    /***********************************************************************************************
+     * function clickPlus
+     * On click function when clicking on Update Plus
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
+    public void clickPlus(View view) {
+        String fuelType = "mid";
+        EditText priceText = (EditText) findViewById(R.id.editPlus);
+        String priceTemp = priceText.getText().toString();
+        if (priceTemp.length() == 3) {
+            String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
+            postGasPrice(newPrice, fuelType, station_id);
+            Intent return_intent = new Intent();
+            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("gas_type", fuelType);
+            setResult(RESULT_OK,return_intent);
+            finish();
+        }
+        else {
+            invalidEntryAlert("Please enter 3 digit Plus price");
+        }
     }
 
-    //Transitioning from Station Detail Activity to Gas Stations List
+    /***********************************************************************************************
+     * function clickPremium
+     * On click function when clicking on Update Premium
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
+    public void clickPremium(View view) {
+        String fuelType = "pre";
+        EditText priceText = (EditText) findViewById(R.id.editPremium);
+        String priceTemp = priceText.getText().toString();
+        if (priceTemp.length() == 3) {
+            String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
+            postGasPrice(newPrice, fuelType, station_id);
+            Intent return_intent = new Intent();
+            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("gas_type", fuelType);
+            setResult(RESULT_OK,return_intent);
+            finish();
+        }
+        else {
+            invalidEntryAlert("Please enter 3 digit Premium price");
+        }
+    }
+
+    /***********************************************************************************************
+     * function goBack
+     * Returns to previous activity, finishing current one
+     *
+     * @param   View
+     * @return  NONE
+     **********************************************************************************************/
     public void goBack(View view) {
         finish();
+    }
+
+    /***********************************************************************************************
+     * function postGasPrice
+     * Updates the given gas price with the given parameters to POST request to the gas API
+     *
+     * @param   price
+     * @param   fuelType
+     * @param   stationID
+     * @return  NONE
+     **********************************************************************************************/
+    public void postGasPrice(String price, String fuelType, String stationId) {
+        HttpPost httppost = new HttpPost("http://api.mygasfeed.com/locations/price/xfakzg0s3n.json");
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("price", price));
+            nameValuePairs.add(new BasicNameValuePair("fueltype", fuelType));
+            nameValuePairs.add(new BasicNameValuePair("stationid", stationId));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            new MyHttpPost().execute(httppost);
+
+        } catch (IOException e) {
+            Log.d("POSTINGFAILURE", e.getLocalizedMessage());
+        }
+    }
+
+    /***********************************************************************************************
+     * class MyHttpPost
+     *
+     * Extends the AsyncTask, used to send POST requests to the Gas API
+     **********************************************************************************************/
+    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
+
+        @Override
+        protected String doInBackground(HttpPost... postUrl) {
+            return POST(postUrl[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // TO DO
+            // WHAT YOU WANT TO DO WITH THE RESULT
+            // "result" is the json data received back!
+            //JSONObject jsonObject =
+        }
+
+        public String POST(HttpPost postUrl){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make POST request to the given URL
+                HttpResponse httpResponse = httpclient.execute(postUrl);
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else
+                    result = "Did not work!";
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+            inputStream.close();
+            return result;
+        }
     }
 }
