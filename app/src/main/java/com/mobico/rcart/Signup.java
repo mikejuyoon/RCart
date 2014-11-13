@@ -1,10 +1,35 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Signup extends Activity {
@@ -36,6 +61,123 @@ public class Signup extends Activity {
     }
 
     public void signupNewAccount(View view){
+        EditText inputNewEmail = (EditText) findViewById(R.id.inputNewEmail);
+        EditText inputNewPassword1 = (EditText) findViewById(R.id.inputNewPassword1);
+        EditText inputNewPassword2 = (EditText) findViewById(R.id.inputNewPassword2);
 
+        if( inputNewPassword1.getText().toString().equals(inputNewPassword2.getText().toString()) ){
+            postSignupData(inputNewEmail.getText().toString(), inputNewPassword1.getText().toString());
+        }else{
+            invalidEntryAlert("Passwords do not match.");
+        }
+    }
+
+    private void postSignupData(String inputEmail, String inputPassword) {
+
+        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users.json");
+
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+            nameValuePairs.add(new BasicNameValuePair("email", inputEmail));
+            nameValuePairs.add(new BasicNameValuePair("password", inputPassword));
+            nameValuePairs.add(new BasicNameValuePair("password_confirmation", inputPassword));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            if(isConnected()){
+                Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
+                new MyHttpPost().execute(httppost);
+            }
+            else{
+                Toast.makeText(getBaseContext(), "NOT CONNECTED!", Toast.LENGTH_LONG).show();
+            }
+            //new MyHttpPost().execute(httppost);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+        }
+    }
+
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Signup.this);
+
+        builder.setTitle("Error");
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
+    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
+
+        @Override
+        protected String doInBackground(HttpPost... postUrl) {
+
+            return POST(postUrl[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
+            try{
+                JSONObject jsonLoginResult = new JSONObject(result);
+                if( jsonLoginResult.getBoolean("success") ){
+                    invalidEntryAlert("Successfully Signed Up!");
+                    Toast.makeText(getBaseContext(), "Signed Up!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    invalidEntryAlert("Email has already been used or password must be longer than 8 characters.");
+                }
+            }
+            catch(JSONException e){
+                //do nothing
+            }
+        }
+
+        public String POST(HttpPost postUrl){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make POST request to the given URL
+                HttpResponse httpResponse = httpclient.execute(postUrl);
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else
+                    result = "Did not work!";
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+            inputStream.close();
+            return result;
+        }
     }
 }
