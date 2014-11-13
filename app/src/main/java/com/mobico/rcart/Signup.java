@@ -44,7 +44,6 @@ public class Signup extends Activity {
         setupKeyboardHide(findViewById(R.id.SignupLayout));
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -125,7 +124,6 @@ public class Signup extends Activity {
 
         @Override
         protected String doInBackground(HttpPost... postUrl) {
-
             return POST(postUrl[0]);
         }
 
@@ -135,8 +133,9 @@ public class Signup extends Activity {
             try {
                 JSONObject jsonLoginResult = new JSONObject(result);
                 if (jsonLoginResult.getBoolean("success")) {
-                    invalidEntryAlert("Successfully Signed Up!");
-                    Toast.makeText(getBaseContext(), "Signed Up!", Toast.LENGTH_LONG).show();
+                    //invalidEntryAlert("Successfully Signed Up! Please Login");
+                    Toast.makeText(getBaseContext(), "Signed Up! Please Login.", Toast.LENGTH_LONG).show();
+                    onBackPressed();
                 } else {
                     invalidEntryAlert("Email has already been used or password must be longer than 8 characters.");
                 }

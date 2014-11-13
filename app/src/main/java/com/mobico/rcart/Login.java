@@ -106,7 +106,7 @@ public class Login extends Activity {
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             if(isConnected()){
-                Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
                 new MyHttpPost().execute(httppost);
             }
             else{
@@ -150,6 +150,7 @@ public class Login extends Activity {
                     inputPassword.setText(null);
 
                     Toast.makeText(getBaseContext(), "Signed in!", Toast.LENGTH_LONG).show();
+                    onBackPressed();
                 }
                 else{
                     invalidEntryAlert("Invalid username or password. Please try again.");
