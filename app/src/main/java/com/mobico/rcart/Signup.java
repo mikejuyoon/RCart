@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -38,6 +41,7 @@ public class Signup extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        setupKeyboardHide(findViewById(R.id.SignupLayout));
     }
 
 
@@ -72,17 +76,17 @@ public class Signup extends Activity {
         }
     }
 
-    private void postSignupData(String inputEmail, String inputPassword) {
+            private void postSignupData(String inputEmail, String inputPassword) {
 
-        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users.json");
+            HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users.json");
 
-        try {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-            nameValuePairs.add(new BasicNameValuePair("email", inputEmail));
-            nameValuePairs.add(new BasicNameValuePair("password", inputPassword));
-            nameValuePairs.add(new BasicNameValuePair("password_confirmation", inputPassword));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            try {
+                // Add your data
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+                nameValuePairs.add(new BasicNameValuePair("email", inputEmail));
+                nameValuePairs.add(new BasicNameValuePair("password", inputPassword));
+                nameValuePairs.add(new BasicNameValuePair("password_confirmation", inputPassword));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             if(isConnected()){
                 Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
@@ -91,7 +95,6 @@ public class Signup extends Activity {
             else{
                 Toast.makeText(getBaseContext(), "NOT CONNECTED!", Toast.LENGTH_LONG).show();
             }
-            //new MyHttpPost().execute(httppost);
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -129,22 +132,20 @@ public class Signup extends Activity {
         @Override
         protected void onPostExecute(String result) {
             //Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-            try{
+            try {
                 JSONObject jsonLoginResult = new JSONObject(result);
-                if( jsonLoginResult.getBoolean("success") ){
+                if (jsonLoginResult.getBoolean("success")) {
                     invalidEntryAlert("Successfully Signed Up!");
                     Toast.makeText(getBaseContext(), "Signed Up!", Toast.LENGTH_LONG).show();
-                }
-                else{
+                } else {
                     invalidEntryAlert("Email has already been used or password must be longer than 8 characters.");
                 }
-            }
-            catch(JSONException e){
+            } catch (JSONException e) {
                 //do nothing
             }
         }
 
-        public String POST(HttpPost postUrl){
+        public String POST(HttpPost postUrl) {
             InputStream inputStream = null;
             String result = "";
             try {
@@ -158,7 +159,7 @@ public class Signup extends Activity {
                 inputStream = httpResponse.getEntity().getContent();
 
                 // convert inputstream to string
-                if(inputStream != null)
+                if (inputStream != null)
                     result = convertInputStreamToString(inputStream);
                 else
                     result = "Did not work!";
@@ -171,13 +172,36 @@ public class Signup extends Activity {
         }
 
         private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line = "";
             String result = "";
-            while((line = bufferedReader.readLine()) != null)
+            while ((line = bufferedReader.readLine()) != null)
                 result += line;
             inputStream.close();
             return result;
         }
+
+    }
+    private void setupKeyboardHide(View view) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(Signup.this);
+                    return false;
+                }
+            });
+        }
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupKeyboardHide(innerView);
+            }
+        }
+    }
+    private static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

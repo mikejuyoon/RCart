@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 public class SplashScreen extends Activity {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +44,13 @@ public class SplashScreen extends Activity {
     public void openLoginActivity(View view){
         Intent i = new Intent(SplashScreen.this, Login.class);
         startActivity(i);
-        finish();
+        //finish();
     }
 
     public void goToGasList(View view){
         Intent i = new Intent(SplashScreen.this, GasStationsList.class);
         startActivity(i);
-        finish();
+        //finish();
     }
 
 }
