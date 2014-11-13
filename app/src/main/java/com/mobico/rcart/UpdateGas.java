@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,7 +82,7 @@ public class UpdateGas extends Activity {
     /***********************************************************************************************
      * function onCreate
      *
-     * Provides the initial variables used to update the gas. Cals the Async to Post the
+     * Provides the initial variables used to update the gas. Calls the Async to Post the
      * updated gas prices.
      **********************************************************************************************/
     @Override
@@ -108,12 +109,12 @@ public class UpdateGas extends Activity {
         Details.setText(station);
         Details = (TextView) findViewById(R.id.address);
         Details.setText(address + "\n" + city + ", " + region + " " + zip + "\n" + country);
-        //Details = (TextView) findViewById(R.id.reg_price);
-        //Details.setText(reg_price);
-        //Details = (TextView) findViewById(R.id.mid_price);
-        //Details.setText(mid_price);
-        //Details = (TextView) findViewById(R.id.pre_price);
-        //Details.setText(pre_price);
+        Details = (TextView) findViewById(R.id.reg_price);
+        Details.setText(reg_price);
+        Details = (TextView) findViewById(R.id.mid_price);
+        Details.setText(mid_price);
+        Details = (TextView) findViewById(R.id.pre_price);
+        Details.setText(pre_price);
 
         //Logs each information of the station
         Log.d("Station", station);
@@ -128,7 +129,45 @@ public class UpdateGas extends Activity {
         Log.d("Country:", country);
         Log.d("Station_ID", station_id);
 
-        //Dunno why to use this, it makes the POSTING work
+        //setting the correct logo for the gas station
+        ImageView my_image;
+        my_image = (ImageView) findViewById(R.id.imageView);
+
+        if(station.equals("Shell")) {
+            my_image.setImageResource(R.drawable.shell_logo);
+        }
+        else if(station.equals("BP")) {
+            my_image.setImageResource(R.drawable.bp_logo);
+        }
+        else if(station.equals("Mobil")) {
+            my_image.setImageResource(R.drawable.mobil_logo);
+        }
+        else if(station.equals("Costco")) {
+            my_image.setImageResource(R.drawable.costco_logo);
+        }
+        else if(station.equals("7-Eleven")) {
+            my_image.setImageResource(R.drawable.seven_eleven_logo);
+        }
+        else if(station.equals("Arco")) {
+            my_image.setImageResource(R.drawable.arco_logo);
+        }
+        else if(station.equals("Sam's Club")) {
+            my_image.setImageResource(R.drawable.sams_club_logo);
+        }
+        else if(station.equals("Valero")) {
+            my_image.setImageResource(R.drawable.valero_logo);
+        }
+        else if(station.equals("Chevron")) {
+            my_image.setImageResource(R.drawable.chevron_logo);
+        }
+        else if(station.equals("76")) {
+            my_image.setImageResource(R.drawable.union_76_logo);
+        }
+        else {
+            my_image.setImageResource(R.drawable.splashscreen);
+        }
+
+        //Dunno why we use this, it makes the POSTING work
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -200,7 +239,7 @@ public class UpdateGas extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void clickUnleaded() {
+    public void clickRegular() {
 
     }
 

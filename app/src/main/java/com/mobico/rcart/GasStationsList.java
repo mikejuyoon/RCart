@@ -237,7 +237,6 @@ public class GasStationsList extends Activity {
         }catch (JSONException e){
             e.printStackTrace();
         }
-
         startActivity(i);
     }
 }

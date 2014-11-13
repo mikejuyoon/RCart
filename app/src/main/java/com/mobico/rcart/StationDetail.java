@@ -72,10 +72,9 @@ public class StationDetail extends Activity {
         Log.d("Country:", country);
         Log.d("Station_ID", station_id);
 
-        //setting the correct logo for the gas station
+        //Setting the correct logo for the each specific gas station
         ImageView my_image;
         my_image = (ImageView) findViewById(R.id.imageView);
-
         if(station.equals("Shell")) {
             my_image.setImageResource(R.drawable.shell_logo);
         }
@@ -88,7 +87,7 @@ public class StationDetail extends Activity {
         else if(station.equals("Costco")) {
             my_image.setImageResource(R.drawable.costco_logo);
         }
-        else if(station.equals("7-11")) {
+        else if(station.equals("7-Eleven")) {
             my_image.setImageResource(R.drawable.seven_eleven_logo);
         }
         else if(station.equals("Arco")) {
