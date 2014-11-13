@@ -170,20 +170,32 @@ public class StationDetail extends Activity {
         startActivityForResult(i, 2);
     }
 
+    /***********************************************************************************************
+     * function onActivityResult
+     * Updates the previous StationDetails after updating the specific gases
+     *
+     * @param   requestCode
+     * @param   resultCode
+     * @param   data
+     * @return  NONE
+     **********************************************************************************************/
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if(requestCode == 2) {
             if(resultCode == RESULT_OK){
-                if(data.getStringExtra("gas_type").equals("regular")) {
+                //Updates the text of regular for station details
+                if(data.getStringExtra("gas_type").equals("reg")) {
                     reg_price = data.getStringExtra("new_gas_price");
                     Details = (TextView) findViewById(R.id.reg_price);
                     Details.setText(reg_price);
                 }
-                else if(data.getStringExtra("gas_type").equals("plus")) {
+                //Updates the text of plus for station details
+                else if(data.getStringExtra("gas_type").equals("mid")) {
                     mid_price = data.getStringExtra("new_gas_price");
                     Details = (TextView) findViewById(R.id.mid_price);
                     Details.setText(mid_price);
                 }
+                //Updates the text of premium for station details
                 else if(data.getStringExtra("gas_type").equals("pre")) {
                     pre_price = data.getStringExtra("new_gas_price");
                     Details = (TextView) findViewById(R.id.pre_price);
@@ -191,7 +203,7 @@ public class StationDetail extends Activity {
                 }
             }
             if (resultCode == RESULT_CANCELED) {
-
+                //EMPTY
             }
         }
     }

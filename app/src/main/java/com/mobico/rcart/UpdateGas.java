@@ -222,7 +222,7 @@ public class UpdateGas extends Activity {
             postGasPrice(newPrice, fuelType, station_id);
             Intent return_intent = new Intent();
             return_intent.putExtra("new_gas_price",newPrice);
-            return_intent.putExtra("gas_type", "regular");
+            return_intent.putExtra("gas_type", fuelType);
             setResult(RESULT_OK,return_intent);
             finish();
         }
@@ -247,7 +247,7 @@ public class UpdateGas extends Activity {
             postGasPrice(newPrice, fuelType, station_id);
             Intent return_intent = new Intent();
             return_intent.putExtra("new_gas_price",newPrice);
-            return_intent.putExtra("gas_type", "plus");
+            return_intent.putExtra("gas_type", fuelType);
             setResult(RESULT_OK,return_intent);
             finish();
         }
