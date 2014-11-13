@@ -66,7 +66,7 @@ import android.os.StrictMode;
 
 public class UpdateGas extends Activity {
 
-    TextView Details;
+    TextView UpdateGas;
     String station;
     String distance;
     String address;
@@ -105,16 +105,16 @@ public class UpdateGas extends Activity {
         station_id = row_intent.getStringExtra("istation_id");
 
         //Layouts information for the Gas Detail Activity with the specific inputs
-        Details = (TextView) findViewById(R.id.gasStationName);
-        Details.setText(station);
-        Details = (TextView) findViewById(R.id.address);
-        Details.setText(address + "\n" + city + ", " + region + " " + zip + "\n" + country);
-        Details = (TextView) findViewById(R.id.reg_price);
-        Details.setText(reg_price);
-        Details = (TextView) findViewById(R.id.mid_price);
-        Details.setText(mid_price);
-        Details = (TextView) findViewById(R.id.pre_price);
-        Details.setText(pre_price);
+        UpdateGas = (TextView) findViewById(R.id.gasStationName);
+        UpdateGas.setText(station);
+        UpdateGas = (TextView) findViewById(R.id.address);
+        UpdateGas.setText(address + "\n" + city + ", " + region + " " + zip + "\n" + country);
+        UpdateGas = (TextView) findViewById(R.id.reg_price);
+        UpdateGas.setText(reg_price);
+        UpdateGas = (TextView) findViewById(R.id.mid_price);
+        UpdateGas.setText(mid_price);
+        UpdateGas = (TextView) findViewById(R.id.pre_price);
+        UpdateGas.setText(pre_price);
 
         //Logs each information of the station
         Log.d("Station", station);
@@ -173,51 +173,6 @@ public class UpdateGas extends Activity {
             StrictMode.setThreadPolicy(policy);
         }
 
-        String url = "http://api.mygasfeed.com/locations/price/xfakzg0s3n.json";
-        new HttpPOSTAsyncTask().execute(url);
-    }
-
-    /***********************************************************************************************
-     * class HttpPostAsyncTask
-     *
-     * protected String doInBackground(String)
-     * publiv void POST(String)
-     **********************************************************************************************/
-    private class HttpPOSTAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            POST(urls[0]);
-            return null;
-        }
-
-        public void POST(String url) {
-            //Prints if Post request sent
-           // Toast.makeText(getBaseContext(), "Sent!", Toast.LENGTH_LONG).show();
-
-            // Create a new HttpClient and Post Header
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://api.mygasfeed.com/locations/price/xfakzg0s3n.json");
-
-            try {
-                // The key and Value pairs for the Post
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                nameValuePairs.add(new BasicNameValuePair("price", "6.00"));
-                nameValuePairs.add(new BasicNameValuePair("fueltype", "reg"));
-                nameValuePairs.add(new BasicNameValuePair("stationid", "1"));
-
-                // Sets the pairs and sends them to the Post request
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                // Execute HTTP Post Request
-                // As well send in stream in response
-                HttpResponse response = httpClient.execute(httpPost);
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -254,5 +209,76 @@ public class UpdateGas extends Activity {
     //Transitioning from Station Detail Activity to Gas Stations List
     public void goBack(View view) {
         finish();
+    }
+
+
+    public void postGasPrice(String price, String fuelType, String stationId){
+        HttpPost httppost = new HttpPost("http://api.mygasfeed.com/locations/price/xfakzg0s3n.json");
+
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            nameValuePairs.add(new BasicNameValuePair("price", price));
+            nameValuePairs.add(new BasicNameValuePair("fueltype", fuelType));
+            nameValuePairs.add(new BasicNameValuePair("stationid", stationId));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            new MyHttpPost().execute(httppost);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+        }
+    }
+
+    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
+
+        @Override
+        protected String doInBackground(HttpPost... postUrl) {
+            return POST(postUrl[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // TO DO
+            // WHAT YOU WANT TO DO WITH THE RESULT
+            // "result" is the json data received back!
+            //JSONObject jsonObject =
+        }
+
+        public String POST(HttpPost postUrl){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make POST request to the given URL
+                HttpResponse httpResponse = httpclient.execute(postUrl);
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else
+                    result = "Did not work!";
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+            inputStream.close();
+            return result;
+        }
     }
 }
