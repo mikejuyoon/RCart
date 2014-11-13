@@ -198,7 +198,7 @@ public class UpdateGas extends Activity {
     private void invalidEntryAlert(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(UpdateGas.this);
 
-        builder.setTitle("Invalid Username or Password");
+        builder.setTitle("Invalid Gas Price");
         builder.setPositiveButton("OK", null);
         builder.setMessage(message);
 
@@ -220,6 +220,10 @@ public class UpdateGas extends Activity {
         if (priceTemp.length() == 3) {
             String newPrice = priceTemp.substring(0, 1) + "." + priceTemp.substring(1, 3);
             postGasPrice(newPrice, fuelType, station_id);
+            Intent return_intent = new Intent();
+            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("gas_type", "regular");
+            setResult(RESULT_OK,return_intent);
             finish();
         }
         else {
@@ -241,6 +245,10 @@ public class UpdateGas extends Activity {
         if (priceTemp.length() == 3) {
             String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
             postGasPrice(newPrice, fuelType, station_id);
+            Intent return_intent = new Intent();
+            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("gas_type", "plus");
+            setResult(RESULT_OK,return_intent);
             finish();
         }
         else {
@@ -262,6 +270,10 @@ public class UpdateGas extends Activity {
         if (priceTemp.length() == 3) {
             String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
             postGasPrice(newPrice, fuelType, station_id);
+            Intent return_intent = new Intent();
+            return_intent.putExtra("new_gas_price",newPrice);
+            return_intent.putExtra("gas_type", fuelType);
+            setResult(RESULT_OK,return_intent);
             finish();
         }
         else {

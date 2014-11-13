@@ -167,6 +167,32 @@ public class StationDetail extends Activity {
         i.putExtra("izip", zip);
         i.putExtra("icountry", country);
         i.putExtra("istation_id", station_id);
-        startActivity(i);
+        startActivityForResult(i, 2);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(requestCode == 2) {
+            if(resultCode == RESULT_OK){
+                if(data.getStringExtra("gas_type").equals("regular")) {
+                    reg_price = data.getStringExtra("new_gas_price");
+                    Details = (TextView) findViewById(R.id.reg_price);
+                    Details.setText(reg_price);
+                }
+                else if(data.getStringExtra("gas_type").equals("plus")) {
+                    mid_price = data.getStringExtra("new_gas_price");
+                    Details = (TextView) findViewById(R.id.mid_price);
+                    Details.setText(mid_price);
+                }
+                else if(data.getStringExtra("gas_type").equals("pre")) {
+                    pre_price = data.getStringExtra("new_gas_price");
+                    Details = (TextView) findViewById(R.id.pre_price);
+                    Details.setText(pre_price);
+                }
+            }
+            if (resultCode == RESULT_CANCELED) {
+
+            }
+        }
     }
 }
