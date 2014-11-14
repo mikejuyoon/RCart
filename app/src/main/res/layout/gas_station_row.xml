@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
+        android:text="miles"
         android:id="@+id/gasDistance"
         android:layout_toEndOf="@+id/gasStationName"
         android:layout_alignBaseline="@+id/gasStationName"
@@ -57,5 +57,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Updated Time"
+        android:id="@+id/gasDate"
+        android:layout_below="@+id/gasPrice"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

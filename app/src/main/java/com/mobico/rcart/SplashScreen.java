@@ -100,15 +100,12 @@ public class SplashScreen extends Activity implements
 
     @Override
     protected void onDestroy (){
-        //String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
-        //SharedPreferences savedData;
-        //savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-
+        super.onDestroy();
         SharedPreferences.Editor preferencesEditor = savedData.edit();
         preferencesEditor.putString("auth_token", "0");
         preferencesEditor.apply();
 
-        super.onDestroy();
+        //super.onDestroy();
     }
 
     /***********************************************************************************************

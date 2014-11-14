@@ -217,9 +217,13 @@ public class UpdateGas extends Activity {
         String fuelType = "reg";
         EditText priceText = (EditText) findViewById(R.id.editRegular);
         String priceTemp = priceText.getText().toString();
+
         if (priceTemp.length() == 3) {
-            String newPrice = priceTemp.substring(0, 1) + "." + priceTemp.substring(1, 3);
+            //Appends the string price correctly to update the price in the server with that string
+            String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
             postGasPrice(newPrice, fuelType, station_id);
+
+            //The intent used to push the changed variables to the previous station detail activity
             Intent return_intent = new Intent();
             return_intent.putExtra("new_gas_price",newPrice);
             return_intent.putExtra("gas_type", fuelType);
@@ -242,8 +246,13 @@ public class UpdateGas extends Activity {
         String fuelType = "mid";
         EditText priceText = (EditText) findViewById(R.id.editPlus);
         String priceTemp = priceText.getText().toString();
+
         if (priceTemp.length() == 3) {
+            //Appends the string price correctly to update the price in the server with that string
             String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
+            postGasPrice(newPrice, fuelType, station_id);
+
+            //The intent used to push the changed variables to the previous station detail activity priceTemp.substring(1,3);
             postGasPrice(newPrice, fuelType, station_id);
             Intent return_intent = new Intent();
             return_intent.putExtra("new_gas_price",newPrice);
@@ -267,9 +276,13 @@ public class UpdateGas extends Activity {
         String fuelType = "pre";
         EditText priceText = (EditText) findViewById(R.id.editPremium);
         String priceTemp = priceText.getText().toString();
+
         if (priceTemp.length() == 3) {
+            //Appends the string price correctly to update the price in the server with that string
             String newPrice = priceTemp.substring(0,1) + "." + priceTemp.substring(1,3);
             postGasPrice(newPrice, fuelType, station_id);
+
+            //The intent used to push the changed variables to the previous station detail activity
             Intent return_intent = new Intent();
             return_intent.putExtra("new_gas_price", newPrice);
             return_intent.putExtra("gas_type", fuelType);
@@ -294,7 +307,8 @@ public class UpdateGas extends Activity {
 
     /***********************************************************************************************
      * function postGasPrice
-     * Updates the given gas price with the given parameters to POST request to the gas API
+     * Updates the given gas price with the given parameters to GET to our own server/database
+     * with the server sending a POST request to the gas API and update our server
      *
      * @param   price
      * @param   fuelType
@@ -302,22 +316,102 @@ public class UpdateGas extends Activity {
      * @return  NONE
      **********************************************************************************************/
     public void postGasPrice(String price, String fuelType, String stationId) {
-        HttpPost httppost = new HttpPost("http://api.mygasfeed.com/locations/price/xfakzg0s3n.json");
+        //The URL used for the gas price updates for sending GET requests to our own server.
+        String url = "https://mobibuddy.herokuapp.com/update_gas.json?stationid="
+                + stationId + "&fueltype=" + fuelType + "&price=" + price;
+
+        new HttpAsyncTask().execute(url);
+    }
+
+    /***********************************************************************************************
+     * function GET
+     * GET request to the url, receiving a JSON format input to the stream. (JSON NOT USED)
+     *
+     * @param   url
+     * @return  STRING result
+     **********************************************************************************************/
+    public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
         try {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("price", price));
-            nameValuePairs.add(new BasicNameValuePair("fueltype", fuelType));
-            nameValuePairs.add(new BasicNameValuePair("stationid", stationId));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
 
-            new MyHttpPost().execute(httppost);
+            // make GET request to the given URL
+            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
 
-        } catch (IOException e) {
-            Log.d("POSTINGFAILURE", e.getLocalizedMessage());
+            // receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+        return result;
+    }
+
+    /***********************************************************************************************
+     * function convertInputStreamToString
+     * Converts the input stream into an actual stream to be used
+     *
+     * @param   inputStream
+     * @return  STRING result
+     **********************************************************************************************/
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+    }
+
+    /***********************************************************************************************
+     * class HttpAsyncTask
+     *
+     * Extends the AsyncTask, used to send a GET request to update gas prices in our own server
+     **********************************************************************************************/
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            return GET(urls[0]);
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
         }
     }
 
+//   *****************THIS IS THE ORIGINAL POST TO THE ACTUAL GAS API*****************
+//
+//    public void postGasPrice(String price, String fuelType, String stationId) {
+//        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/update_gas.json?stationid="
+//                                        + stationId + "&fueltype=" + fuelType + "&price=" + price);
+//        try {
+//            // Add your data
+//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//            nameValuePairs.add(new BasicNameValuePair("price", price));
+//            nameValuePairs.add(new BasicNameValuePair("fueltype", fuelType));
+//            nameValuePairs.add(new BasicNameValuePair("stationid", stationId));
+//            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//
+//            new MyHttpPost().execute(httppost);
+//
+//        } catch (IOException e) {
+//            Log.d("POSTINGFAILURE", e.getLocalizedMessage());
+//        }
+//    }
+
+    // **************************** NOT USED ANYMORE **************************************
     /***********************************************************************************************
      * class MyHttpPost
      *

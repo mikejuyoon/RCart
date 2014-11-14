@@ -97,10 +97,12 @@ public class GasStationsList extends Activity {
     Double longitude;
 
     GasStationListAdapter listAdapter;
+
     private String distance = "2";
     private String sortby = "price";
     private String brand = "";
     private String gastype = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,28 +122,10 @@ public class GasStationsList extends Activity {
         if(distance == null) distance = "2";
         if(sortby == null) sortby = "price";
 
-        //tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
-
-        // check if you are connected or not
-        /*txtLat.setText(latitude+ "");
-        txtLong.setText(longitude+"");
-        if(isConnected()){
-            tvIsConnected.setBackgroundColor(0xFF00CC00);
-            tvIsConnected.setText("You are connected");
-        }
-        else{
-            tvIsConnected.setText("You are NOT connected");
-        }*/
         // call AsynTask to perform network operation on separate thread
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
                 "&long=" + String.valueOf(longitude) +
                 "&dist="+ distance + "&sortBy=" + sortby;
-        //String url2 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
-                //"&long=" + String.valueOf(longitude) +
-                //"&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
-        // String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
-
-        //tvIsConnected.setText(url2);
 
         new HttpAsyncTask().execute(url1);
 
@@ -158,27 +142,7 @@ public class GasStationsList extends Activity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode == 1 && resultCode == RESULT_OK){
-            distance = data.getStringExtra("distance");
-            brand = data.getStringExtra("brand");
-            gastype = data.getStringExtra("gastype");
-            sortby = data.getStringExtra("sortby");
 
-            //String url2 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
-                    //"&long=" + String.valueOf(longitude) +
-                    //"&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
-
-            //tvIsConnected.setText(url2);
-
-            String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
-                    "&long=" + String.valueOf(longitude) +
-                    "&dist="+ distance + "&sortBy=" + sortby;
-            new HttpAsyncTask().execute(url1);
-
-        }
-    }
     public static String GET(String url){
         InputStream inputStream = null;
         String result = "";
@@ -267,17 +231,41 @@ public class GasStationsList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /***********************************************************************************************
+     * function fillIst
+     * Fills the ArrayList of Hashmaps which is then pushed into the list adapter.
+     * Each Hashmap contains each individual description (text) of the row.
+     * This function takes parameters from gas array for the ArrayList to hold
+     * the values of each row. This also then calls our listAdapter which outputs the values
+     * of the rows, as well as set each row to a specific element. This allows multiple applications
+     * with our rows, including pushing information to the Gas Details as well as easy access
+     * to every description(text) in the row.
+     *
+     * @param   NONE
+     * @return  NONE
+     **********************************************************************************************/
     public void fillList(){
         ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String,String>>();
+        //Increment through every element in the gas array to push a hashmap back to be stored
+        //into the ArrayList
         for(int i = 0 ; i < gasArray.length() ; i++){
             ListOfRows.add(pushListItemToLayoutView(i));
             Log.d("add rows: ", Integer.toString(i));
         }
+        //Sets the List Adapter to be used, calls getView automatically, displaying the rows
+        listAdapter = new GasStationListAdapter(this);
         listAdapter.insertList(ListOfRows);
         gasStationList.setAdapter(listAdapter);
         listAdapter.notifyDataSetChanged();
     }
 
+    /***********************************************************************************************
+     * function pushListItemToLayoutView
+     * Returns the HashMap of the row in order for the hash map to be stored into the array
+     *
+     * @param   i       Which is used to get the specific element in the gas array
+     * @return  Hashmap<String,String></String,String>
+     **********************************************************************************************/
     private HashMap<String,String> pushListItemToLayoutView(int i) {
        // LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -285,11 +273,18 @@ public class GasStationsList extends Activity {
         HashMap<String,String> hash = new HashMap<String, String>();
 
         try {
+            //Gets the JSON strings corresponding to their objects, assorting each string with
+            //their keys
             hash.put("station",gasArray.getJSONObject(i).getString("station"));
             hash.put("distance",gasArray.getJSONObject(i).getString("distance"));
             hash.put("address",gasArray.getJSONObject(i).getString("address"));
+            hash.put("city",gasArray.getJSONObject(i).getString("city"));
+            hash.put("region",gasArray.getJSONObject(i).getString("region"));
+            hash.put("zip",gasArray.getJSONObject(i).getString("zip"));
+            hash.put("country",gasArray.getJSONObject(i).getString("country"));
             hash.put("reg_price",gasArray.getJSONObject(i).getString("reg_price"));
             hash.put("station_id",gasArray.getJSONObject(i).getString("id"));
+            hash.put("reg_date",gasArray.getJSONObject(i).getString("updated_at"));
         }
         catch(JSONException e) {
             e.printStackTrace();
@@ -297,7 +292,16 @@ public class GasStationsList extends Activity {
         return hash;
     }
 
-    public void goToStationDetail(View view, int specific_row){
+    /***********************************************************************************************
+     * function goToStationDetail
+     * Goes to the Station Detail activity as well as sending in necessary parameters through
+     *
+     * @param   view            Needed for function to work (Not used)
+     * @param   specific_row    Used to see which row is clicked in order to receive the correct
+     *                          element in the gas array
+     * @return  NONE
+     **********************************************************************************************/
+    public void goToStationDetail(View view, int specific_row) {
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
         try {
             i.putExtra("istation", gasArray.getJSONObject(specific_row).getString("station"));
@@ -314,13 +318,65 @@ public class GasStationsList extends Activity {
         }catch (JSONException e){
             e.printStackTrace();
         }
-        startActivity(i);
+        //Will return to the onActivityResult function
+        startActivityForResult(i, 3);
     }
 
-    public void goToFilterFromGasStation(View view){
+    /***********************************************************************************************
+     * function goToFilterFromGasStation
+     * Goes to the Filter activity
+     *
+     * @param   view    Needed for function to work (Not used)
+     * @return  NONE
+     **********************************************************************************************/
+    public void goToFilterFromGasStation(View view) {
         Intent i = new Intent(GasStationsList.this, Filter.class);
+        //Will return to the onActivityResult function
         startActivityForResult(i, 1);
-        //startActivity(i);
-        //finish();
+    }
+
+    /***********************************************************************************************
+     * function onActivityResult
+     * Gets called whenever a user returns from the different activities (Filter, StationDetail)
+     *
+     * @param   requestCode Used to differentiate between the different activities
+     * @param   resultCode  The status of the changes from the previous activity
+     * @param   data        The intent from the previous activity for the updated variables
+     * @return  NONE
+     **********************************************************************************************/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        //When the activity switches from Filter to Gas Stations list
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            distance = data.getStringExtra("distance");
+            brand = data.getStringExtra("brand");
+            gastype = data.getStringExtra("gastype");
+            sortby = data.getStringExtra("sortby");
+
+            String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
+                    "&long=" + String.valueOf(longitude) +
+                    "&dist="+ distance + "&sortBy=" + sortby;
+            new HttpAsyncTask().execute(url1);
+        }
+
+        //When the activity switches from Station Details to Gas Stations list
+        //Updates the list only if user updates gas
+        else if (requestCode == 3 && resultCode == RESULT_OK) {
+            //Receives the boolean value from Station Details if gas is updated or not
+            boolean if_updated = data.getBooleanExtra("updated", false);
+
+            //If it was updated, update the actual list with the new price
+            if (if_updated) {
+
+                //Our mobi url which includes latitude, longitude, distance, and sortby as params
+                String url1 = "https://mobibuddy.herokuapp.com/nearby_gas.json?lat="
+                        + String.valueOf(latitude) +
+                        "&long=" + String.valueOf(longitude) +
+                        "&dist=" + distance + "&sortBy=" + sortby;
+
+                //Executes a GET request to our own server
+                new HttpAsyncTask().execute(url1);
+            }
+        }
     }
 }

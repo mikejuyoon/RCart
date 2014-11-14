@@ -4,6 +4,7 @@ package com.mobico.rcart;
  * Created by Michael on 11/12/2014.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,7 +52,7 @@ public class GasStationListAdapter extends BaseAdapter{
      **********************************************************************************************/
     public void insertList(ArrayList<HashMap<String,String>> list_hash) {
         list = list_hash;
-        Log.d("insertion hehehee ", "Haha");
+        Log.d("Inserting ArrayList into Adapter: ", "SUCCESS");
     }
 
     /***********************************************************************************************
@@ -100,34 +101,30 @@ public class GasStationListAdapter extends BaseAdapter{
     public View getView(int i, View view, ViewGroup viewGroup) {
         View row = view;
 
-        if (row == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.gas_station_row, viewGroup, false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        row = inflater.inflate(R.layout.gas_station_row, viewGroup, false);
 
-            HashMap<String, String> listHash = list.get(i);
-            Log.d("rows: ", Integer.toString(i));
+        HashMap<String, String> listHash = list.get(i);
 
-            TextView gasStationName = (TextView) row.findViewById(R.id.gasStationName);
-            gasStationName.setText(listHash.get("station"));
-            Log.d("Gas station name: ", listHash.get("station"));
+        TextView gasStationName = (TextView) row.findViewById(R.id.gasStationName);
+        gasStationName.setText(listHash.get("station"));
 
-            TextView gasDistance = (TextView) row.findViewById(R.id.gasDistance);
-            gasDistance.setText(listHash.get("distance"));
-            Log.d("Gas distance: ", listHash.get("distance"));
+        TextView gasDistance = (TextView) row.findViewById(R.id.gasDistance);
+        gasDistance.setText(listHash.get("distance"));
 
-            TextView gasAddress = (TextView) row.findViewById(R.id.gasAddress);
-            gasAddress.setText(listHash.get("address"));
-            Log.d("Gas address: ", listHash.get("address"));
+        TextView gasAddress = (TextView) row.findViewById(R.id.gasAddress);
+        gasAddress.setText( listHash.get("address") + "\n"
+                          + listHash.get("city")    + ", "
+                          + listHash.get("region")  + " "
+                          + listHash.get("zip")     + "\n");
 
-            TextView gasPrice = (TextView) row.findViewById(R.id.gasPrice);
-            gasPrice.setText(listHash.get("reg_price"));
-            Log.d("Gas price: ", listHash.get("reg_price"));
+        TextView gasPrice = (TextView) row.findViewById(R.id.gasPrice);
+        gasPrice.setText(listHash.get("reg_price"));
 
-            return row;
-        }
-        else {
-            return row;
-        }
+        TextView gasDate = (TextView) row.findViewById(R.id.gasDate);
+        gasDate.setText(listHash.get("reg_date"));
+
+        return row;
     }
 
 }

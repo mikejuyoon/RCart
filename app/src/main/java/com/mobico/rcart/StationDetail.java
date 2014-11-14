@@ -33,7 +33,7 @@ public class StationDetail extends Activity {
     String zip;
     String country;
     String station_id;
-
+    boolean updated;
 
     /***********************************************************************************************
      * function onCreate
@@ -46,7 +46,7 @@ public class StationDetail extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_detail);
 
-
+        updated = false;
 
         //Receiving the inputs of the gas station informations.
         Intent row_intent = getIntent();
@@ -120,6 +120,15 @@ public class StationDetail extends Activity {
         else if(station.equals("76")) {
             my_image.setImageResource(R.drawable.union_76_logo);
         }
+        else if(station.equals("Usa Petroleum")) {
+            my_image.setImageResource(R.drawable.usa_petroleum);
+        }
+        else if(station.equals("Circle K")) {
+            my_image.setImageResource(R.drawable.circle_k);
+        }
+        else if(station.equals("G & M Food Mart")) {
+            my_image.setImageResource(R.drawable.g_and_m);
+        }
         else {
             my_image.setImageResource(R.drawable.splashscreen);
         }
@@ -156,6 +165,15 @@ public class StationDetail extends Activity {
         onBackPressed();
     }
 
+    @Override
+    public void onBackPressed(){
+        Intent return_intent = new Intent();
+        return_intent.putExtra("updated", updated);
+        setResult(RESULT_OK, return_intent);
+        updated = false;
+        super.onBackPressed();
+    }
+
     /***********************************************************************************************
      * function goToUpdateGas
      * Goes to the UpdateGas activity, pushing every needed variable
@@ -166,8 +184,8 @@ public class StationDetail extends Activity {
     public void goToUpdateGas(View view) {
 
         savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-
         String authToken = savedData.getString("auth_token", "0");
+
         if( ! authToken.equals("0") ){
             Intent i = new Intent(StationDetail.this, UpdateGas.class);
             i.putExtra("istation", station);
@@ -214,6 +232,7 @@ public class StationDetail extends Activity {
     {
         if(requestCode == 2) {
             if(resultCode == RESULT_OK){
+                updated = true;
                 //Updates the text of regular for station details
                 if(data.getStringExtra("gas_type").equals("reg")) {
                     reg_price = data.getStringExtra("new_gas_price");
@@ -234,8 +253,11 @@ public class StationDetail extends Activity {
                 }
             }
             if (resultCode == RESULT_CANCELED) {
-                //EMPTY
+                updated = false;
             }
+        }
+        else {
+            updated = false;
         }
     }
 }
