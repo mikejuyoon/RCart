@@ -1,6 +1,7 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -229,6 +230,45 @@ public class GasStationsList extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /***********************************************************************************************
+     * function invalidEntryAlert
+     * Displays an invalid message
+     *
+     * @param   String
+     * @return  NONE
+     **********************************************************************************************/
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GasStationsList.this);
+
+        builder.setTitle("Invalid entry");
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
+    /***********************************************************************************************
+     * function searchBar
+     *
+     * @param   view
+     * @return  NONE
+     **********************************************************************************************/
+    public void searchBar(View view) {
+        EditText search = (EditText) findViewById(R.id.SearchBar);
+        String searchBarText = search.getText().toString();
+
+
+        if (searchBarText.length() == 0) {
+            invalidEntryAlert("Please enter address, city, or zip");
+        }
+        else {
+            search.setText("");
+            String url = "https://mobibuddy.herokuapp.com/search.json?query=" + searchBarText;
+            new HttpAsyncTask().execute(url);
+        }
     }
 
     /***********************************************************************************************

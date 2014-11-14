@@ -87,8 +87,26 @@ public class StationDetail extends Activity {
         //Features
         Details = (TextView) findViewById(R.id.distanceView);
         Details.setText(distance);
+        if (credit.equals("1")) {
+            credit = "Credit Accepted";
+        }
+        else {
+            credit = "Credit Unaccepted";
+        }
+        if (carwash.equals("1")) {
+            carwash = "Car Wash: Yes";
+        }
+        else {
+            carwash = "Car Wash: No";
+        }
+        if (hours.equals("1")) {
+            hours = "Hours: 24/7";
+        }
+        else {
+            hours = "Hours: Not 24/7";
+        }
         Details = (TextView) findViewById(R.id.features);
-        Details.setText("Phone: " + phone + "\n" + "Hours: 24/7" + "\n" + "Credit Accepted" + "\n" + "Car Wash: No");
+        Details.setText("Phone: " + phone + "\n" + hours + "\n" + credit + "\n" + carwash);
 
         //Logs each information of the station
         Log.d("Station", station);
