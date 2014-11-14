@@ -1,8 +1,10 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -13,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,10 +104,20 @@ public class GasStationsList extends Activity {
     private String sortby = "price";
     private String brand = "";
     private String gastype = "";
+    private String checkdistance = "" , oldd = "";
+    private String checkbrand = "" , oldb= "";
+    private String checkgastype = "" , oldg = "";
+    private String checksortby = "", olds = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gas_stations_list);
+
+       /* ImageView i = (ImageView)findViewById(R.id.img1);
+        i.setBackgroundResource(R.drawable.gif);
+
+        AnimationDrawable pro = (AnimationDrawable)i.getBackground();
+        pro.start();*/
 
         gasStationList = (ListView) findViewById(R.id.myListView);
 
@@ -118,9 +131,11 @@ public class GasStationsList extends Activity {
         Intent intent2 = getIntent();
         onActivityResult(0, RESULT_OK, intent2);
         if(distance == null) distance = "2";
-        if(sortby == null) sortby = "price";
+        if(sortby == null) sortby = "distance";
+        oldd = distance;
+        olds = sortby;
 
-        //tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
+       // tvIsConnected = (TextView) findViewById(R.id.tvIsConnected);
 
         // check if you are connected or not
         /*txtLat.setText(latitude+ "");
@@ -137,11 +152,14 @@ public class GasStationsList extends Activity {
                 "&long=" + String.valueOf(longitude) +
                 "&dist="+ distance + "&sortBy=" + sortby;
         //String url2 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
-                //"&long=" + String.valueOf(longitude) +
-                //"&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
+        //        "&long=" + String.valueOf(longitude) +
+         //      "&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
         // String url1 = "http://api.mygasfeed.com/stations/radius/34.081823/-118.09926/3/reg/price/xfakzg0s3n.json";
 
-        //tvIsConnected.setText(url2);
+
+ //        invalidEntryAlert(url2);
+
+        //vIsConnected.setText(url2);
 
         new HttpAsyncTask().execute(url1);
 
@@ -158,23 +176,43 @@ public class GasStationsList extends Activity {
         });
     }
 
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GasStationsList.this);
+
+        builder.setTitle("Error");
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == 1 && resultCode == RESULT_OK){
-            distance = data.getStringExtra("distance");
-            brand = data.getStringExtra("brand");
-            gastype = data.getStringExtra("gastype");
-            sortby = data.getStringExtra("sortby");
+            checkdistance = data.getStringExtra("distance");
+            checkbrand = data.getStringExtra("brand");
+            checkgastype = data.getStringExtra("gastype");
+            checksortby = data.getStringExtra("sortby");
 
-            //String url2 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
-                    //"&long=" + String.valueOf(longitude) +
-                    //"&dist="+ distance + "&sortBy=" + sortby + brand + gastype;
+
+            if(checkdistance.equals("s")){distance = oldd;} else distance = checkdistance;
+            if(checkbrand.equals("s")){brand= oldb;} else brand = checkbrand;
+            if(checkgastype.equals("s")){gastype = oldg;} else gastype = checkgastype;
+            if(checksortby.equals("s")){sortby = olds;} else sortby = checksortby;
+
+            oldd = distance;
+            oldb = brand;
+            oldg = gastype;
+            olds = sortby;
+            //String url2 = "&dist="+ checkdistance + "!!!" + distance + " &gastype=" + gastype +" brand=" + brand + " sortby=" + sortby;
 
             //tvIsConnected.setText(url2);
 
             String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
                     "&long=" + String.valueOf(longitude) +
-                    "&dist="+ distance + "&sortBy=" + sortby;
+                    "&dist="+ distance + "&sortBy=" + gastype;
+            //invalidEntryAlert(url2);
             new HttpAsyncTask().execute(url1);
 
         }
@@ -269,9 +307,21 @@ public class GasStationsList extends Activity {
 
     public void fillList(){
         ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String,String>>();
+        HashMap<String,String> hash1 = new HashMap<String, String>();
         for(int i = 0 ; i < gasArray.length() ; i++){
-            ListOfRows.add(pushListItemToLayoutView(i));
-            Log.d("add rows: ", Integer.toString(i));
+            if(!checkbrand.equals("s") && !checkbrand.equals("")){
+                hash1 = pushListItemToLayoutView(i);
+                if(pushListItemToLayoutView(i).get("station").equals(brand)){
+                    ListOfRows.add(hash1);
+                }
+            }else if (checkbrand.equals("s")){
+                ListOfRows.add(pushListItemToLayoutView(i));
+                Log.d("add rows: ", Integer.toString(i));
+            }else if (checkbrand.equals("")){
+                ListOfRows.add(pushListItemToLayoutView(i));
+                Log.d("add rows: ", Integer.toString(i));
+            }
+
         }
         listAdapter.insertList(ListOfRows);
         gasStationList.setAdapter(listAdapter);
@@ -283,17 +333,20 @@ public class GasStationsList extends Activity {
 
         //iew listItem = inflater.inflate(R.layout.gas_station_row, null);
         HashMap<String,String> hash = new HashMap<String, String>();
-
-        try {
-            hash.put("station",gasArray.getJSONObject(i).getString("station"));
-            hash.put("distance",gasArray.getJSONObject(i).getString("distance"));
-            hash.put("address",gasArray.getJSONObject(i).getString("address"));
-            hash.put("reg_price",gasArray.getJSONObject(i).getString("reg_price"));
-            hash.put("station_id",gasArray.getJSONObject(i).getString("id"));
-        }
-        catch(JSONException e) {
-            e.printStackTrace();
-        }
+            try {
+                hash.put("station", gasArray.getJSONObject(i).getString("station"));
+                hash.put("distance", gasArray.getJSONObject(i).getString("distance"));
+                hash.put("address", gasArray.getJSONObject(i).getString("address"));
+//                if(checkgastype.equals("mid"))
+//                    hash.put("mid_price", gasArray.getJSONObject(i).getString("mid_price"));
+//                else if(checkgastype.equals("pre"))
+//                    hash.put("pre_price", gasArray.getJSONObject(i).getString("pre_price"));
+//                else
+                    hash.put("reg_price", gasArray.getJSONObject(i).getString("reg_price"));
+                hash.put("station_id", gasArray.getJSONObject(i).getString("id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         return hash;
     }
 
@@ -319,7 +372,7 @@ public class GasStationsList extends Activity {
 
     public void goToFilterFromGasStation(View view){
         Intent i = new Intent(GasStationsList.this, Filter.class);
-        startActivityForResult(i, 1);
+        startActivityForResult(i, 1); //getting result back from next activity(child activity)
         //startActivity(i);
         //finish();
     }
