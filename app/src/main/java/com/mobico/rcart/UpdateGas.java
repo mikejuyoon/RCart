@@ -164,6 +164,15 @@ public class UpdateGas extends Activity {
         else if(station.equals("76")) {
             my_image.setImageResource(R.drawable.union_76_logo);
         }
+        else if(station.equals("Usa Petroleum")) {
+            my_image.setImageResource(R.drawable.usa_petroleum);
+        }
+        else if(station.equals("Circle K")) {
+            my_image.setImageResource(R.drawable.circle_k);
+        }
+        else if(station.equals("G & M Food Mart")) {
+            my_image.setImageResource(R.drawable.g_and_m);
+        }
         else {
             my_image.setImageResource(R.drawable.splashscreen);
         }

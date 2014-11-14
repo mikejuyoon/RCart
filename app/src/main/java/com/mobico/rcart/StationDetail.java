@@ -33,6 +33,10 @@ public class StationDetail extends Activity {
     String zip;
     String country;
     String station_id;
+    String phone;
+    String credit;
+    String carwash;
+    String hours;
     boolean updated;
 
     /***********************************************************************************************
@@ -46,9 +50,10 @@ public class StationDetail extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_detail);
 
+        //Changes to true if user actually updates gas prices
         updated = false;
 
-        //Receiving the inputs of the gas station informations.
+        //Receiving the inputs of the gas station information.
         Intent row_intent = getIntent();
         station = row_intent.getStringExtra("istation");
         distance = row_intent.getStringExtra("idistance");
@@ -61,8 +66,13 @@ public class StationDetail extends Activity {
         zip = row_intent.getStringExtra("izip");
         country = row_intent.getStringExtra("icountry");
         station_id = row_intent.getStringExtra("istation_id");
+        phone = row_intent.getStringExtra("iphone");
+        credit = row_intent.getStringExtra("icredit");
+        carwash = row_intent.getStringExtra("icarwash");
+        hours = row_intent.getStringExtra("ihours");
 
         //Layouts information for the Gas Detail Activity with the specific inputs
+        //Address
         Details = (TextView) findViewById(R.id.gasStationName);
         Details.setText(station);
         Details = (TextView) findViewById(R.id.address);
@@ -73,6 +83,12 @@ public class StationDetail extends Activity {
         Details.setText(mid_price);
         Details = (TextView) findViewById(R.id.pre_price);
         Details.setText(pre_price);
+
+        //Features
+        Details = (TextView) findViewById(R.id.distanceView);
+        Details.setText(distance);
+        Details = (TextView) findViewById(R.id.features);
+        Details.setText("Phone: " + phone + "\n" + "Hours: 24/7" + "\n" + "Credit Accepted" + "\n" + "Car Wash: No");
 
         //Logs each information of the station
         Log.d("Station", station);
@@ -202,8 +218,7 @@ public class StationDetail extends Activity {
             startActivityForResult(i, 2);
         }else{
             errorAlert("Please login before updating gas.");
-            errorAlert(authToken);
-
+            //errorAlert(authToken);
         }
     }
 

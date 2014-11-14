@@ -232,7 +232,7 @@ public class GasStationsList extends Activity {
     }
 
     /***********************************************************************************************
-     * function fillIst
+     * function fillList
      * Fills the ArrayList of Hashmaps which is then pushed into the list adapter.
      * Each Hashmap contains each individual description (text) of the row.
      * This function takes parameters from gas array for the ArrayList to hold
@@ -304,17 +304,31 @@ public class GasStationsList extends Activity {
     public void goToStationDetail(View view, int specific_row) {
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
         try {
+            //
             i.putExtra("istation", gasArray.getJSONObject(specific_row).getString("station"));
             i.putExtra("idistance", gasArray.getJSONObject(specific_row).getString("distance"));
-            i.putExtra("iaddress", gasArray.getJSONObject(specific_row).getString("address"));
+
+            //Prices
             i.putExtra("ireg_price", gasArray.getJSONObject(specific_row).getString("reg_price"));
             i.putExtra("imid_price", gasArray.getJSONObject(specific_row).getString("mid_price"));
             i.putExtra("ipre_price", gasArray.getJSONObject(specific_row).getString("pre_price"));
+
+            //Locations
+            i.putExtra("iaddress", gasArray.getJSONObject(specific_row).getString("address"));
             i.putExtra("icity", gasArray.getJSONObject(specific_row).getString("city"));
             i.putExtra("iregion", gasArray.getJSONObject(specific_row).getString("region"));
             i.putExtra("izip", gasArray.getJSONObject(specific_row).getString("zip"));
             i.putExtra("icountry", gasArray.getJSONObject(specific_row).getString("country"));
+
+            //StationID
             i.putExtra("istation_id", gasArray.getJSONObject(specific_row).getString("id"));
+
+            //Features
+            i.putExtra("iphone", gasArray.getJSONObject(specific_row).getString("phone"));
+            i.putExtra("icredit", gasArray.getJSONObject(specific_row).getString("credit"));
+            i.putExtra("icarwash", gasArray.getJSONObject(specific_row).getString("carwash"));
+            i.putExtra("ihours", gasArray.getJSONObject(specific_row).getString("hours"));
+
         }catch (JSONException e){
             e.printStackTrace();
         }

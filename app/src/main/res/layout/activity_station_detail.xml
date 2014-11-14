@@ -40,7 +40,7 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="125dp"
+        android:layout_height="238dp"
         android:id="@+id/details" >
 
         <ImageView
@@ -58,7 +58,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Arco"
             android:id="@+id/gasStationName"
             android:layout_alignParentTop="true"
@@ -83,9 +83,45 @@
             android:text="Directions"
             android:id="@+id/button2"
             android:layout_toEndOf="@+id/imageView"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Phone: 555-555-5555\nHours: 24/7\nCredit: Accept\nCar Wash: No"
+            android:id="@+id/features"
+            android:layout_toEndOf="@+id/imageView"
             android:layout_alignParentBottom="true"
             android:layout_alignLeft="@+id/address"
             android:layout_alignStart="@+id/address" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold"
+            android:text="Features:"
+            android:id="@+id/featuretitle"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_above="@+id/features"
+            android:layout_alignLeft="@+id/features"
+            android:layout_alignStart="@+id/features"
+            android:layout_alignRight="@+id/features"
+            android:layout_alignEnd="@+id/features" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="0.8 miless"
+            android:id="@+id/distanceView"
+            android:layout_alignTop="@+id/gasStationName"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/imageView"
+            android:layout_margin="10dp" />
     </RelativeLayout>
 
     <RelativeLayout
