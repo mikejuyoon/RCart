@@ -12,5 +12,6 @@
     <string name="title_activity_filter">Filter</string>
     <string name="title_activity_products_list">ProductsList</string>
     <string name="title_activity_nearby_list">NearbyList</string>
+    <string name="title_activity_wish_list">WishList</string>
 
 </resources>

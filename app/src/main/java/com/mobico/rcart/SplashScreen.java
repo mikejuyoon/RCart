@@ -202,8 +202,8 @@ public class SplashScreen extends Activity implements
 
     public void goToProductsList(View view){
         Intent i = new Intent(SplashScreen.this, ProductsList.class);
-//        i.putExtra("lati", mCurrentLocation.getLatitude());
-//        i.putExtra("longi", mCurrentLocation.getLongitude());
+        i.putExtra("lati", mCurrentLocation.getLatitude());
+        i.putExtra("longi", mCurrentLocation.getLongitude());
         startActivity(i);
     }
 }

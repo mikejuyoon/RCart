@@ -1,42 +1,24 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
-public class NearbyList extends Activity {
-
-    ArrayList<HashMap<String,String>> ListOfProduct;
-    ListView listView;
-    double latitude, longitude;
+public class WishList extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nearby_list);
-
-        listView = (ListView) findViewById(R.id.myListView);
-
-        ProductListAdapter listAdapter = new ProductListAdapter(this);
-        listView.setAdapter(listAdapter);
-
-        Intent intent1 = getIntent();
-        latitude = intent1.getDoubleExtra("lati", 1.0);
-        longitude = intent1.getDoubleExtra("longi", 1.0);
+        setContentView(R.layout.activity_wish_list);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.nearby_list, menu);
+        getMenuInflater().inflate(R.menu.wish_list, menu);
         return true;
     }
 
@@ -50,9 +32,5 @@ public class NearbyList extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void addWishlistItem(View view) {
-
     }
 }

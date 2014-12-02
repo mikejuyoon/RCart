@@ -3,6 +3,7 @@ package com.mobico.rcart;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,16 +19,20 @@ public class ProductsList extends Activity {
 
     ArrayList<String> productsList;
     ListView listView;
+    double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products_list);
 
+        Intent intent1 = getIntent();
+        latitude = intent1.getDoubleExtra("lati", 1.0);
+        longitude = intent1.getDoubleExtra("longi", 1.0);
+
         listView = (ListView) findViewById(R.id.myListView);
 
         productsList = new ArrayList<String>();
-
         productsList.add("Apple");
         productsList.add("Banana");
         productsList.add("Eclair");
@@ -39,17 +44,12 @@ public class ProductsList extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(ProductsList.this, NearbyList.class);
+                intent.putExtra("lati", latitude);
+                intent.putExtra("longi", longitude);
                 startActivityForResult(intent, 1234);
             }
         });
-
-
-//        Intent intent1 = getIntent();
-//        latitude = intent1.getDoubleExtra("lati", 1.0);
-//        longitude = intent1.getDoubleExtra("longi", 1.0);
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,5 +68,11 @@ public class ProductsList extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goToWishlist(View view) {
+        Intent i = new Intent(ProductsList.this, WishList.class);
+        //Will return to the onActivityResult function
+        startActivityForResult(i, 1);
     }
 }

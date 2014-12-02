@@ -73,6 +73,10 @@
             android:name=".NearbyList"
             android:label="@string/title_activity_nearby_list" >
         </activity>
+        <activity
+            android:name=".WishList"
+            android:label="@string/title_activity_wish_list" >
+        </activity>
     </application>
 
 </manifest>
