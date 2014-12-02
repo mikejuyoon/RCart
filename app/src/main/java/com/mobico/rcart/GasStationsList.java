@@ -84,6 +84,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class GasStationsList extends Activity {
@@ -171,7 +173,11 @@ public class GasStationsList extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("indexxxxxx: ", Integer.toString(i));
-                goToStationDetail(view, i);
+                ArrayList<Integer> al = new ArrayList<Integer>();
+                al = fillList();
+                int ii = al.get(i);
+                goToStationDetail(view, ii);
+
             }
         });
     }
@@ -282,7 +288,8 @@ public class GasStationsList extends Activity {
             catch(JSONException e){
                 //do nothing
             }
-            fillList();
+            ArrayList<Integer> al = new ArrayList<Integer>();
+            al = fillList();
         }
     }
 
@@ -305,20 +312,23 @@ public class GasStationsList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void fillList(){
+    public ArrayList<Integer> fillList(){
         ArrayList<HashMap<String,String>> ListOfRows = new ArrayList<HashMap<String,String>>();
-        HashMap<String,String> hash1 = new HashMap<String, String>();
+        ArrayList<Integer> al = new ArrayList<Integer>();
         for(int i = 0 ; i < gasArray.length() ; i++){
             if(!checkbrand.equals("s") && !checkbrand.equals("")){
-                hash1 = pushListItemToLayoutView(i);
+               // hash1 = pushListItemToLayoutView(i);
                 if(pushListItemToLayoutView(i).get("station").equals(brand)){
-                    ListOfRows.add(hash1);
+                    ListOfRows.add(pushListItemToLayoutView(i)); //ListOfRows.add(hash1);
+                    al.add(i);
                 }
-            }else if (checkbrand.equals("s")){
+            }else if (checkbrand.equals("s")){ //empty choice case
                 ListOfRows.add(pushListItemToLayoutView(i));
+                al.add(i);
                 Log.d("add rows: ", Integer.toString(i));
-            }else if (checkbrand.equals("")){
+            }else if (checkbrand.equals("")){ //initial case
                 ListOfRows.add(pushListItemToLayoutView(i));
+                al.add(i);
                 Log.d("add rows: ", Integer.toString(i));
             }
 
@@ -326,6 +336,7 @@ public class GasStationsList extends Activity {
         listAdapter.insertList(ListOfRows);
         gasStationList.setAdapter(listAdapter);
         listAdapter.notifyDataSetChanged();
+        return al;
     }
 
     private HashMap<String,String> pushListItemToLayoutView(int i) {
@@ -352,22 +363,22 @@ public class GasStationsList extends Activity {
 
     public void goToStationDetail(View view, int specific_row){
         Intent i = new Intent(GasStationsList.this, StationDetail.class);
-        try {
-            i.putExtra("istation", gasArray.getJSONObject(specific_row).getString("station"));
-            i.putExtra("idistance", gasArray.getJSONObject(specific_row).getString("distance"));
-            i.putExtra("iaddress", gasArray.getJSONObject(specific_row).getString("address"));
-            i.putExtra("ireg_price", gasArray.getJSONObject(specific_row).getString("reg_price"));
-            i.putExtra("imid_price", gasArray.getJSONObject(specific_row).getString("mid_price"));
-            i.putExtra("ipre_price", gasArray.getJSONObject(specific_row).getString("pre_price"));
-            i.putExtra("icity", gasArray.getJSONObject(specific_row).getString("city"));
-            i.putExtra("iregion", gasArray.getJSONObject(specific_row).getString("region"));
-            i.putExtra("izip", gasArray.getJSONObject(specific_row).getString("zip"));
-            i.putExtra("icountry", gasArray.getJSONObject(specific_row).getString("country"));
-            i.putExtra("istation_id", gasArray.getJSONObject(specific_row).getString("id"));
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-        startActivity(i);
+            try {
+                i.putExtra("istation", gasArray.getJSONObject(specific_row).getString("station"));
+                i.putExtra("idistance", gasArray.getJSONObject(specific_row).getString("distance"));
+                i.putExtra("iaddress", gasArray.getJSONObject(specific_row).getString("address"));
+                i.putExtra("ireg_price", gasArray.getJSONObject(specific_row).getString("reg_price"));
+                i.putExtra("imid_price", gasArray.getJSONObject(specific_row).getString("mid_price"));
+                i.putExtra("ipre_price", gasArray.getJSONObject(specific_row).getString("pre_price"));
+                i.putExtra("icity", gasArray.getJSONObject(specific_row).getString("city"));
+                i.putExtra("iregion", gasArray.getJSONObject(specific_row).getString("region"));
+                i.putExtra("izip", gasArray.getJSONObject(specific_row).getString("zip"));
+                i.putExtra("icountry", gasArray.getJSONObject(specific_row).getString("country"));
+                i.putExtra("istation_id", gasArray.getJSONObject(specific_row).getString("id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(i);
     }
 
     public void goToFilterFromGasStation(View view){

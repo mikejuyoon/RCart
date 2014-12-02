@@ -42,7 +42,6 @@ public class SplashScreen extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
         // 3. create LocationClient
         mLocationClient = new LocationClient(this, this, this);
         // 4. create & set LocationRequest for Location update
