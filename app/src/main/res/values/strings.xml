@@ -10,5 +10,6 @@
     <string name="title_activity_signup">Signup</string>
     <string name="title_activity_update_gas">UpdateGas</string>
     <string name="title_activity_filter">Filter</string>
+    <string name="title_activity_products_list">ProductsList</string>
 
 </resources>
