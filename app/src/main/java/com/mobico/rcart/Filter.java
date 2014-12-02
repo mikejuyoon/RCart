@@ -19,10 +19,11 @@ import android.util.Log;
 public class Filter extends Activity{
 
     private Spinner spinner1,spinner2,spinner3, spinner4;
-    private static final String[]distanceMile = {"1", "2", "3"};
-    private static final String[]brandname = {"Chevron", "Shell", "76", "Flyers", "Arco", "Texaco", "Mobil"};
-    private static final String[]gastype = {"Gasoline", "Diesel"};
-    private static final String[]sortby = {"price", "nearest"};
+    private static final String[]distanceMile = {"", "1", "2", "3", "4", "5"};
+    private static final String[]brandname = {"", "Chevron", "Shell", "76", "Flyers", "Arco", "Texaco", "Mobil", "7-Eleven"};
+    private static final String[]gastype = {"", "Regular 87", "Plus 89", "Premium 91", "diesel", "distance"};
+    private static final String[]gasTypeReplace = {"", "reg", "mid", "pre", "diesel", "distance"};
+    private static final String[]sortby = {"", "price", "distance"};
     private int mile= 0, name = 0, type = 0, sort = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -64,6 +65,8 @@ public class Filter extends Activity{
                     case 6:
                         // mile = position;
                         break;
+                    case 7:
+                        break;
                 }
 
             }
@@ -90,6 +93,8 @@ public class Filter extends Activity{
                     case 1:
                         // Whatever you want to happen when the second item gets selected
                         // name = position;
+                        break;
+                    case 2:
                         break;
                 }
 
@@ -118,7 +123,14 @@ public class Filter extends Activity{
                         // Whatever you want to happen when the second item gets selected
                         //type = position;
                         break;
-
+                    case 2:
+                         break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
                 }
 
             }
@@ -147,10 +159,7 @@ public class Filter extends Activity{
                         //sort = position;
                         break;
                     case 2:
-                        // Whatever you want to happen when the thrid item gets selected
-                        //sort = position;
                         break;
-
                 }
 
             }
@@ -188,14 +197,14 @@ public class Filter extends Activity{
     public void goToGasListFromFilter(View view){
 
         Intent j = new Intent();
-        j.putExtra("distance", distanceMile[mile]);
-        j.putExtra("brand", brandname[name]);
-        j.putExtra("gastype", gastype[type]);
-        j.putExtra("sortby", sortby[sort]);
+        if(mile == 0) j.putExtra("distance", "s"); else j.putExtra("distance", distanceMile[mile]);
+        if(name == 0) j.putExtra("brand", "s"); else j.putExtra("brand", brandname[name]);
+        if(type == 0) j.putExtra("gastype", "s"); else j.putExtra("gastype", gasTypeReplace[type]);
+        if(sort == 0) j.putExtra("sortby", "s"); else  j.putExtra("sortby", sortby[sort]);
         setResult(RESULT_OK, j);
         Log.d(distanceMile[mile] , "Distance = ");
         Log.d(brandname[name] , "Brand =" );
-        Log.d(gastype[type], "gastype =");
+        Log.d(gasTypeReplace[type], "gastype =");
         Log.d(sortby[sort], "sortby =" );
         finish();
     }

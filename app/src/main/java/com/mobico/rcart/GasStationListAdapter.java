@@ -1,10 +1,5 @@
 package com.mobico.rcart;
 
-/**
- * Created by Michael on 11/12/2014.
- */
-
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
