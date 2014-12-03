@@ -37,7 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ProductsList extends Activity {
+public class ProductsList extends Activity implements MyAsyncResponse {
 
     ArrayList<String> productsList;
     ListView listView;
@@ -79,6 +79,7 @@ public class ProductsList extends Activity {
                 Intent intent = new Intent(ProductsList.this, NearbyList.class);
                 intent.putExtra("lati", latitude);
                 intent.putExtra("longi", longitude);
+
                 startActivityForResult(intent, 1234);
             }
         });
@@ -155,7 +156,7 @@ public class ProductsList extends Activity {
         String paramString = URLEncodedUtils.format(params, "utf-8");
         url += paramString;
         HttpGet httpGet = new HttpGet(url);
-        new MyHttpGet().execute(httpGet);
+        new MyHttpGet(this).execute(httpGet);
     }
 
     private void updateProductList(){
@@ -168,53 +169,20 @@ public class ProductsList extends Activity {
         adapter.notifyDataSetChanged();
     }
 
-    private class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
+    private void onPostMyHttpGet(JSONObject result){
+        try {
+            listJson = result.getJSONArray("items");
+        }catch(Exception e){}
+        updateProductList();
+    }
 
-        @Override
-        protected String doInBackground(HttpGet... getUrl) {
-            return GET(getUrl[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            JSONObject json;
-            try{
-                json = new JSONObject(result);
-                listJson = json.getJSONArray("items");
-                updateProductList();
-                //etResponse.setText(json.toString(1));
-            }
-            catch(JSONException e){}
-        }
-
-        public String GET(HttpGet getUrl){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse httpResponse = httpclient.execute(getUrl);
-                inputStream = httpResponse.getEntity().getContent();
-                if(inputStream != null){
-                    result = convertInputStreamToString(inputStream);
-                }
-                else{
-                    result = "Did not work!";
-                    invalidEntryAlert("GET request error");
-                }
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-            inputStream.close();
-            return result;
-        }
+    @Override
+    public void processFinish(String result) {
+        JSONObject json;
+        try {
+            json = new JSONObject(result);
+            listJson = json.getJSONArray("items");
+        }catch(Exception e){}
+        updateProductList();
     }
 }
