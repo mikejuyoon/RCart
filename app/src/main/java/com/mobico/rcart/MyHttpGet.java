@@ -48,7 +48,6 @@ public class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
             }
             else{
                 result = "Did not work!";
-                //invalidEntryAlert("GET request error");
             }
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
