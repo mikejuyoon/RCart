@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +31,18 @@ public class ProductsList extends Activity {
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
 
+        Spinner spinner = (Spinner) findViewById(R.id.catagories_spinner);
+        ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(this,
+                R.array.catagories_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinner_adapter);
+
         listView = (ListView) findViewById(R.id.myListView);
 
         productsList = new ArrayList<String>();
         productsList.add("Apple");
-        productsList.add("Banana");
-        productsList.add("Eclair");
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, productsList);
         listView.setAdapter(adapter);
