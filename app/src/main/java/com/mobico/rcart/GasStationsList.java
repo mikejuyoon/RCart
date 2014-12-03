@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class GasStationsList extends Activity {
+public class GasStationsList extends Activity implements MyAsyncResponse{
 
     ArrayList<HashMap<String,String>> ListOfRows;
 
@@ -89,8 +89,8 @@ public class GasStationsList extends Activity {
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
                 "&long=" + String.valueOf(longitude) +
                 "&dist="+ distance + "&sortBy=" + sortby;
-
-        new HttpAsyncTask().execute(url1);
+        HttpGet httpGet = new HttpGet(url1);
+        new MyHttpGet(this).execute(httpGet);
 
         /***********************************************************************************************
          * Main point is to go to the station details whenever a row is clicked, bringing element with it
@@ -109,43 +109,6 @@ public class GasStationsList extends Activity {
         });
     }
 
-    public static String GET(String url){
-        InputStream inputStream = null;
-        String result = "";
-        try {
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-
-        return result;
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
 
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -154,30 +117,6 @@ public class GasStationsList extends Activity {
             return true;
         else
             return false;
-    }
-
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            return GET(urls[0]);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-            try{
-                gasJson = new JSONObject(result);
-                gasArray = gasJson.getJSONArray("stations");
-                //etResponse.setText(json.toString(1));
-            }
-            catch(JSONException e){
-                //do nothing
-            }
-//            ArrayList<Integer> al = new ArrayList<Integer>();
-//            al = fillList();
-            fillList();
-        }
     }
 
     @Override
@@ -234,7 +173,8 @@ public class GasStationsList extends Activity {
         else {
             search.setText("");
             String url = "https://mobibuddy.herokuapp.com/search.json?query=" + searchBarText;
-            new HttpAsyncTask().execute(url);
+            HttpGet httpGet = new HttpGet(url);
+            new MyHttpGet(this).execute(httpGet);
         }
     }
 
@@ -433,7 +373,8 @@ public class GasStationsList extends Activity {
                     "&long=" + String.valueOf(longitude) +
                     "&dist="+ distance + "&sortBy=" + gastype;
             //invalidEntryAlert(url2);
-            new HttpAsyncTask().execute(url1);
+            HttpGet httpGet = new HttpGet(url1);
+            new MyHttpGet(this).execute(httpGet);
         }
 
         //When the activity switches from Station Details to Gas Stations list
@@ -452,8 +393,21 @@ public class GasStationsList extends Activity {
                         "&dist=" + distance + "&sortBy=" + sortby;
 
                 //Executes a GET request to our own server
-                new HttpAsyncTask().execute(url1);
+                HttpGet httpGet = new HttpGet(url1);
+                new MyHttpGet(this).execute(httpGet);
             }
         }
     }
+
+    @Override
+    public void processFinish(String result) {
+        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
+        try{
+            gasJson = new JSONObject(result);
+            gasArray = gasJson.getJSONArray("stations");
+        }
+        catch(JSONException e){}
+        fillList();
+    }
+
 }

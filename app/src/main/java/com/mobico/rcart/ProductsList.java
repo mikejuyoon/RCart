@@ -169,12 +169,12 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         adapter.notifyDataSetChanged();
     }
 
-    private void onPostMyHttpGet(JSONObject result){
-        try {
-            listJson = result.getJSONArray("items");
-        }catch(Exception e){}
-        updateProductList();
-    }
+    // private void onPostMyHttpGet(JSONObject result){
+    //     try {
+    //         listJson = result.getJSONArray("items");
+    //     }catch(Exception e){}
+    //     updateProductList();
+    // }
 
     @Override
     public void processFinish(String result) {
