@@ -191,7 +191,6 @@ public class SplashScreen extends Activity implements
     public void openLoginActivity(View view){
         Intent i = new Intent(SplashScreen.this, Login.class);
         startActivity(i);
-        //finish();
     }
 
     public void goToGasList(View view){
@@ -199,6 +198,12 @@ public class SplashScreen extends Activity implements
         i.putExtra("lati", mCurrentLocation.getLatitude());
         i.putExtra("longi", mCurrentLocation.getLongitude());
         startActivity(i);
-        //finish();
+    }
+
+    public void goToProductsList(View view){
+        Intent i = new Intent(SplashScreen.this, ProductsList.class);
+        i.putExtra("lati", mCurrentLocation.getLatitude());
+        i.putExtra("longi", mCurrentLocation.getLongitude());
+        startActivity(i);
     }
 }
