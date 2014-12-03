@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -516,5 +517,9 @@ public class GasStationsList extends Activity {
                 new HttpAsyncTask().execute(url1);
             }
         }
+    }
+    public void goToMap(View view){
+        Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/dir/33.9759789,-117.3259195/Starbucks/@33.9653373,-117.3180231,14z/data=!4m8!4m7!1m0!1m5!1m1!1s0x0:0x391a790c6071196e!2m2!1d-117.330413!2d33.957142"));
+        startActivity(i);
     }
 }
