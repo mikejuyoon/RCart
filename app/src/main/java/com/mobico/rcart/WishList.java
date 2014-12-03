@@ -1,17 +1,40 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
-public class WishList extends Activity {
-
+public class WishList extends Activity implements MyAsyncResponse {
+    private double curlati = 0, curlongi= 0;
+    ArrayList<HashMap<String,String>> mylist;
+    String address = "", city = "", region = "";
+    String address1 = "", city1 = "", region1 = "";
+    String address2 = "", city2 = "", region2 = "";
+    String lati, longi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wish_list);
+
+        Intent i = getIntent();
+        curlati = i.getDoubleExtra("latitude", 0);
+        curlongi = i.getDoubleExtra("longitude", 0);
     }
 
 
@@ -32,5 +55,34 @@ public class WishList extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void goToRoute(View view){
+        String addstr = address + ","+ "+" + city + ",+" + region;
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?";
+        params.add(new BasicNameValuePair("key", "AIzaSyDnnBpMCtrnDehllEZA-XPJJwYEFlpSjnw"));
+        params.add(new BasicNameValuePair("address", addstr));
+
+        String paramString = URLEncodedUtils.format(params, "utf-8");
+        url += paramString;
+        //invalidEntryAlert(url);
+        HttpGet httpGet = new HttpGet(url);
+        new MyHttpGet(this).execute(httpGet);
+    }
+    @Override
+    public void processFinish(String result) {
+        // invalidEntryAlert(result);
+        JSONObject json;
+        try {
+            json = new JSONObject(result);
+            lati = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+            longi = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+            Log.d(lati, "latitude = ");
+            Log.d(longi, "longitude = ");
+
+            String url = "https://www.google.com/maps/dir/" + String.valueOf(curlati)+ "," + String.valueOf(curlongi) + "/" + lati + "," + longi;
+            Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
+        }catch(Exception e){}
     }
 }

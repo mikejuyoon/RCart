@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,10 +14,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
-public class StationDetail extends Activity {
+public class StationDetail extends Activity implements MyAsyncResponse {
 
     private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
     public static SharedPreferences savedData;
@@ -38,7 +56,8 @@ public class StationDetail extends Activity {
     String carwash;
     String hours;
     boolean updated;
-
+    Double curlati, curlongi;
+    String lati, longi;
     /***********************************************************************************************
      * function onCreate
      *
@@ -70,7 +89,8 @@ public class StationDetail extends Activity {
         credit = row_intent.getStringExtra("icredit");
         carwash = row_intent.getStringExtra("icarwash");
         hours = row_intent.getStringExtra("ihours");
-
+        curlati = row_intent.getDoubleExtra("latitude", 0);
+        curlongi = row_intent.getDoubleExtra("longitude", 0);
         //Layouts information for the Gas Detail Activity with the specific inputs
         //Address
         Details = (TextView) findViewById(R.id.gasStationName);
@@ -292,5 +312,60 @@ public class StationDetail extends Activity {
         else {
             updated = false;
         }
+    }
+    public void goDirection(View view){
+        String addstr = address + ","+ "+" + city + ",+" + region;
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?";
+        params.add(new BasicNameValuePair("key", "AIzaSyDnnBpMCtrnDehllEZA-XPJJwYEFlpSjnw"));
+        params.add(new BasicNameValuePair("address", addstr));
+
+        String paramString = URLEncodedUtils.format(params, "utf-8");
+        url += paramString;
+        //invalidEntryAlert(url);
+        HttpGet httpGet = new HttpGet(url);
+        new MyHttpGet(this).execute(httpGet);
+    }
+//    public void goDirectionHelper(String address, String city, String region){
+//        String addstr = address + ",+" + city + ",+" + region;
+//        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+//        String url = "https://maps.googleapis.com/maps/api/geocode/json?";
+//        params.add(new BasicNameValuePair("key", "AIzaSyCKo272Opa3roLYk3h7kF7i3Ju74Q-fsIs"));
+//        params.add(new BasicNameValuePair("address", addstr));
+//
+//        String paramString = URLEncodedUtils.format(params, "utf-8");
+//        url += paramString;
+//        HttpGet httpGet = new HttpGet(url);
+//        new MyHttpGet(this).execute(httpGet);
+//
+//    }
+
+    private void invalidEntryAlert(String message) {
+        /// change to current class
+        AlertDialog.Builder builder = new AlertDialog.Builder(StationDetail.this);
+
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
+    @Override
+    public void processFinish(String result) {
+       // invalidEntryAlert(result);
+        JSONObject json;
+        try {
+            json = new JSONObject(result);
+            lati = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+            longi = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+            Log.d(lati, "latitude = ");
+            Log.d(longi, "longitude = ");
+
+            String url = "https://www.google.com/maps/dir/" + String.valueOf(curlati)+ "," + String.valueOf(curlongi) + "/" + lati + "," + longi;
+            Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
+        }catch(Exception e){}
     }
 }
