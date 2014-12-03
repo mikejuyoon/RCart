@@ -320,32 +320,6 @@ public class StationDetail extends Activity implements MyAsyncResponse {
         HttpGet httpGet = new HttpGet(url);
         new MyHttpGet(this).execute(httpGet);
     }
-//    public void goDirectionHelper(String address, String city, String region){
-//        String addstr = address + ",+" + city + ",+" + region;
-//        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-//        String url = "https://maps.googleapis.com/maps/api/geocode/json?";
-//        params.add(new BasicNameValuePair("key", "AIzaSyCKo272Opa3roLYk3h7kF7i3Ju74Q-fsIs"));
-//        params.add(new BasicNameValuePair("address", addstr));
-//
-//        String paramString = URLEncodedUtils.format(params, "utf-8");
-//        url += paramString;
-//        HttpGet httpGet = new HttpGet(url);
-//        new MyHttpGet(this).execute(httpGet);
-//
-//    }
-
-    private void invalidEntryAlert(String message) {
-        /// change to current class
-        AlertDialog.Builder builder = new AlertDialog.Builder(StationDetail.this);
-
-        builder.setTitle("Error"); /// change this
-        builder.setPositiveButton("OK", null);
-        builder.setMessage(message);
-
-        AlertDialog theAlertDialog = builder.create();
-        theAlertDialog.show();
-    }
-
     @Override
     public void processFinish(String result) {
         // invalidEntryAlert(result);
