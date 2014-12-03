@@ -65,7 +65,7 @@ import android.util.Log;
 
 import android.os.StrictMode;
 
-public class UpdateGas extends Activity {
+public class UpdateGas extends Activity implements MyAsyncResponse{
 
     //Public variables of UpdateGas
     TextView UpdateGas;
@@ -329,152 +329,13 @@ public class UpdateGas extends Activity {
         String url = "https://mobibuddy.herokuapp.com/update_gas.json?stationid="
                 + stationId + "&fueltype=" + fuelType + "&price=" + price;
 
-        new HttpAsyncTask().execute(url);
+        HttpGet httpGet = new HttpGet(url);
+        new MyHttpGet(this).execute(httpGet);
     }
 
-    /***********************************************************************************************
-     * function GET
-     * GET request to the url, receiving a JSON format input to the stream. (JSON NOT USED)
-     *
-     * @param   url
-     * @return  STRING result
-     **********************************************************************************************/
-    public static String GET(String url){
-        InputStream inputStream = null;
-        String result = "";
-        try {
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-        return result;
+    @Override
+    public void processFinish(String result) {
+        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
     }
-
-    /***********************************************************************************************
-     * function convertInputStreamToString
-     * Converts the input stream into an actual stream to be used
-     *
-     * @param   inputStream
-     * @return  STRING result
-     **********************************************************************************************/
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-    }
-
-    /***********************************************************************************************
-     * class HttpAsyncTask
-     *
-     * Extends the AsyncTask, used to send a GET request to update gas prices in our own server
-     **********************************************************************************************/
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            return GET(urls[0]);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-        }
-    }
-
-//   *****************THIS IS THE ORIGINAL POST TO THE ACTUAL GAS API*****************
-//
-//    public void postGasPrice(String price, String fuelType, String stationId) {
-//        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/update_gas.json?stationid="
-//                                        + stationId + "&fueltype=" + fuelType + "&price=" + price);
-//        try {
-//            // Add your data
-//            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//            nameValuePairs.add(new BasicNameValuePair("price", price));
-//            nameValuePairs.add(new BasicNameValuePair("fueltype", fuelType));
-//            nameValuePairs.add(new BasicNameValuePair("stationid", stationId));
-//            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//
-//            new MyHttpPost().execute(httppost);
-//
-//        } catch (IOException e) {
-//            Log.d("POSTINGFAILURE", e.getLocalizedMessage());
-//        }
-//    }
-
-    // **************************** NOT USED ANYMORE **************************************
-    /***********************************************************************************************
-     * class MyHttpPost
-     *
-     * Extends the AsyncTask, used to send POST requests to the Gas API
-     **********************************************************************************************/
-    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
-
-        @Override
-        protected String doInBackground(HttpPost... postUrl) {
-            return POST(postUrl[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // TO DO
-            // WHAT YOU WANT TO DO WITH THE RESULT
-            // "result" is the json data received back!
-            //JSONObject jsonObject =
-        }
-
-        public String POST(HttpPost postUrl){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make POST request to the given URL
-                HttpResponse httpResponse = httpclient.execute(postUrl);
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else
-                    result = "Did not work!";
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-            inputStream.close();
-            return result;
-        }
-    }
+  
 }

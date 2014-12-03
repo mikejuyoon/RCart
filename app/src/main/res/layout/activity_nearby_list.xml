@@ -38,25 +38,23 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <TableRow
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center" >
+        android:layout_height="wrap_content">
 
-        <EditText
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Search ..."
-            android:id="@+id/SearchBar"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:id="@+id/product_thumbnail" />
 
-    </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/product_name"
+            android:layout_gravity="right" />
+    </TableRow>
 
     <ListView
         android:layout_width="match_parent"

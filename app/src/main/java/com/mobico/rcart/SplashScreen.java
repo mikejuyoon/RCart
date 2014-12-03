@@ -126,7 +126,7 @@ public class SplashScreen extends Activity implements
         if(mLocationClient != null)
             mLocationClient.requestLocationUpdates(mLocationRequest,  this);
 
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 
         if(mLocationClient != null){
             // get location

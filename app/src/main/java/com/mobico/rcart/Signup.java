@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Signup extends Activity {
+public class Signup extends Activity implements MyAsyncResponse{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class Signup extends Activity {
 
             if(isConnected()){
                 Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
-                new MyHttpPost().execute(httppost);
+                new MyHttpPost(this).execute(httppost);
             }
             else{
                 Toast.makeText(getBaseContext(), "NOT CONNECTED!", Toast.LENGTH_LONG).show();
@@ -120,67 +120,8 @@ public class Signup extends Activity {
         theAlertDialog.show();
     }
 
-    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
+    
 
-        @Override
-        protected String doInBackground(HttpPost... postUrl) {
-            return POST(postUrl[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-            try {
-                JSONObject jsonLoginResult = new JSONObject(result);
-                if (jsonLoginResult.getBoolean("success")) {
-                    //invalidEntryAlert("Successfully Signed Up! Please Login");
-                    Toast.makeText(getBaseContext(), "Signed Up! Please Login.", Toast.LENGTH_LONG).show();
-                    onBackPressed();
-                } else {
-                    invalidEntryAlert("Email has already been used or password must be longer than 8 characters.");
-                }
-            } catch (JSONException e) {
-                //do nothing
-            }
-        }
-
-        public String POST(HttpPost postUrl) {
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make POST request to the given URL
-                HttpResponse httpResponse = httpclient.execute(postUrl);
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if (inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else
-                    result = "Did not work!";
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while ((line = bufferedReader.readLine()) != null)
-                result += line;
-            inputStream.close();
-            return result;
-        }
-
-    }
     private void setupKeyboardHide(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
@@ -202,5 +143,19 @@ public class Signup extends Activity {
     private static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void processFinish(String result) {
+        try {
+            JSONObject jsonLoginResult = new JSONObject(result);
+            if (jsonLoginResult.getBoolean("success")) {
+                //invalidEntryAlert("Successfully Signed Up! Please Login");
+                Toast.makeText(getBaseContext(), "Signed Up! Please Login.", Toast.LENGTH_LONG).show();
+                onBackPressed();
+            } else {
+                invalidEntryAlert("Email has already been used or password must be longer than 8 characters.");
+            }
+        }catch (JSONException e) {}
     }
 }
