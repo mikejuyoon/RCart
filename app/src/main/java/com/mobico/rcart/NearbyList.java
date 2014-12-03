@@ -28,7 +28,9 @@ import java.util.List;
 
 public class NearbyList extends Activity implements MyAsyncResponse{
 
-    ArrayList<String> locationList;
+    ArrayList<HashMap<String, String>> storeList;
+    NearbyListAdapter nearbyListAdapter;
+
     ListView listView;
     double latitude, longitude;
     TextView productName;
@@ -46,6 +48,8 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_list);
         productName = (TextView) findViewById(R.id.product_name);
+
+        storeList = new ArrayList<HashMap<String, String>>();
 
         listView = (ListView) findViewById(R.id.myListView);
 
@@ -66,27 +70,14 @@ public class NearbyList extends Activity implements MyAsyncResponse{
 
         listView = (ListView) findViewById(R.id.myListView);
 
-        locationList = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, locationList);
-        locationList.add("Apple");
-        listView.setAdapter(adapter);
+        nearbyListAdapter = new NearbyListAdapter(this, storeList);
+        listView.setAdapter(nearbyListAdapter);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // JSONObject currObject;
-                // try {
-                //     currObject = listJson.getJSONObject(i);
-                //     Intent intent = new Intent(ProductsList.this, NearbyList.class);
-                //     intent.putExtra("lati", latitude);
-                //     intent.putExtra("longi", longitude);
-                //     intent.putExtra("name", currObject.getString("name"));
-                //     intent.putExtra("imgUrl", currObject.getString("thumbnailImage"));
-                //     intent.putExtra("price", currObject.getString("salePrice"));
-                //     intent.putExtra("category", currCategory);
-                //     startActivityForResult(intent, 1234);
 
-                // }catch(Exception e){}
 
             }
         });
@@ -155,14 +146,22 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     }
 
     private void updateLocationsList(){
-        locationList.clear();
+
         for(int i = 0 ; i < resultsJson.length() ; i++){
             try {
-                locationList.add(resultsJson.getJSONObject(i).getString("name"));
+                HashMap<String, String> storeInfo = new HashMap<String, String>();
+                storeInfo.put("store_name", resultsJson.getJSONObject(i).getString("name"));
+                storeInfo.put("store_price", price);
+                storeInfo.put("store_distance", "1.5");
+                storeInfo.put("lati", String.valueOf(latitude));
+                storeInfo.put("longi", String.valueOf(longitude));
+                storeInfo.put("category", category);
+                storeList.add(storeInfo);
             }catch (Exception e){}
 
         }
-        adapter.notifyDataSetChanged();
+        nearbyListAdapter = new NearbyListAdapter(this, storeList);
+        listView.setAdapter(nearbyListAdapter);
     }
 
     @Override
