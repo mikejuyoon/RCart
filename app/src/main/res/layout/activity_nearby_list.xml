@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Search ..."
-            android:id="@+id/SearchBar"
+            android:id="@+id/productSearchBar"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             android:layout_alignParentLeft="true"

@@ -1,6 +1,7 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -21,6 +23,8 @@ public class ProductsList extends Activity {
     ArrayList<String> productsList;
     ListView listView;
     double latitude, longitude;
+    EditText productSearchBar;
+    Spinner catagories_spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +35,14 @@ public class ProductsList extends Activity {
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
 
-        Spinner spinner = (Spinner) findViewById(R.id.catagories_spinner);
+        productSearchBar = (EditText) findViewById(R.id.productSearchBar);
+        catagories_spinner = (Spinner) findViewById(R.id.catagories_spinner);
         ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(this,
                 R.array.catagories_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinner_adapter);
+        catagories_spinner.setAdapter(spinner_adapter);
+
 
         listView = (ListView) findViewById(R.id.myListView);
 
@@ -81,5 +87,28 @@ public class ProductsList extends Activity {
         Intent i = new Intent(ProductsList.this, WishList.class);
         //Will return to the onActivityResult function
         startActivityForResult(i, 1);
+    }
+
+    public void productSearchButton(View view){
+        String itemSelected = catagories_spinner.getSelectedItem().toString();
+        String searchKeyword = productSearchBar.getText().toString();
+        if(itemSelected.equals("Select Catagory") || searchKeyword.length()==0){ //I know. Horrible.
+            invalidEntryAlert("Please enter a product keyword and select a catagory");
+            return;
+        }
+
+    }
+
+
+
+    // ============ HELPER FUNCTIONS =================
+
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductsList.this);
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
     }
 }
