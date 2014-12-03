@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="catagories_array">
-        <item>Select Catagory</item>
+    <string-array name="categories_array">
+        <item>Select Category</item>
         <item>Electronics &amp; Computers</item>
         <item>Groceries &amp; Food</item>
         <item>Pharmacy &amp; Health</item>
@@ -17,6 +17,6 @@
         <item>Office &amp; School Supplies</item>
     </string-array>
 
-    <string name="catagories_prompt">Select Catagories</string>
+    <string name="categories_prompt">Select Categories</string>
 </resources>
 
