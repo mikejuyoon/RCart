@@ -1,7 +1,11 @@
 package com.mobico.rcart;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,10 +13,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class ProductsList extends Activity {
@@ -20,6 +42,11 @@ public class ProductsList extends Activity {
     ArrayList<String> productsList;
     ListView listView;
     double latitude, longitude;
+    EditText productSearchBar;
+    Spinner catagories_spinner;
+    ArrayAdapter<String> adapter;
+
+    JSONArray listJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +57,20 @@ public class ProductsList extends Activity {
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
 
+        //invalidEntryAlert("lati: "+ latitude + "\nlong: "+longitude);
+
+        productSearchBar = (EditText) findViewById(R.id.productSearchBar);
+        catagories_spinner = (Spinner) findViewById(R.id.catagories_spinner);
+        ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(this,R.array.catagories_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        catagories_spinner.setAdapter(spinner_adapter);
+
+
         listView = (ListView) findViewById(R.id.myListView);
 
         productsList = new ArrayList<String>();
-        productsList.add("Apple");
-        productsList.add("Banana");
-        productsList.add("Eclair");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, productsList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, productsList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,5 +107,114 @@ public class ProductsList extends Activity {
         Intent i = new Intent(ProductsList.this, WishList.class);
         //Will return to the onActivityResult function
         startActivityForResult(i, 1);
+    }
+
+    public void productSearchButton(View view){
+        String itemSelected = catagories_spinner.getSelectedItem().toString();
+        String searchKeyword = productSearchBar.getText().toString();
+        if(itemSelected.equals("Select Catagory") || searchKeyword.length()==0){ //I know. Horrible.
+            invalidEntryAlert("Please enter a product keyword and select a catagory");
+            return;
+        }
+
+        if(isConnected()){
+            callWalmartApi(searchKeyword);
+        }
+        else
+            invalidEntryAlert("No connection");
+
+    }
+
+
+    // ============ HELPER FUNCTIONS =================
+
+    private boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductsList.this);
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
+    private void callWalmartApi(String searchKeyword){
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        String url = "http://walmartlabs.api.mashery.com/v1/search?&format=json&";
+        params.add(new BasicNameValuePair("apiKey", "ucggnqrfww45m98bbv93ny4h"));
+        params.add(new BasicNameValuePair("format", "json"));
+        params.add(new BasicNameValuePair("query", searchKeyword));
+        String paramString = URLEncodedUtils.format(params, "utf-8");
+        url += paramString;
+        HttpGet httpGet = new HttpGet(url);
+        new MyHttpGet().execute(httpGet);
+    }
+
+    private void updateProductList(){
+        productsList.clear();
+        for(int i = 0 ; i < listJson.length() ; i++){
+            try {
+                productsList.add(listJson.getJSONObject(i).getString("name"));
+            }catch(Exception e){}
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
+
+        @Override
+        protected String doInBackground(HttpGet... getUrl) {
+            return GET(getUrl[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            JSONObject json;
+            try{
+                json = new JSONObject(result);
+                listJson = json.getJSONArray("items");
+                updateProductList();
+                //etResponse.setText(json.toString(1));
+            }
+            catch(JSONException e){}
+        }
+
+        public String GET(HttpGet getUrl){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpclient.execute(getUrl);
+                inputStream = httpResponse.getEntity().getContent();
+                if(inputStream != null){
+                    result = convertInputStreamToString(inputStream);
+                }
+                else{
+                    result = "Did not work!";
+                    invalidEntryAlert("GET request error");
+                }
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+            inputStream.close();
+            return result;
+        }
     }
 }

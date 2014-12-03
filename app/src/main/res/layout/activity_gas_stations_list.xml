@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Address, city, or zip"
-            android:id="@+id/SearchBar"
+            android:id="@+id/productSearchBar"
             android:layout_toLeftOf="@+id/SearchButton"
             android:layout_toStartOf="@+id/SearchButton"
             android:layout_alignParentLeft="true"

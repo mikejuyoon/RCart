@@ -67,15 +67,18 @@
         </activity>
         <activity
             android:name=".ProductsList"
-            android:label="@string/title_activity_products_list" >
+            android:label="@string/title_activity_products_list"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".NearbyList"
-            android:label="@string/title_activity_nearby_list" >
+            android:label="@string/title_activity_nearby_list"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".WishList"
-            android:label="@string/title_activity_wish_list" >
+            android:label="@string/title_activity_wish_list"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
