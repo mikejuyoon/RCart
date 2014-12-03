@@ -115,6 +115,7 @@ public class GasStationsList extends Activity {
     private String checkbrand = "" , oldb= "";
     private String checkgastype = "" , oldg = "";
     private String checksortby = "", olds = "";
+    private int dpos= 0, bpos = 0, gpos =0 , spos =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -430,6 +431,10 @@ public class GasStationsList extends Activity {
     public void goToFilterFromGasStation(View view) {
         Intent i = new Intent(GasStationsList.this, Filter.class);
         //Will return to the onActivityResult function
+        i.putExtra("mile",dpos);
+        i.putExtra("name", bpos);
+        i.putExtra("type", gpos);
+        i.putExtra("sort", spos);
         startActivityForResult(i, 1);
     }
 
@@ -451,6 +456,10 @@ public class GasStationsList extends Activity {
             checkbrand = data.getStringExtra("brand");
             checkgastype = data.getStringExtra("gastype");
             checksortby = data.getStringExtra("sortby");
+            dpos = data.getIntExtra("mile", 0);
+            bpos = data.getIntExtra("name", 0);
+            gpos = data.getIntExtra("type", 0);
+            spos = data.getIntExtra("sort", 0);
 
             if(checkdistance.equals("s")){
                 distance = oldd;
