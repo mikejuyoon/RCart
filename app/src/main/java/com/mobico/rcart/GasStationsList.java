@@ -416,6 +416,10 @@ public class GasStationsList extends Activity {
         i.putExtra("icarwash", ListOfRows.get(index).get("carwash"));
         i.putExtra("ihours", ListOfRows.get(index).get("hours"));
 
+        i.putExtra("longitude" , longitude);
+        i.putExtra("latitude", latitude);
+
+
         //Will return to the onActivityResult function
         startActivityForResult(i, 3);
     }
