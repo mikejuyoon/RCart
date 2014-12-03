@@ -75,17 +75,16 @@ public class Signup extends Activity {
         }
     }
 
-            private void postSignupData(String inputEmail, String inputPassword) {
+    private void postSignupData(String inputEmail, String inputPassword) {
+        HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users.json");
 
-            HttpPost httppost = new HttpPost("https://mobibuddy.herokuapp.com/users.json");
-
-            try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-                nameValuePairs.add(new BasicNameValuePair("email", inputEmail));
-                nameValuePairs.add(new BasicNameValuePair("password", inputPassword));
-                nameValuePairs.add(new BasicNameValuePair("password_confirmation", inputPassword));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+            nameValuePairs.add(new BasicNameValuePair("email", inputEmail));
+            nameValuePairs.add(new BasicNameValuePair("password", inputPassword));
+            nameValuePairs.add(new BasicNameValuePair("password_confirmation", inputPassword));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             if(isConnected()){
                 Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
@@ -94,7 +93,6 @@ public class Signup extends Activity {
             else{
                 Toast.makeText(getBaseContext(), "NOT CONNECTED!", Toast.LENGTH_LONG).show();
             }
-
         } catch (IOException e) {
             // TODO Auto-generated catch block
         }
