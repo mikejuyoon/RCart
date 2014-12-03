@@ -16,6 +16,7 @@ public class NearbyList extends Activity {
 
     ArrayList<HashMap<String,String>> ListOfProduct;
     ListView listView;
+
     double latitude, longitude;
 
     @Override
@@ -31,6 +32,7 @@ public class NearbyList extends Activity {
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
+
     }
 
     @Override

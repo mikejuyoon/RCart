@@ -19,8 +19,6 @@ public class ProductListAdapter extends BaseAdapter{
     ProductListAdapter(Context c) {
         context = c;
         list = new ArrayList<HashMap<String, String>>();
-        Log.d("Constructor ", "Haha");
-
     }
 
     ProductListAdapter(Context c, ArrayList<HashMap<String,String>> list_hash) {

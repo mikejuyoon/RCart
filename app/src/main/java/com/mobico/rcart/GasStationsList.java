@@ -152,11 +152,7 @@ public class GasStationsList extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("indexxxxxx: ", Integer.toString(i));
-//                ArrayList<Integer> al = new ArrayList<Integer>();
-////                al = fillList();
-//                int ii = al.get(i);
                 goToStationDetail(view, i);
-
             }
         });
     }

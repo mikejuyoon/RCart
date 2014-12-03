@@ -14,7 +14,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class ProductsList extends Activity {
 
     ArrayList<String> productsList;
@@ -73,6 +72,8 @@ public class ProductsList extends Activity {
     public void goToWishlist(View view) {
         Intent i = new Intent(ProductsList.this, WishList.class);
         //Will return to the onActivityResult function
-        startActivityForResult(i, 1);
+        i.putExtra("lati", latitude);
+        i.putExtra("longi", longitude);
+        startActivityForResult(i, 1111);
     }
 }
