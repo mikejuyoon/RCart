@@ -37,14 +37,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ProductsList extends Activity {
+public class ProductsList extends Activity implements MyAsyncResponse {
 
     ArrayList<String> productsList;
     ListView listView;
     double latitude, longitude;
     EditText productSearchBar;
-    Spinner catagories_spinner;
+    Spinner categories_spinner;
     ArrayAdapter<String> adapter;
+    String currCategory;
 
     JSONArray listJson;
 
@@ -60,11 +61,11 @@ public class ProductsList extends Activity {
         //invalidEntryAlert("lati: "+ latitude + "\nlong: "+longitude);
 
         productSearchBar = (EditText) findViewById(R.id.productSearchBar);
-        catagories_spinner = (Spinner) findViewById(R.id.catagories_spinner);
-        ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(this,R.array.catagories_array, android.R.layout.simple_spinner_item);
+        categories_spinner = (Spinner) findViewById(R.id.categories_spinner);
+        ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(this,R.array.categories_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        catagories_spinner.setAdapter(spinner_adapter);
+        categories_spinner.setAdapter(spinner_adapter);
 
 
         listView = (ListView) findViewById(R.id.myListView);
@@ -76,10 +77,20 @@ public class ProductsList extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(ProductsList.this, NearbyList.class);
-                intent.putExtra("lati", latitude);
-                intent.putExtra("longi", longitude);
-                startActivityForResult(intent, 1234);
+                JSONObject currObject;
+                try {
+                    currObject = listJson.getJSONObject(i);
+                    Intent intent = new Intent(ProductsList.this, NearbyList.class);
+                    intent.putExtra("lati", latitude);
+                    intent.putExtra("longi", longitude);
+                    intent.putExtra("name", currObject.getString("name"));
+                    intent.putExtra("imgUrl", currObject.getString("thumbnailImage"));
+                    intent.putExtra("price", currObject.getString("salePrice"));
+                    intent.putExtra("category", currCategory);
+                    startActivityForResult(intent, 1234);
+
+                }catch(Exception e){}
+
             }
         });
     }
@@ -110,12 +121,14 @@ public class ProductsList extends Activity {
     }
 
     public void productSearchButton(View view){
-        String itemSelected = catagories_spinner.getSelectedItem().toString();
+        String itemSelected = categories_spinner.getSelectedItem().toString();
         String searchKeyword = productSearchBar.getText().toString();
-        if(itemSelected.equals("Select Catagory") || searchKeyword.length()==0){ //I know. Horrible.
-            invalidEntryAlert("Please enter a product keyword and select a catagory");
+        if(itemSelected.equals("Select Category") || searchKeyword.length()==0){ //I know. Horrible.
+            invalidEntryAlert("Please enter a product keyword and select a category");
             return;
         }
+
+        currCategory = itemSelected;
 
         if(isConnected()){
             callWalmartApi(searchKeyword);
@@ -155,7 +168,7 @@ public class ProductsList extends Activity {
         String paramString = URLEncodedUtils.format(params, "utf-8");
         url += paramString;
         HttpGet httpGet = new HttpGet(url);
-        new MyHttpGet().execute(httpGet);
+        new MyHttpGet(this).execute(httpGet);
     }
 
     private void updateProductList(){
@@ -168,53 +181,13 @@ public class ProductsList extends Activity {
         adapter.notifyDataSetChanged();
     }
 
-    private class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
-
-        @Override
-        protected String doInBackground(HttpGet... getUrl) {
-            return GET(getUrl[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            JSONObject json;
-            try{
-                json = new JSONObject(result);
-                listJson = json.getJSONArray("items");
-                updateProductList();
-                //etResponse.setText(json.toString(1));
-            }
-            catch(JSONException e){}
-        }
-
-        public String GET(HttpGet getUrl){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse httpResponse = httpclient.execute(getUrl);
-                inputStream = httpResponse.getEntity().getContent();
-                if(inputStream != null){
-                    result = convertInputStreamToString(inputStream);
-                }
-                else{
-                    result = "Did not work!";
-                    invalidEntryAlert("GET request error");
-                }
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-            inputStream.close();
-            return result;
-        }
+    @Override
+    public void processFinish(String result) {
+        JSONObject json;
+        try {
+            json = new JSONObject(result);
+            listJson = json.getJSONArray("items");
+        }catch(Exception e){}
+        updateProductList();
     }
 }
