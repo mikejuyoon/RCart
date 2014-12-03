@@ -107,6 +107,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     public void addWishlistItem(View view) {
         String url = "mobibuddy.herokuapp.com/items.json?";
 
+
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("name", name));
         params.add(new BasicNameValuePair("category", category));
@@ -149,9 +150,11 @@ public class NearbyList extends Activity implements MyAsyncResponse{
 
         for(int i = 0 ; i < resultsJson.length() ; i++){
             try {
+                Double newPrice = (Double.parseDouble(price) - 0.3) + (Double.parseDouble(price) * 0.4 * Math.random());
+
                 HashMap<String, String> storeInfo = new HashMap<String, String>();
                 storeInfo.put("store_name", resultsJson.getJSONObject(i).getString("name"));
-                storeInfo.put("store_price", price);
+                storeInfo.put("store_price", String.valueOf(newPrice));
                 storeInfo.put("store_distance", "1.5");
                 storeInfo.put("lati", String.valueOf(latitude));
                 storeInfo.put("longi", String.valueOf(longitude));
