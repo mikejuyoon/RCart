@@ -329,6 +329,23 @@ public class GasStationsList extends Activity implements MyAsyncResponse{
         startActivityForResult(i, 1);
     }
 
+    /******************************************************************************************
+     * function goToMap
+     * goes to map activity
+     *
+     */
+    public void goToMap(View view) {
+        //Intent i = new Intent(GasStationsList.this, MyMap.class);
+        //startActivityForResult(i,5);
+
+        //get edge distances
+
+        //calculate best route
+
+        //call google maps
+
+    }
+
     /***********************************************************************************************
      * function onActivityResult
      * Gets called whenever a user returns from the different activities (Filter, StationDetail)
