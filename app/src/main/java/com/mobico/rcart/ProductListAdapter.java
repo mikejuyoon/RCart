@@ -65,7 +65,7 @@ public class ProductListAdapter extends BaseAdapter{
         TextView productPrice = (TextView) row.findViewById(R.id.productPrice);
         productPrice.setText(listHash.get("price"));
 
-        new DownloadImageTask((ImageView) row.findViewById(R.id.productImage)).execute("http://i.walmartimages.com/i/mp/MP/10/00/77/92/MP10007792024_P321146_100X100.jpg");
+        new DownloadImageTask((ImageView) row.findViewById(R.id.productImage)).execute(listHash.get("image_url"));
         //http://i.walmartimages.com/i/mp/MP/10/00/77/92/MP10007792024_P321146_100X100.jpg
         //listHash.get("image_url")
         return row;
