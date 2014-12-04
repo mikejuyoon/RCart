@@ -38,6 +38,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     NearbyListAdapter nearbyListAdapter;
 
     ListView listView;
+
     double latitude, longitude;
     TextView productName;
     ArrayAdapter<String> adapter;
@@ -65,6 +66,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
+
         name = intent1.getStringExtra("name");
         imageUrl = intent1.getStringExtra("imgUrl");
         price = intent1.getStringExtra("price");
@@ -91,6 +93,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 intent.putExtra("lati", storeList.get(i).get("lati"));
                 intent.putExtra("longi", storeList.get(i).get("longi"));
                 intent.putExtra("category", storeList.get(i).get("category"));
+                intent.putExtra("image_url", storeList.get(i).get("image_url"));
                 startActivity(intent);
 
             }
@@ -175,6 +178,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 storeInfo.put("lati", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
                 storeInfo.put("longi", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
                 storeInfo.put("category", category);
+                storeInfo.put("image_url", imageUrl);
                 storeList.add(storeInfo);
             }catch (Exception e){}
 

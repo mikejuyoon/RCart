@@ -3,6 +3,7 @@ package com.mobico.rcart;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -32,10 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 
 public class ProductsList extends Activity implements MyAsyncResponse {
 
@@ -47,7 +48,14 @@ public class ProductsList extends Activity implements MyAsyncResponse {
     ArrayAdapter<String> adapter;
     String currCategory;
 
+    HashMap<String,String> categoryMap;
+
+
     JSONArray listJson;
+
+    //Used for checking if user is logged in for wishlist
+    private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+    public static SharedPreferences savedData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +102,8 @@ public class ProductsList extends Activity implements MyAsyncResponse {
 
             }
         });
+
+        makeCategoryHashMap();
     }
 
     @Override
@@ -115,10 +125,37 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         return super.onOptionsItemSelected(item);
     }
 
+    //Used when user is not logged in as the user clicks on the Wishlist button
+    private void notLoggedInError(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductsList.this);
+        builder.setTitle("Not logged in"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
     public void goToWishlist(View view) {
-        Intent i = new Intent(ProductsList.this, WishList.class);
-        //Will return to the onActivityResult function
-        startActivityForResult(i, 1);
+        //Opens up SharedPreferences
+        //Reads from the SharedPreferences the email and token to access that specific user's wishlist
+        savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        String defaultValue = "";
+        String email = savedData.getString("email", "");
+        String auth_token = savedData.getString("auth_token", "");
+
+        //If there is a valid email and auth_token, then go to wishlist
+        if (email.length() > 0 && auth_token.length() > 0) {
+            Intent i = new Intent(ProductsList.this, WishList.class);
+            i.putExtra("lati", latitude);
+            i.putExtra("longi", longitude);
+            i.putExtra("email", email);
+            i.putExtra("auth_token", auth_token);
+            startActivityForResult(i, 1111);
+        }
+        //If there is no valid email or auth_token, displays an invalid message
+        else {
+            notLoggedInError("Please login to access your Wishlist.");
+        }
     }
 
     public void productSearchButton(View view){
@@ -142,6 +179,14 @@ public class ProductsList extends Activity implements MyAsyncResponse {
 
     // ============ HELPER FUNCTIONS =================
 
+    private void makeCategoryHashMap(){
+        ArrayList<String> categoryKey = new ArrayList<String>(Arrays.asList("Electronics & Computers", "Groceries & Food", "Pharmacy & Health", "Sports & Outdoors", "Home, Garden & Tools", "Beauty & Health", "Automotive & Industrial", "Health & Household", "Toys, Kids & Baby", "Clothing, Shoes & Jewelry", "Entertainment & Books", "Movies, Music & Games", "Office & School Supplies"));
+        ArrayList<String> categoryValue = new ArrayList<String>(Arrays.asList("3944","976759_1071964_976793","976760","4096_616859_617020","4044","1085666","91083_1104294_1218943","1115193","5427","5438","4044_103150_635499","4096","1085632_1104053_1199468"));
+        categoryMap = new HashMap<String, String>();
+        for(int i = 0 ; i < categoryKey.size() ; i++){
+            categoryMap.put(categoryKey.get(i),categoryValue.get(i));
+        }
+    }
     private boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -166,6 +211,10 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         params.add(new BasicNameValuePair("apiKey", "ucggnqrfww45m98bbv93ny4h"));
         params.add(new BasicNameValuePair("format", "json"));
         params.add(new BasicNameValuePair("query", searchKeyword));
+        if(categoryMap.containsKey(currCategory)){
+            params.add(new BasicNameValuePair("categoryId", categoryMap.get(currCategory)));
+            //invalidEntryAlert(categoryMap.get(currCategory));
+        }
         String paramString = URLEncodedUtils.format(params, "utf-8");
         url += paramString;
         HttpGet httpGet = new HttpGet(url);
