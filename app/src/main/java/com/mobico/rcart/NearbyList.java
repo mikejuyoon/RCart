@@ -93,6 +93,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 intent.putExtra("lati", storeList.get(i).get("lati"));
                 intent.putExtra("longi", storeList.get(i).get("longi"));
                 intent.putExtra("category", storeList.get(i).get("category"));
+                intent.putExtra("image_url", storeList.get(i).get("image_url"));
                 startActivity(intent);
 
             }
@@ -177,6 +178,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 storeInfo.put("lati", String.valueOf(latitude));
                 storeInfo.put("longi", String.valueOf(longitude));
                 storeInfo.put("category", category);
+                storeInfo.put("image_url", imageUrl);
                 storeList.add(storeInfo);
             }catch (Exception e){}
 

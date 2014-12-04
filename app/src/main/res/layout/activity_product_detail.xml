@@ -65,7 +65,8 @@
         android:id="@+id/add_wishlist_button"
         android:layout_below="@+id/store_price"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="goToWishlist" />
 
     <TextView
         android:layout_width="wrap_content"
