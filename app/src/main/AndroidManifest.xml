@@ -11,11 +11,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Light.NoTitleBar">
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
         <activity
             android:name=".SplashScreen"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,13 +34,13 @@
         <activity
             android:name=".StationDetail"
             android:label="@string/title_activity_station_detail"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Login"
             android:label="@string/title_activity_login"
             android:parentActivityName=".SplashScreen"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobico.rcart.SplashScreen" />
@@ -48,7 +48,7 @@
         <activity
             android:name=".Signup"
             android:label="@string/title_activity_signup"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
 
         <meta-data
@@ -58,12 +58,31 @@
         <activity
             android:name=".UpdateGas"
             android:label="@string/title_activity_update_gas"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Filter"
             android:label="@string/title_activity_filter"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ProductsList"
+            android:label="@string/title_activity_products_list"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".NearbyList"
+            android:label="@string/title_activity_nearby_list"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".WishList"
+            android:label="@string/title_activity_wish_list"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ProductDetail"
+            android:label="@string/title_activity_product_detail" >
         </activity>
     </application>
 

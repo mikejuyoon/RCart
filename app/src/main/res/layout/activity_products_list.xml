@@ -15,22 +15,22 @@
         android:background="@android:color/holo_blue_bright">
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Filter"
-            android:id="@+id/button"
-            android:layout_alignTop="@+id/gasPrice"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="5dp"
-            android:onClick="goToFilterFromGasStation" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Wishlist"
+            android:id="@+id/wishlistButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="2dp"
+            android:onClick="goToWishlist" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="R'Cart"
+            android:text="Products"
+            android:textSize="26dp"
             android:width="120dp"
             android:gravity="center"
             android:layout_centerVertical="true"
@@ -47,24 +47,43 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Address, city, or zip"
+            android:hint="Search by Keyword"
             android:id="@+id/productSearchBar"
-            android:layout_toLeftOf="@+id/SearchButton"
-            android:layout_toStartOf="@+id/SearchButton"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_margin="2dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Search"
-            android:id="@+id/SearchButton"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="2dp"
-            android:onClick="searchBar" />
+            android:layout_alignParentEnd="true" />
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/productSearchBar"
+            android:layout_centerHorizontal="true">
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/categories_spinner"
+                android:spinnerMode="dropdown"
+                android:layout_below="@+id/productSearchBar"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_weight="2" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Search"
+                android:id="@+id/product_search_btn"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:onClick="productSearchButton" />
+
+        </TableRow>
+
     </RelativeLayout>
 
     <ListView

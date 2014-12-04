@@ -26,10 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Andy on 12/2/2014.
- */
-public class MyMap implements MyAsyncResponse{
+public class MyMap extends Activity implements MyAsyncResponse{
 
 
     ArrayList<Pair<String,String>> coordinates;

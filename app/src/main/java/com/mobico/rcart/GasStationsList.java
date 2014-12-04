@@ -2,29 +2,20 @@ package com.mobico.rcart;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -32,64 +23,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
-public class GasStationsList extends Activity {
+public class GasStationsList extends Activity implements MyAsyncResponse{
 
     ArrayList<HashMap<String,String>> ListOfRows;
 
@@ -116,6 +63,7 @@ public class GasStationsList extends Activity {
     private String checkbrand = "" , oldb= "";
     private String checkgastype = "" , oldg = "";
     private String checksortby = "", olds = "";
+    private int dpos= 0, bpos = 0, gpos =0 , spos =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,8 +90,8 @@ public class GasStationsList extends Activity {
         String url1 ="https://mobibuddy.herokuapp.com/nearby_gas.json?lat=" + String.valueOf(latitude) +
                 "&long=" + String.valueOf(longitude) +
                 "&dist="+ distance + "&sortBy=" + sortby;
-
-        new HttpAsyncTask().execute(url1);
+        HttpGet httpGet = new HttpGet(url1);
+        new MyHttpGet(this).execute(httpGet);
 
         /***********************************************************************************************
          * Main point is to go to the station details whenever a row is clicked, bringing element with it
@@ -162,43 +110,6 @@ public class GasStationsList extends Activity {
         });
     }
 
-    public static String GET(String url){
-        InputStream inputStream = null;
-        String result = "";
-        try {
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-
-        return result;
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
 
     public boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -207,30 +118,6 @@ public class GasStationsList extends Activity {
             return true;
         else
             return false;
-    }
-
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            return GET(urls[0]);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-            try{
-                gasJson = new JSONObject(result);
-                gasArray = gasJson.getJSONArray("stations");
-                //etResponse.setText(json.toString(1));
-            }
-            catch(JSONException e){
-                //do nothing
-            }
-//            ArrayList<Integer> al = new ArrayList<Integer>();
-//            al = fillList();
-            fillList();
-        }
     }
 
     @Override
@@ -277,7 +164,7 @@ public class GasStationsList extends Activity {
      * @return  NONE
      **********************************************************************************************/
     public void searchBar(View view) {
-        EditText search = (EditText) findViewById(R.id.SearchBar);
+        EditText search = (EditText) findViewById(R.id.productSearchBar);
         String searchBarText = search.getText().toString();
 
 
@@ -287,7 +174,8 @@ public class GasStationsList extends Activity {
         else {
             search.setText("");
             String url = "https://mobibuddy.herokuapp.com/search.json?query=" + searchBarText;
-            new HttpAsyncTask().execute(url);
+            HttpGet httpGet = new HttpGet(url);
+            new MyHttpGet(this).execute(httpGet);
         }
     }
 
@@ -417,6 +305,10 @@ public class GasStationsList extends Activity {
         i.putExtra("icarwash", ListOfRows.get(index).get("carwash"));
         i.putExtra("ihours", ListOfRows.get(index).get("hours"));
 
+        i.putExtra("longitude" , longitude);
+        i.putExtra("latitude", latitude);
+
+
         //Will return to the onActivityResult function
         startActivityForResult(i, 3);
     }
@@ -431,6 +323,10 @@ public class GasStationsList extends Activity {
     public void goToFilterFromGasStation(View view) {
         Intent i = new Intent(GasStationsList.this, Filter.class);
         //Will return to the onActivityResult function
+        i.putExtra("mile",dpos);
+        i.putExtra("name", bpos);
+        i.putExtra("type", gpos);
+        i.putExtra("sort", spos);
         startActivityForResult(i, 1);
     }
 
@@ -444,14 +340,6 @@ public class GasStationsList extends Activity {
         //startActivityForResult(i,5);
 
         //get edge distances
-        MyMap m1 = new MyMap();
-        ArrayList<Pair<String,String>> my_array = new ArrayList<Pair<String, String>>();
-        my_array.add( Pair.create("33.9759789","-117.3259195"));
-        my_array.add( Pair.create("33.9653373","-117.3180231"));
-        my_array.add( Pair.create("33.9622411","-117.5490241"));
-
-        m1.callApi(my_array);
-
 
         //calculate best route
 
@@ -477,6 +365,10 @@ public class GasStationsList extends Activity {
             checkbrand = data.getStringExtra("brand");
             checkgastype = data.getStringExtra("gastype");
             checksortby = data.getStringExtra("sortby");
+            dpos = data.getIntExtra("mile", 0);
+            bpos = data.getIntExtra("name", 0);
+            gpos = data.getIntExtra("type", 0);
+            spos = data.getIntExtra("sort", 0);
 
             if(checkdistance.equals("s")){
                 distance = oldd;
@@ -511,7 +403,8 @@ public class GasStationsList extends Activity {
                     "&long=" + String.valueOf(longitude) +
                     "&dist="+ distance + "&sortBy=" + gastype;
             //invalidEntryAlert(url2);
-            new HttpAsyncTask().execute(url1);
+            HttpGet httpGet = new HttpGet(url1);
+            new MyHttpGet(this).execute(httpGet);
         }
 
         //When the activity switches from Station Details to Gas Stations list
@@ -530,8 +423,21 @@ public class GasStationsList extends Activity {
                         "&dist=" + distance + "&sortBy=" + sortby;
 
                 //Executes a GET request to our own server
-                new HttpAsyncTask().execute(url1);
+                HttpGet httpGet = new HttpGet(url1);
+                new MyHttpGet(this).execute(httpGet);
             }
         }
     }
+
+    @Override
+    public void processFinish(String result) {
+        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
+        try{
+            gasJson = new JSONObject(result);
+            gasArray = gasJson.getJSONArray("stations");
+        }
+        catch(JSONException e){}
+        fillList();
+    }
+
 }
