@@ -7,17 +7,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created by Michael on 12/3/2014.
- */
 public class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
 
     public MyAsyncResponse delegate;
