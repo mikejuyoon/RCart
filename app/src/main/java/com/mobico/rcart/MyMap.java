@@ -33,7 +33,7 @@ public class MyMap extends Activity implements MyAsyncResponse{
     ArrayList<Edge> edge_list;
     ArrayList<Vertex> stores;
     ArrayList<Vertex> points;
-    int start_pos = 0;
+    int start_pos;
 
     public MyMap(){
 
@@ -84,6 +84,16 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
         }//*/
 
+
+        try
+        {
+            Thread.sleep(1000);
+        }
+        catch(InterruptedException e)
+        {
+
+        }
+
         //add
         orderVertices();
         //points is sorted vertices
@@ -103,6 +113,7 @@ public class MyMap extends Activity implements MyAsyncResponse{
         stores = new ArrayList<Vertex>();
         coordinates = new ArrayList<Pair<String, String>>();
         edge_list = new ArrayList<Edge>();
+        start_pos = 0;
     }
 
     public void orderVertices()
@@ -162,27 +173,27 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
     }
 
-    public void antFunction(int start_pos, int length)
+    public void antFunction(int center, int length)
     {
-        stores.get(start_pos).was_visited = true;
+        stores.get(center).was_visited = true;
         //loop through each edge
         for( int i = 0; i < edge_list.size(); ++i)
         {
             //find adjacent edge
-            if(edge_list.get(i).A == start_pos && !(stores.get(edge_list.get(i).B).was_visited) )
+            if(edge_list.get(i).A == center && !(stores.get(edge_list.get(i).B).was_visited) )
             {
                 length += edge_list.get(i).dist;
                 antFunction(edge_list.get(i).B, length);
                 edge_list.get(i).p_lvl += 1000.0 / length;
             }
-            else if(edge_list.get(i).B == start_pos && !(stores.get(edge_list.get(i).A).was_visited) )
+            else if(edge_list.get(i).B == center && !(stores.get(edge_list.get(i).A).was_visited) )
             {
                 length += edge_list.get(i).dist;
                 antFunction(edge_list.get(i).A, length);
                 edge_list.get(i).p_lvl += 1000.0 / length;
             }
         }
-        stores.get(start_pos).was_visited = false;
+        stores.get(center).was_visited = false;
     }
 
 
