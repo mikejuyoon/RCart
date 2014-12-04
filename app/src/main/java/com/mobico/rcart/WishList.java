@@ -179,43 +179,6 @@ public class WishList extends Activity implements MyAsyncResponse{
         startActivityForResult(intent, 1555);
     }
 
-//==========GOING TO BE USED IN PRODUCT DETAILS============
-
-//    public void goToRoute(View view){
-//        String addstr = address + ","+ "+" + city + ",+" + region;
-//        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-//        String url = "https://maps.googleapis.com/maps/api/geocode/json?";
-//        params.add(new BasicNameValuePair("key", "AIzaSyDnnBpMCtrnDehllEZA-XPJJwYEFlpSjnw"));
-//        params.add(new BasicNameValuePair("address", addstr));
-//
-//        String paramString = URLEncodedUtils.format(params, "utf-8");
-//        url += paramString;
-//        //invalidEntryAlert(url);
-//        HttpGet httpGet = new HttpGet(url);
-//        new MyHttpGet(this).execute(httpGet);
-//        MyMap m1 = new MyMap();
-//        ArrayList<Pair<String,String>> coordinates = new ArrayList<Pair<String, String>>();
-//        coordinates.add(Pair.create("", ""));
-//        m1.callApi(coordinates);
-//
-//    }
-//
-//    @Override
-//    public void processFinish(String result) {
-//        // invalidEntryAlert(result);
-//        JSONObject json;
-//        try {
-//            json = new JSONObject(result);
-//            lati = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
-//            longi = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-//            Log.d(lati, "latitude = ");
-//            Log.d(longi, "longitude = ");
-//
-//            String url = "https://www.google.com/maps/dir/" + String.valueOf(curlati)+ "," + String.valueOf(curlongi) + "/" + lati + "," + longi;
-//            Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
-//            startActivity(i);
-//        }catch(Exception e){}
-
     public void goToRoute(View view){
         ArrayList<Pair<String, String>> mylist = new ArrayList<Pair<String, String>>();
         ArrayList<Pair<String, String>> mylist2 = new ArrayList<Pair<String, String>>();
@@ -244,7 +207,7 @@ public class WishList extends Activity implements MyAsyncResponse{
                   url += ",+";
                   url += mylist2.get(i).second;
         }
-        invalidEntryAlert(url);
+       // invalidEntryAlert(url);
         Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(i);
     }
