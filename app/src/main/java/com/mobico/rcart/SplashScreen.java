@@ -204,6 +204,7 @@ public class SplashScreen extends Activity implements
         //invalidEntryAlert("loggedout");
         Button login_btn = (Button) findViewById(R.id.login_btn);
         login_btn.setText("Login");
+        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
     }
     /***********************************************************************************************
      *
