@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Login extends Activity {
+public class Login extends Activity implements MyAsyncResponse{
 
     private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
     public static SharedPreferences savedData;
@@ -107,7 +107,7 @@ public class Login extends Activity {
 
             if(isConnected()){
                 //Toast.makeText(getBaseContext(), "CONNECTED", Toast.LENGTH_LONG).show();
-                new MyHttpPost().execute(httppost);
+                new MyHttpPost(this).execute(httppost);
             }
             else{
                 Toast.makeText(getBaseContext(), "NOT CONNECTED!", Toast.LENGTH_LONG).show();
@@ -126,77 +126,6 @@ public class Login extends Activity {
             return true;
         else
             return false;
-    }
-    private class MyHttpPost extends AsyncTask<HttpPost, Void, String> {
-
-        @Override
-        protected String doInBackground(HttpPost... postUrl) {
-
-            return POST(postUrl[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
-            try{
-                JSONObject jsonLoginResult = new JSONObject(result);
-                if( jsonLoginResult.getBoolean("success") ){
-                    // Saves received "auth_token" in SharedPreferences
-                    SharedPreferences.Editor preferencesEditor = savedData.edit();
-                    preferencesEditor.putString("auth_token", jsonLoginResult.getJSONObject("user").getString("auth_token"));
-                    preferencesEditor.apply();
-
-                    // Clears the input EditTexts
-                    inputEmail.setText(null);
-                    inputPassword.setText(null);
-
-                    Toast.makeText(getBaseContext(), "Signed in!", Toast.LENGTH_LONG).show();
-                    onBackPressed();
-                }
-                else{
-                    invalidEntryAlert("Invalid username or password. Please try again.");
-                }
-            }
-            catch(JSONException e){
-                //do nothing
-            }
-        }
-
-        public String POST(HttpPost postUrl){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make POST request to the given URL
-                HttpResponse httpResponse = httpclient.execute(postUrl);
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else
-                    result = "Did not work!";
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-            inputStream.close();
-            return result;
-        }
     }
 
     private void invalidEntryAlert(String message) {
@@ -237,5 +166,30 @@ public class Login extends Activity {
     private static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void processFinish(String result) {
+        try{
+            JSONObject jsonLoginResult = new JSONObject(result);
+            if( jsonLoginResult.getBoolean("success") ){
+                // Saves received "auth_token" in SharedPreferences
+                SharedPreferences.Editor preferencesEditor = savedData.edit();
+                preferencesEditor.putString("email", jsonLoginResult.getJSONObject("user").getString("email"));
+                preferencesEditor.putString("auth_token", jsonLoginResult.getJSONObject("user").getString("auth_token"));
+                preferencesEditor.apply();
+
+                // Clears the input EditTexts
+                inputEmail.setText(null);
+                inputPassword.setText(null);
+
+                Toast.makeText(getBaseContext(), "Signed in!", Toast.LENGTH_LONG).show();
+                onBackPressed();
+            }
+            else{
+                invalidEntryAlert("Invalid username or password. Please try again.");
+            }
+        }
+        catch(JSONException e){}
     }
 }

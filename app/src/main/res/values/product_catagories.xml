@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_array">
+        <item>Select Category</item>
+        <item>Electronics &amp; Computers</item>
+        <item>Groceries &amp; Food</item>
+        <item>Pharmacy &amp; Health</item>
+        <item>Sports &amp; Outdoors</item>
+        <item>Home, Garden &amp; Tools</item>
+        <item>Beauty &amp; Health</item>
+        <item>Automotive &amp; Industrial</item>
+        <item>Health &amp; Household</item>
+        <item>Toys, Kids &amp; Baby</item>
+        <item>Clothing, Shoes &amp; Jewelry</item>
+        <item>Entertainment &amp; Books</item>
+        <item>Movies, Music &amp; Games</item>
+        <item>Office &amp; School Supplies</item>
+    </string-array>
+
+    <string name="categories_prompt">Select Categories</string>
+</resources>
+

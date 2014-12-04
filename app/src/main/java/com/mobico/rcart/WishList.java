@@ -29,16 +29,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
-public class WishList extends Activity {
+public class WishList extends Activity implements MyAsyncResponse{
 
-    ArrayList<String> myWishList;
+    //Public variables
+    ArrayList<HashMap<String,String>> myWishList;
     ListView listView;
     double latitude,longitude;
+    String email, auth_token;
 
+    //JSON variables used to read in the JSON from the requests
     JSONObject wishJson;
     JSONArray wishArray;
+
+    //Adapter variable
+    ProductListAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +56,24 @@ public class WishList extends Activity {
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
+        email = intent1.getStringExtra("email");
+        auth_token = intent1.getStringExtra("auth_token");
 
         //Declaring variables of the public variables
-        myWishList = new ArrayList<String>();
+        myWishList = new ArrayList<HashMap<String,String>>();
         listView = (ListView) findViewById(R.id.myListView);
+
+        //Setting up the adapter
+        listAdapter = new ProductListAdapter(this);
+        listView.setAdapter(listAdapter);
 
         //Creates the URL to call Get requests from the server with the added headers that
         //deal with authentication
         String url = "https://mobibuddy.herokuapp.com/wishlist.json";
         HttpGet httpGet = new HttpGet(url);
-        httpGet.addHeader("X-API_EMAIL", "test@test.com");
-        httpGet.addHeader("X-API-TOKEN", "kjoeCiMizXfngxfqutE3xz_QiHxeCgZESQ");
-        new MyHttpGet().execute(httpGet);
+        httpGet.addHeader("X-API_EMAIL", email);
+        httpGet.addHeader("X-API-TOKEN", auth_token);
+        new MyHttpGet(this).execute(httpGet);
 
         //On click listener
         //sends activity to the new activity (Nearby Product) in accordance to the product clicked
@@ -95,78 +108,39 @@ public class WishList extends Activity {
     }
 
     public void fillList() {
+        //Goes through the JSON of the wishArray to return each individual item and its characteristics
         for (int i  = 0; i < wishArray.length(); ++i) {
+            HashMap<String,String> hash = new HashMap<String, String>();
             try {
-                myWishList.add(wishArray.getJSONObject(i).getString("name"));
+                hash.put("name", wishArray.getJSONObject(i).getString("name"));
+                hash.put("category", wishArray.getJSONObject(i).getString("category"));
+                hash.put("price",wishArray.getJSONObject(i).getString("price"));
+                hash.put("image_url",wishArray.getJSONObject(i).getString("image_url"));
+                hash.put("lat",wishArray.getJSONObject(i).getString("lat"));
+                hash.put("long",wishArray.getJSONObject(i).getString("long"));
+                hash.put("store_name",wishArray.getJSONObject(i).getString("store_name"));
             }
             catch (JSONException e) {
                 e.printStackTrace();
             }
+            myWishList.add(hash);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myWishList);
-        listView.setAdapter(adapter);
+        listAdapter = new ProductListAdapter(this);
+        listAdapter.insertList(myWishList);
+        listView.setAdapter(listAdapter);
+        listAdapter.notifyDataSetChanged();
     }
-    
-    private class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
 
-        @Override
-        protected String doInBackground(HttpGet... getUrl) {
-            return GET(getUrl[0]);
+    @Override
+    public void processFinish(String output) {
+        try {
+            wishJson = new JSONObject(output);
+            wishArray = wishJson.getJSONArray("wishlist");
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try{
-                wishJson = new JSONObject(result);
-                wishArray = wishJson.getJSONArray("wishlist");
-            }
-            catch(JSONException e){
-                e.printStackTrace();
-            }
-
-            //Fills the list with the JSON values
-            fillList();
+        catch(JSONException e){
+            e.printStackTrace();
         }
-
-        public String GET(HttpGet getUrl){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse httpResponse = httpclient.execute(getUrl);
-                inputStream = httpResponse.getEntity().getContent();
-                if(inputStream != null){
-                    result = convertInputStreamToString(inputStream);
-                }
-                else{
-                    result = "Did not work!";
-                    invalidEntryAlert("GET request error");
-                }
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private void invalidEntryAlert(String message) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(WishList.this);
-
-            builder.setTitle("Invalid entry");
-            builder.setPositiveButton("OK", null);
-            builder.setMessage(message);
-
-            AlertDialog theAlertDialog = builder.create();
-            theAlertDialog.show();
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-            inputStream.close();
-            return result;
-        }
+        //Fills the list with the JSON values
+        fillList();
     }
 }
