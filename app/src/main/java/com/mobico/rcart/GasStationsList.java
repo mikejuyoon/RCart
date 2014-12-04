@@ -18,6 +18,7 @@ import android.widget.Toast;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,8 @@ import java.io.InputStreamReader;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -164,8 +167,12 @@ public class GasStationsList extends Activity implements MyAsyncResponse{
      **********************************************************************************************/
     public void searchBar(View view) {
         EditText search = (EditText) findViewById(R.id.productSearchBar);
-        String searchBarText = search.getText().toString();
-
+        String searchBarText = "";
+        try{
+            searchBarText = URLEncoder.encode(search.getText().toString(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         if (searchBarText.length() == 0) {
             invalidEntryAlert("Please enter address, city, or zip");
