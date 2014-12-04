@@ -77,7 +77,15 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                Intent intent = new Intent(NearbyList.this, ProductDetail.class);
+                intent.putExtra("product_name", name);
+                intent.putExtra("store_name", storeList.get(i).get("store_name"));
+                intent.putExtra("store_price", storeList.get(i).get("store_price"));
+                intent.putExtra("store_distance", storeList.get(i).get("store_distance"));
+                intent.putExtra("lati", storeList.get(i).get("lati"));
+                intent.putExtra("longi", storeList.get(i).get("longi"));
+                intent.putExtra("category", storeList.get(i).get("category"));
+                startActivity(intent);
 
             }
         });
