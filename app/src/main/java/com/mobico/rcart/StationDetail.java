@@ -249,8 +249,9 @@ public class StationDetail extends Activity implements MyAsyncResponse {
             i.putExtra("istation_id", station_id);
             startActivityForResult(i, 2);
         }else{
-            errorAlert("Please login before updating gas.");
-            //errorAlert(authToken);
+            //errorAlert("Please login before updating gas.");
+            Intent i = new Intent(StationDetail.this, Login.class);
+            startActivityForResult(i, 999);
         }
     }
 

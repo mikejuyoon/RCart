@@ -145,7 +145,9 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         }
         //If there is no valid email or auth_token, displays an invalid message
         else {
-            notLoggedInError("Please login to access your Wishlist.");
+            //notLoggedInError("Please login to access your Wishlist.");
+            Intent i = new Intent(ProductsList.this, Login.class);
+            startActivityForResult(i, 999);
         }
     }
 
