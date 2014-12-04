@@ -31,16 +31,19 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
     ArrayList<Pair<String,String>> coordinates;
     ArrayList<Edge> edge_list;
+    ArrayList<Vertex> stores;
+    ArrayList<Vertex> points;
     int start_pos = 0;
 
     public MyMap(){
 
     }
 
-    public void callApi(ArrayList<Pair<String,String>> input){
+    public ArrayList<Pair<String,String>> callApi(ArrayList<Pair<String,String>> input){
 
         edge_list = new ArrayList<Edge>();
-        coordinates = new ArrayList<Pair<String, String>>(input);
+        coordinates = input;
+        stores = new ArrayList<Vertex>();
         start_pos = 0;
 
         int size = coordinates.size();
@@ -81,9 +84,106 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
         }//*/
 
+        //add
+        orderVertices();
+        //points is sorted vertices
+        coordinates = new ArrayList<Pair<String, String>>();
+        for(int i = 0; i < points.size(); ++i)
+        {
+            coordinates.add(Pair.create( points.get(i).lat, points.get(i).longi) );
+        }
+
+
+        return coordinates ;
     }
 
 
+    public void reset()
+    {
+        stores = new ArrayList<Vertex>();
+        coordinates = new ArrayList<Pair<String, String>>();
+        edge_list = new ArrayList<Edge>();
+    }
+
+    public void orderVertices()
+    {
+        //set up list of store vertices
+        for(int i = 0; i < coordinates.size(); ++i)
+        {
+            stores.add(new Vertex(coordinates.get(i).first,coordinates.get(i).second));
+        }
+        //assign p_level values for each edge by trying all possible paths
+        antFunction(0,0);
+
+        //set the correct order for the vertices
+        sortVertices();
+        //points is the sorted vertices
+
+    }
+
+    public void sortVertices()
+    {
+        points = new ArrayList<Vertex>();
+        sort_helper(0);
+    }
+
+    public void sort_helper(int cur_vertex)
+    {
+        points.add(stores.get(cur_vertex));
+        stores.get(cur_vertex).was_visited = true;
+        int best_edge = -1;
+        double highest_p = 0;
+        int best_vertex = -1;
+        //find the edge with the highest p_lvl
+        for(int i = 0; i < edge_list.size(); ++i)
+        {
+            if( edge_list.get(i).A == cur_vertex && edge_list.get(i).p_lvl > highest_p
+                    && !(stores.get(edge_list.get(i).B).was_visited) )
+            {
+                best_edge = i;
+                highest_p = edge_list.get(i).p_lvl;
+                best_vertex = edge_list.get(i).B;
+            }
+
+            else if( edge_list.get(i).B == cur_vertex && edge_list.get(i).p_lvl > highest_p
+                    && !(stores.get(edge_list.get(i).A).was_visited))
+            {
+                best_edge = i;
+                highest_p = edge_list.get(i).p_lvl;
+                best_vertex = edge_list.get(i).A;
+            }
+        }
+
+        if(best_edge == -1 || best_vertex == -1) return; //done
+        else
+        {
+            sort_helper(best_vertex);
+        }
+
+    }
+
+    public void antFunction(int start_pos, int length)
+    {
+        stores.get(start_pos).was_visited = true;
+        //loop through each edge
+        for( int i = 0; i < edge_list.size(); ++i)
+        {
+            //find adjacent edge
+            if(edge_list.get(i).A == start_pos && !(stores.get(edge_list.get(i).B).was_visited) )
+            {
+                length += edge_list.get(i).dist;
+                antFunction(edge_list.get(i).B, length);
+                edge_list.get(i).p_lvl += 1000.0 / length;
+            }
+            else if(edge_list.get(i).B == start_pos && !(stores.get(edge_list.get(i).A).was_visited) )
+            {
+                length += edge_list.get(i).dist;
+                antFunction(edge_list.get(i).A, length);
+                edge_list.get(i).p_lvl += 1000.0 / length;
+            }
+        }
+        stores.get(start_pos).was_visited = false;
+    }
 
 
     @Override
@@ -128,22 +228,42 @@ public class MyMap extends Activity implements MyAsyncResponse{
         start_pos++;
     }
 
+    public class Vertex
+    {
+        public String lat;
+        public String longi;
+        public boolean was_visited;
+
+        public Vertex()
+        {}
+
+        public Vertex(String latitude, String longitude)
+        {
+            lat = latitude;
+            longi = longitude;
+            was_visited = false;
+        }
+    }
+
     public class Edge
     {
         public int A;
         public int B;
         public int dist;
+        double p_lvl;
         public Edge()
         {
             A = 0;
             B = 0;
             dist = 0;
+            p_lvl = 0;
         }
         public Edge(int a, int b, int d)
         {
             A = a;
             B = b;
             dist = d;
+            p_lvl = 0;
         }
     }
 }
