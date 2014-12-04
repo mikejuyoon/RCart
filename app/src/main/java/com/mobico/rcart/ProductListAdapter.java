@@ -66,17 +66,9 @@ public class ProductListAdapter extends BaseAdapter{
         productPrice.setText(listHash.get("price"));
 
         new DownloadImageTask((ImageView) row.findViewById(R.id.productImage)).execute(listHash.get("image_url"));
-        //http://i.walmartimages.com/i/mp/MP/10/00/77/92/MP10007792024_P321146_100X100.jpg
-        //listHash.get("image_url")
+
         return row;
 
-//        hash.put("name", wishArray.getJSONObject(i).getString("name"));
-//        hash.put("category", wishArray.getJSONObject(i).getString("category"));
-//        hash.put("price",wishArray.getJSONObject(i).getString("price"));
-//        hash.put("image_url",wishArray.getJSONObject(i).getString("image_url"));
-//        hash.put("lat",wishArray.getJSONObject(i).getString("lat"));
-//        hash.put("long",wishArray.getJSONObject(i).getString("long"));
-//        hash.put("store_name",wishArray.getJSONObject(i).getString("store_name"));
     }
 
 
