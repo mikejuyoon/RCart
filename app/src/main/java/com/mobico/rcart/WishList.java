@@ -73,23 +73,14 @@ public class WishList extends Activity implements MyAsyncResponse{
         listAdapter = new ProductListAdapter(this);
         listView.setAdapter(listAdapter);
 
-        //Creates the URL to call Get requests from the server with the added headers that
-        //deal with authentication
-        String url = "https://mobibuddy.herokuapp.com/wishlist.json";
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.addHeader("X-API_EMAIL", email);
-        httpGet.addHeader("X-API-TOKEN", auth_token);
-        new MyHttpGet(this).execute(httpGet);
+        getWishList();
 
         //On click listener
         //sends activity to the new activity (Nearby Product) in accordance to the product clicked
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(WishList.this, NearbyList.class);
-                intent.putExtra("lati", latitude);
-                intent.putExtra("longi", longitude);
-                startActivityForResult(intent, 1234);
+                goToProductDetail(view, i);
             }
         });
     }
@@ -113,18 +104,38 @@ public class WishList extends Activity implements MyAsyncResponse{
         return super.onOptionsItemSelected(item);
     }
 
+    public void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(WishList.this);
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
+    public void getWishList(){
+        //Creates the URL to call Get requests from the server with the added headers that
+        //deal with authentication
+        String url = "https://mobibuddy.herokuapp.com/wishlist.json";
+        HttpGet httpGet = new HttpGet(url);
+        httpGet.addHeader("X-API_EMAIL", email);
+        httpGet.addHeader("X-API-TOKEN", auth_token);
+        new MyHttpGet(this).execute(httpGet);
+    }
     public void fillList() {
         //Goes through the JSON of the wishArray to return each individual item and its characteristics
+        myWishList.clear();
         for (int i  = 0; i < wishArray.length(); ++i) {
             HashMap<String,String> hash = new HashMap<String, String>();
             try {
                 hash.put("name", wishArray.getJSONObject(i).getString("name"));
-                hash.put("category", wishArray.getJSONObject(i).getString("category"));
+                hash.put("store_name",wishArray.getJSONObject(i).getString("store_name"));
+                hash.put("item_id",wishArray.getJSONObject(i).getString("id"));
                 hash.put("price",wishArray.getJSONObject(i).getString("price"));
-                hash.put("image_url",wishArray.getJSONObject(i).getString("image_url"));
                 hash.put("lat",wishArray.getJSONObject(i).getString("lat"));
                 hash.put("long",wishArray.getJSONObject(i).getString("long"));
-                hash.put("store_name",wishArray.getJSONObject(i).getString("store_name"));
+                hash.put("category", wishArray.getJSONObject(i).getString("category"));
+                hash.put("image_url",wishArray.getJSONObject(i).getString("image_url"));
             }
             catch (JSONException e) {
                 e.printStackTrace();
@@ -147,6 +158,21 @@ public class WishList extends Activity implements MyAsyncResponse{
         }
         //Fills the list with the JSON values
         fillList();
+    }
+
+    public void goToProductDetail(View view, int index) {
+        Intent intent = new Intent(WishList.this, ProductDetail.class);
+        intent.putExtra("product_name", myWishList.get(index).get("name"));
+        intent.putExtra("store_name", myWishList.get(index).get("store_name"));
+        intent.putExtra("store_price", myWishList.get(index).get("price"));
+        //DISTANCE DOES NOT HAVE A VALUE YET
+        intent.putExtra("store_distance", "0");
+        intent.putExtra("lati", myWishList.get(index).get("lat"));
+        intent.putExtra("longi", myWishList.get(index).get("long"));
+        intent.putExtra("category", myWishList.get(index).get("category"));
+        intent.putExtra("image_url", myWishList.get(index).get("image_url"));
+
+        startActivityForResult(intent, 1555);
     }
 
 //==========GOING TO BE USED IN PRODUCT DETAILS============

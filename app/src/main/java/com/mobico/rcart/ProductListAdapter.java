@@ -1,24 +1,42 @@
 package com.mobico.rcart;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
-public class ProductListAdapter extends BaseAdapter{
+
+public class ProductListAdapter extends BaseAdapter implements MyAsyncResponse{
+
+    private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+    public static SharedPreferences savedData;
+
+    ProductListAdapter thisAdapter;
 
     ArrayList<HashMap<String,String>> list;
     Context context;
 
     ProductListAdapter(Context c) {
-        context = c;
+        this.context = c;
+        this.thisAdapter = this;
         list = new ArrayList<HashMap<String, String>>();
     }
 
@@ -54,7 +72,7 @@ public class ProductListAdapter extends BaseAdapter{
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         row = inflater.inflate(R.layout.product_row, viewGroup, false);
 
-        HashMap<String, String> listHash = list.get(i);
+        final HashMap<String, String> listHash = list.get(i);
 
         TextView productName = (TextView) row.findViewById(R.id.productName);
         productName.setText(listHash.get("name"));
@@ -63,22 +81,38 @@ public class ProductListAdapter extends BaseAdapter{
         productStoreName.setText(listHash.get("store_name"));
 
         TextView productPrice = (TextView) row.findViewById(R.id.productPrice);
-        productPrice.setText(listHash.get("price"));
+        productPrice.setText("$" + listHash.get("price"));
 
+        Button removeItem = (Button) row.findViewById(R.id.productButton);
+        removeItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                savedData = context.getSharedPreferences(SHARED_PREFERENCES_NAME, context.MODE_PRIVATE);
+                String email = savedData.getString("email", "");
+                String auth_token = savedData.getString("auth_token", "");
+
+                String url = "https://mobibuddy.herokuapp.com/items/" + listHash.get("item_id") +".json";
+
+                WishList myWishlist =(WishList) context;
+                //myWishlist.invalidEntryAlert(url);
+                HttpDelete httpdelete = new HttpDelete(url);
+                httpdelete.addHeader("X-API_EMAIL", email);
+                httpdelete.addHeader("X-API-TOKEN", auth_token);
+                new MyHttpDelete(thisAdapter).execute(httpdelete);
+
+            }
+        });
         new DownloadImageTask((ImageView) row.findViewById(R.id.productImage)).execute(listHash.get("image_url"));
-        //http://i.walmartimages.com/i/mp/MP/10/00/77/92/MP10007792024_P321146_100X100.jpg
-        //listHash.get("image_url")
-        return row;
 
-//        hash.put("name", wishArray.getJSONObject(i).getString("name"));
-//        hash.put("category", wishArray.getJSONObject(i).getString("category"));
-//        hash.put("price",wishArray.getJSONObject(i).getString("price"));
-//        hash.put("image_url",wishArray.getJSONObject(i).getString("image_url"));
-//        hash.put("lat",wishArray.getJSONObject(i).getString("lat"));
-//        hash.put("long",wishArray.getJSONObject(i).getString("long"));
-//        hash.put("store_name",wishArray.getJSONObject(i).getString("store_name"));
+        return row;
     }
 
+    @Override
+    public void processFinish(String output) {
 
+        WishList myWishlist =(WishList) context;
+        //myWishlist.invalidEntryAlert(output);
+        myWishlist.getWishList();
 
+    }
 }
