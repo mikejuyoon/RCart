@@ -172,8 +172,8 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 //storeInfo.put("store_price", String.valueOf(newPrice));
                 storeInfo.put("store_price", String.format("%.2f",newPrice));
                 storeInfo.put("store_distance", "1.5");
-                storeInfo.put("lati", String.valueOf(latitude));
-                storeInfo.put("longi", String.valueOf(longitude));
+                storeInfo.put("lati", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
+                storeInfo.put("longi", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
                 storeInfo.put("category", category);
                 storeList.add(storeInfo);
             }catch (Exception e){}

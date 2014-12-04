@@ -57,8 +57,9 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
-
-        //invalidEntryAlert("lati: "+ latitude + "\nlong: "+longitude);
+        ((globalvariable) this.getApplication()).setGloballati(latitude);
+        ((globalvariable) this.getApplication()).setGloballongi(longitude);
+       // invalidEntryAlert(String.valueOf(latitude + String.valueOf(longitude)));
 
         productSearchBar = (EditText) findViewById(R.id.productSearchBar);
         categories_spinner = (Spinner) findViewById(R.id.categories_spinner);

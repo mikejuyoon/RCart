@@ -70,7 +70,7 @@ public class WishList extends Activity implements MyAsyncResponse {
         ArrayList<Pair<String,String>> coordinates = new ArrayList<Pair<String, String>>();
         coordinates.add(Pair.create("", ""));
         m1.callApi(coordinates);
-       
+
     }
 
     @Override
