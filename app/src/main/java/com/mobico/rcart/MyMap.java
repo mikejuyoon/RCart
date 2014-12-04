@@ -66,8 +66,12 @@ public class MyMap extends Activity implements MyAsyncResponse{
             String destinations = "";
             for( int j = i + 1 ; j < coordinates.size(); ++j) {
                 destinations += coordinates.get(j).first + "," + coordinates.get(j).second + "|";
+                size = coordinates.size();
+                t= "" + size + " "+ coordinates.get(j).first + "," + coordinates.get(j).second;
+                Log.d("Coordinates size = inside ", t);
 
             }
+
 
             List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
             params.add(new BasicNameValuePair("origins", orig));
@@ -79,17 +83,23 @@ public class MyMap extends Activity implements MyAsyncResponse{
             String paramString = URLEncodedUtils.format(params, "utf-8");
 
             url += paramString;
+            Log.d("URL =  " , url);
             HttpGet httpGet = new HttpGet(url);
+
+            size = coordinates.size();
+            t= "" + size;
+            Log.d("Coordinates size = outside ", t);
+
             new MyHttpGet(this).execute(httpGet);
 
         }//*/
-
 
         try
         {
             Thread.sleep(1000);
         }
-        catch(InterruptedException e)
+
+        catch(InterruptedException e )
         {
 
         }
@@ -97,13 +107,12 @@ public class MyMap extends Activity implements MyAsyncResponse{
         //add
         orderVertices();
         //points is sorted vertices
-        coordinates = new ArrayList<Pair<String, String>>();
+        ArrayList<Pair<String, String>> coordinates2 = new ArrayList<Pair<String, String>>();
         for(int i = 0; i < points.size(); ++i)
         {
-            coordinates.add(Pair.create( points.get(i).lat, points.get(i).longi) );
+            coordinates2.add(Pair.create( points.get(i).lat, points.get(i).longi) );
+            Log.d("coordinates2 are " , i + ""+  points.get(i).lat + "," + points.get(i).longi);
         }
-
-
         return coordinates ;
     }
 
@@ -195,10 +204,15 @@ public class MyMap extends Activity implements MyAsyncResponse{
         }
         stores.get(center).was_visited = false;
     }
-
+    int j = 1;
 
     @Override
     public void processFinish(String result){
+        Log.d("coordinates size", ""+coordinates.size());
+
+        Log.d("process finish called time : ", ""+j);
+        j++;
+
         JSONObject my_json;
         int distance = 0;
         try {
@@ -209,9 +223,16 @@ public class MyMap extends Activity implements MyAsyncResponse{
             int A = 0;
             int B = 0;
 
+            Log.d("start_pos" , ""+start_pos);
+            Log.d("coordinates size", ""+coordinates.size());
             for(int i = start_pos; i < coordinates.size() - 1; ++i) {
                 A = i;
 
+                Log.d("Process finish called ", "for loop CALLED");
+
+                Log.d("edge from", String.valueOf(A));
+                Log.d("edge to", ""+ B);
+                Log.d("distace from" , ""+distance);
 
                 for(int j = i + 1; j < coordinates.size(); ++j) {
                     B = j;
@@ -278,3 +299,5 @@ public class MyMap extends Activity implements MyAsyncResponse{
         }
     }
 }
+
+
