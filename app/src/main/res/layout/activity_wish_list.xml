@@ -42,7 +42,8 @@
         android:layout_height="wrap_content"
         android:text="Route"
         android:id="@+id/routeButton"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="goToRoute" />
 
     <ListView
         android:layout_width="match_parent"
