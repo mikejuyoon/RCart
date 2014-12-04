@@ -170,11 +170,21 @@ public class NearbyList extends Activity implements MyAsyncResponse{
             try {
                 Double newPrice = (Double.parseDouble(price) - 0.3) + (Double.parseDouble(price) * 0.4 * Math.random());
 
+                Double lat2 = Double.parseDouble(resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
+                Double long2 = Double.parseDouble(resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
+
+                Double dlon = long2 - longitude;
+                Double dlat = lat2 - latitude;
+                Double a = Math.pow(Math.sin(dlat/2), 2) + Math.cos(latitude) * Math.cos(lat2) * Math.pow(Math.sin(dlon/2), 2);
+                Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                Double d = 3961 * c;
+                d = d / 11;
+
                 HashMap<String, String> storeInfo = new HashMap<String, String>();
                 storeInfo.put("store_name", resultsJson.getJSONObject(i).getString("name"));
                 //storeInfo.put("store_price", String.valueOf(newPrice));
                 storeInfo.put("store_price", String.format("%.2f",newPrice));
-                storeInfo.put("store_distance", "1.5");
+                storeInfo.put("store_distance", String.format("%.2f",d));
                 storeInfo.put("lati", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
                 storeInfo.put("longi", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
                 storeInfo.put("category", category);
