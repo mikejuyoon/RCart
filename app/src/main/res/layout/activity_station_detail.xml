@@ -1,0 +1,225 @@
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:weightSum="1"
+    android:orientation="vertical">
+   <!-- android:id="@+id/"> -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@android:color/holo_blue_bright">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:id="@+id/button"
+            android:layout_alignTop="@+id/gasPrice"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="5dp"
+            android:onClick="goBack"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Details"
+            android:id="@+id/Detail_title"
+            android:width="200dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="238dp"
+        android:id="@+id/details" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/splashscreen"
+            android:adjustViewBounds="true"
+            android:maxWidth="100dp"
+            android:layout_margin="10dp"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Arco"
+            android:id="@+id/gasStationName"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="123 Something Avenue\nRiverside, CA 92508\nCountry"
+            android:id="@+id/address"
+            android:layout_below="@+id/gasStationName"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toEndOf="@+id/imageView" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Directions"
+            android:id="@+id/button2"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView"
+            android:onClick="goDirection"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Phone: 555-555-5555\nHours: 24/7\nCredit: Accept\nCar Wash: No"
+            android:id="@+id/features"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/address"
+            android:layout_alignStart="@+id/address" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold"
+            android:text="Features:"
+            android:id="@+id/featuretitle"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_above="@+id/features"
+            android:layout_alignLeft="@+id/features"
+            android:layout_alignStart="@+id/features"
+            android:layout_alignRight="@+id/features"
+            android:layout_alignEnd="@+id/features" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="0.8 miless"
+            android:id="@+id/distanceView"
+            android:layout_alignTop="@+id/gasStationName"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/imageView"
+            android:layout_margin="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Regular"
+            android:id="@+id/gasDistance"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="$3.33"
+            android:id="@+id/reg_price"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Plus"
+            android:id="@+id/textView6"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="$3.43"
+            android:id="@+id/mid_price"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Premium"
+            android:id="@+id/textView8"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="$3.53"
+            android:id="@+id/pre_price"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update Gas"
+            android:id="@+id/button3"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="goToUpdateGas" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/darker_gray"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@android:color/holo_blue_bright">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BACK"
+            android:id="@+id/button"
+            android:layout_alignTop="@+id/gasPrice"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="5dp"
+            android:onClick="cancelFilter" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Filter"
+            android:width="120dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Search by"
+            android:id="@+id/gasStationName"
+            android:layout_marginLeft="5dp"
+            android:textSize="24dp"/>
+    </TableRow>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Distance"
+            android:id="@+id/distanceMile"
+            android:layout_row="0"
+            android:layout_column="5"
+            android:textSize="24dp" />
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:layout_row="0"
+            android:layout_column="8" />
+
+        //android:entries="@array/country_arrays"
+        // android:prompt="@string/country_prompt"
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Brand"
+            android:id="@+id/brandName"
+            android:layout_row="0"
+            android:layout_column="5"
+            android:textSize="24dp" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:layout_row="0"
+            android:layout_column="8"
+            android:prompt="@string/spinner_prompt"/>
+
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Gas Type"
+            android:id="@+id/Gastype"
+            android:layout_row="0"
+            android:layout_column="5"
+            android:textSize="24dp" />
+
+        <Spinner
+            android:id="@+id/spinner3"
+            android:layout_width="220dp"
+            android:layout_height="60dp"
+            android:layout_row="0"
+            android:layout_column="8" />
+
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Sort by"
+            android:id="@+id/sortBy"
+            android:layout_row="0"
+            android:layout_column="5"
+            android:textSize="24dp" />
+
+        <Spinner
+            android:id="@+id/spinner4"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:layout_row="0"
+            android:layout_column="8" />
+
+    </GridLayout>
+
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_gravity="center_horizontal"
+        android:onClick="goToGasListFromFilter"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp" />
+</LinearLayout>

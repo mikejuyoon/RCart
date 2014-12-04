@@ -1,0 +1,246 @@
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:weightSum="1"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@android:color/holo_blue_bright">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:id="@+id/button"
+            android:layout_alignTop="@+id/gasPrice"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="5dp"
+            android:onClick="goBack"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Update Gas"
+            android:id="@+id/updateGas"
+            android:width="200dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="125dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/splashscreen"
+            android:adjustViewBounds="true"
+            android:maxWidth="100dp"
+            android:layout_margin="10dp"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Whatever the gas station was"
+            android:id="@+id/gasStationName"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="123 Something Avenue\nRiverside, CA 92508\nCountry"
+            android:id="@+id/address"
+            android:layout_below="@+id/gasStationName"
+            android:layout_toRightOf="@+id/imageView"
+            android:layout_toEndOf="@+id/imageView" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Directions"
+            android:id="@+id/button2"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/address"
+            android:layout_alignStart="@+id/address" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/reg_row" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Regular"
+                android:id="@+id/reg_text"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="$3.33"
+                android:id="@+id/reg_price"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editRegular"
+                android:hint="_ . _ _"
+                android:inputType="number"
+                android:maxLength="3"
+                android:layout_below="@+id/reg_text"
+                android:layout_alignLeft="@+id/reg_text"
+                android:layout_alignStart="@+id/reg_text" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Regular"
+                android:id="@+id/UpdateReg"
+                android:layout_below="@+id/reg_price"
+                android:layout_alignRight="@+id/reg_price"
+                android:layout_alignEnd="@+id/reg_price"
+                android:onClick="clickRegular"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mid_row"
+            android:layout_below="@+id/reg_row">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Plus"
+                android:id="@+id/mid_text"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="$3.33"
+                android:id="@+id/mid_price"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editPlus"
+                android:hint="_ . _ _"
+                android:inputType="number"
+                android:maxLength="3"
+                android:layout_below="@+id/mid_text"
+                android:layout_alignLeft="@+id/mid_text"
+                android:layout_alignStart="@+id/mid_text" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Plus"
+                android:id="@+id/UpdateMid"
+                android:layout_below="@+id/mid_price"
+                android:layout_alignRight="@+id/mid_price"
+                android:layout_alignEnd="@+id/mid_price"
+                android:onClick="clickPlus"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pre_row"
+            android:layout_below="@+id/mid_row" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Premium"
+                android:id="@+id/pre_text"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="$3.33"
+                android:id="@+id/pre_price"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editPremium"
+                android:hint="_ . _ _"
+                android:inputType="number"
+                android:maxLength="3"
+                android:layout_below="@+id/pre_text"
+                android:layout_alignLeft="@+id/pre_text"
+                android:layout_alignStart="@+id/pre_text" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Premium"
+                android:id="@+id/UpdatePre"
+                android:layout_below="@+id/pre_price"
+                android:layout_alignRight="@+id/pre_price"
+                android:layout_alignEnd="@+id/pre_price"
+                android:onClick="clickPremium" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
