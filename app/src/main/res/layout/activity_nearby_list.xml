@@ -23,7 +23,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="2dp"
-            android:onClick="addWishlistItem" />
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="wrap_content"

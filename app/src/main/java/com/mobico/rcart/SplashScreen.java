@@ -204,6 +204,7 @@ public class SplashScreen extends Activity implements
         //invalidEntryAlert("loggedout");
         Button login_btn = (Button) findViewById(R.id.login_btn);
         login_btn.setText("Login");
+        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
     }
     /***********************************************************************************************
      *
@@ -219,9 +220,11 @@ public class SplashScreen extends Activity implements
     }
 
     public void goToGasList(View view){
+
         Intent i = new Intent(SplashScreen.this, GasStationsList.class);
         i.putExtra("lati", mCurrentLocation.getLatitude());
         i.putExtra("longi", mCurrentLocation.getLongitude());
+
         startActivity(i);
     }
 

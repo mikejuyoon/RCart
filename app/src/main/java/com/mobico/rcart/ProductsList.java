@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,21 +16,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +37,9 @@ public class ProductsList extends Activity implements MyAsyncResponse {
     Spinner categories_spinner;
     ArrayAdapter<String> adapter;
     String currCategory;
+
+    HashMap<String,String> categoryMap;
+
 
     JSONArray listJson;
 
@@ -61,8 +55,9 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
-
-        //invalidEntryAlert("lati: "+ latitude + "\nlong: "+longitude);
+        ((globalvariable) this.getApplication()).setGloballati(latitude);
+        ((globalvariable) this.getApplication()).setGloballongi(longitude);
+       // invalidEntryAlert(String.valueOf(latitude + String.valueOf(longitude)));
 
         productSearchBar = (EditText) findViewById(R.id.productSearchBar);
         categories_spinner = (Spinner) findViewById(R.id.categories_spinner);
@@ -97,6 +92,8 @@ public class ProductsList extends Activity implements MyAsyncResponse {
 
             }
         });
+
+        makeCategoryHashMap();
     }
 
     @Override
@@ -172,6 +169,14 @@ public class ProductsList extends Activity implements MyAsyncResponse {
 
     // ============ HELPER FUNCTIONS =================
 
+    private void makeCategoryHashMap(){
+        ArrayList<String> categoryKey = new ArrayList<String>(Arrays.asList("Electronics & Computers", "Groceries & Food", "Pharmacy & Health", "Sports & Outdoors", "Home, Garden & Tools", "Beauty & Health", "Automotive & Industrial", "Health & Household", "Toys, Kids & Baby", "Clothing, Shoes & Jewelry", "Entertainment & Books", "Movies, Music & Games", "Office & School Supplies"));
+        ArrayList<String> categoryValue = new ArrayList<String>(Arrays.asList("3944","976759_1071964_976793","976760","4096_616859_617020","4044","1085666","91083_1104294_1218943","1115193","5427","5438","4044_103150_635499","4096","1085632_1104053_1199468"));
+        categoryMap = new HashMap<String, String>();
+        for(int i = 0 ; i < categoryKey.size() ; i++){
+            categoryMap.put(categoryKey.get(i),categoryValue.get(i));
+        }
+    }
     private boolean isConnected(){
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -196,6 +201,10 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         params.add(new BasicNameValuePair("apiKey", "ucggnqrfww45m98bbv93ny4h"));
         params.add(new BasicNameValuePair("format", "json"));
         params.add(new BasicNameValuePair("query", searchKeyword));
+        if(categoryMap.containsKey(currCategory)){
+            params.add(new BasicNameValuePair("categoryId", categoryMap.get(currCategory)));
+            //invalidEntryAlert(categoryMap.get(currCategory));
+        }
         String paramString = URLEncodedUtils.format(params, "utf-8");
         url += paramString;
         HttpGet httpGet = new HttpGet(url);
