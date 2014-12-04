@@ -38,6 +38,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     NearbyListAdapter nearbyListAdapter;
 
     ListView listView;
+
     double latitude, longitude;
     TextView productName;
     ArrayAdapter<String> adapter;
@@ -65,6 +66,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
+
         name = intent1.getStringExtra("name");
         imageUrl = intent1.getStringExtra("imgUrl");
         price = intent1.getStringExtra("price");

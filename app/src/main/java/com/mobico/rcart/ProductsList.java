@@ -3,6 +3,7 @@ package com.mobico.rcart;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -36,7 +37,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class ProductsList extends Activity implements MyAsyncResponse {
 
     ArrayList<String> productsList;
@@ -48,6 +48,10 @@ public class ProductsList extends Activity implements MyAsyncResponse {
     String currCategory;
 
     JSONArray listJson;
+
+    //Used for checking if user is logged in for wishlist
+    private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+    public static SharedPreferences savedData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +118,37 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         return super.onOptionsItemSelected(item);
     }
 
+    //Used when user is not logged in as the user clicks on the Wishlist button
+    private void notLoggedInError(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductsList.this);
+        builder.setTitle("Not logged in"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+
     public void goToWishlist(View view) {
-        Intent i = new Intent(ProductsList.this, WishList.class);
-        //Will return to the onActivityResult function
-        startActivityForResult(i, 1);
+        //Opens up SharedPreferences
+        //Reads from the SharedPreferences the email and token to access that specific user's wishlist
+        savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        String defaultValue = "";
+        String email = savedData.getString("email", "");
+        String auth_token = savedData.getString("auth_token", "");
+
+        //If there is a valid email and auth_token, then go to wishlist
+        if (email.length() > 0 && auth_token.length() > 0) {
+            Intent i = new Intent(ProductsList.this, WishList.class);
+            i.putExtra("lati", latitude);
+            i.putExtra("longi", longitude);
+            i.putExtra("email", email);
+            i.putExtra("auth_token", auth_token);
+            startActivityForResult(i, 1111);
+        }
+        //If there is no valid email or auth_token, displays an invalid message
+        else {
+            notLoggedInError("Please login to access your Wishlist.");
+        }
     }
 
     public void productSearchButton(View view){
