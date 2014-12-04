@@ -59,14 +59,11 @@ public class MyMap extends Activity implements MyAsyncResponse{
             //source
             String orig = coordinates.get(i).first;
             orig += "," + coordinates.get(i).second;
-            Log.d("i vertex: ", "" + i);
-
-
             //destinations
             String destinations = "";
             for( int j = i + 1 ; j < coordinates.size(); ++j) {
                 destinations += coordinates.get(j).first + "," + coordinates.get(j).second + "|";
-                Log.d("j vertex: ", "" + j);
+
             }
 
             List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
@@ -84,21 +81,6 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
         }//*/
 
-        //test hardcoded latitude longitude values
-        /*
-        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("origins", "33.9759789,-117.3259195"));
-        params.add(new BasicNameValuePair("destinations", "33.9653373,-117.3180231"));
-        params.add(new BasicNameValuePair("units","imperial" ));
-        params.add(new BasicNameValuePair("mode","driving" ));
-        params.add(new BasicNameValuePair("key", "AIzaSyC7bJzIpJkliaoW11SFz_nEcCRi1YxRZHc"));
-
-        String paramString = URLEncodedUtils.format(params, "utf-8");
-
-        url += paramString;
-        HttpGet httpGet = new HttpGet(url);
-        new MyHttpGet(this).execute(httpGet);
-        */
     }
 
 
@@ -106,7 +88,6 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
     @Override
     public void processFinish(String result){
-        Log.d("testing map: ", "inside processFinish");
         JSONObject my_json;
         int distance = 0;
         try {
@@ -119,8 +100,8 @@ public class MyMap extends Activity implements MyAsyncResponse{
 
             for(int i = start_pos; i < coordinates.size() - 1; ++i) {
                 A = i;
-                String test = "A = " + A;
-                Log.d("inside for loop", test);
+
+
                 for(int j = i + 1; j < coordinates.size(); ++j) {
                     B = j;
                     try {
@@ -130,44 +111,21 @@ public class MyMap extends Activity implements MyAsyncResponse{
                         obj_pos++;
                         Edge my_edge = new Edge(A,B,distance);
                         edge_list.add(my_edge);
-
-
                     }
 
                     catch(Exception e)
                     {
-
                     }
-                    Log.d("test", "after JSON");
-
-
-                    Log.d("adding edge", "A " + A + " B " + B + " dist " + distance);
-
-
-                    Log.d("edgelist size ", "" + edge_list.size());
-
-                    Log.d("test", "after edge list");
-
                 }
             }
-
-            //testing
-            /*distance = my_json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").
-                    getJSONObject(0).getJSONObject("distance").getInt("value");
-               */
         }
         catch(Exception e){}
-
-        //String s = "distance: " + "" + distance;
-        //Log.d("distance", s);
 
         for(int i = 0; i < edge_list.size(); ++i)
         {
             String s1 = "" + edge_list.get(i).dist;
-            Log.d("distance: ", s1);
         }
         start_pos++;
-
     }
 
     public class Edge
@@ -188,6 +146,4 @@ public class MyMap extends Activity implements MyAsyncResponse{
             dist = d;
         }
     }
-
-
 }
