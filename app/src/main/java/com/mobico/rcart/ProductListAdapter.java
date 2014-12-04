@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -64,9 +65,9 @@ public class ProductListAdapter extends BaseAdapter{
         TextView productPrice = (TextView) row.findViewById(R.id.productPrice);
         productPrice.setText(listHash.get("price"));
 
-        TextView productImage = (TextView) row.findViewById(R.id.productImage);
-        productImage.setText(listHash.get("image_url"));
-
+        new DownloadImageTask((ImageView) row.findViewById(R.id.productImage)).execute(listHash.get("image_url"));
+        //http://i.walmartimages.com/i/mp/MP/10/00/77/92/MP10007792024_P321146_100X100.jpg
+        //listHash.get("image_url")
         return row;
 
 //        hash.put("name", wishArray.getJSONObject(i).getString("name"));
