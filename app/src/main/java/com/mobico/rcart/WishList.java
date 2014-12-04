@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,6 +67,8 @@ public class WishList extends Activity implements MyAsyncResponse{
         email = intent1.getStringExtra("email");
         auth_token = intent1.getStringExtra("auth_token");
 
+        curlati = ((globalvariable) this.getApplication()).getGloballati();
+        curlongi = ((globalvariable) this.getApplication()).getGloballongi();
         //Declaring variables of the public variables
         myWishList = new ArrayList<HashMap<String,String>>();
         listView = (ListView) findViewById(R.id.myListView);
@@ -147,6 +151,38 @@ public class WishList extends Activity implements MyAsyncResponse{
         }
         //Fills the list with the JSON values
         fillList();
+    }
+
+    private void invalidEntryAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(WishList.this);
+        builder.setTitle("Error"); /// change this
+        builder.setPositiveButton("OK", null);
+        builder.setMessage(message);
+        AlertDialog theAlertDialog = builder.create();
+        theAlertDialog.show();
+    }
+    public void goToRoute(View view){
+        ArrayList<Pair<String, String>> mylist = new ArrayList<Pair<String, String>>();
+        for(int i  = 0; i < wishArray.length(); ++i) {
+            try {
+                mylist.add(Pair.create(wishArray.getJSONObject(i).getString("lat"), wishArray.getJSONObject(i).getString("long")));
+            }catch(JSONException e){}
+        }
+
+        Log.d("globallatitude = ", String.valueOf(curlati));
+        Log.d("globallongitude = ", String.valueOf(curlongi));
+        String url = "https://www.google.com/maps/dir/" + String.valueOf(curlati) + "," + String.valueOf(curlongi);
+        for(int i  = 0; i < wishArray.length(); ++i) {
+              try {
+                  url += "/";
+                  url += wishArray.getJSONObject(i).getString("lat");
+                  url += ",+";
+                  url += wishArray.getJSONObject(i).getString("long");
+              }catch (JSONException e){}
+        }
+        invalidEntryAlert(url);
+        Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(i);
     }
 
 }
