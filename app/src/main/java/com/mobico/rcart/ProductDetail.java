@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.apache.http.client.methods.HttpGet;
@@ -18,19 +20,25 @@ import org.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
 
 public class ProductDetail extends Activity implements MyAsyncResponse{
 
+    //Public Variables
     Intent intent;
-    String product_name, store_name, store_distance, store_price, lati, longi, category, image_url;
 
+    //Used for the displays in the product details page
+    String product_name, store_name, store_distance, store_price, lati, longi, category, image_url;
     TextView product_name_tv, store_name_tv, store_distance_tv, store_price_tv;
     Double curlati, curlongi;
 
-    String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
+    //Used to store the email and auth_token
+    private final static String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
     SharedPreferences savedData;
 
     @Override
@@ -38,8 +46,10 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
+        //Used for checking the email and token
         savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 
+        //Receiving the variables sent from the previous activity
         intent = getIntent();
         product_name = intent.getStringExtra("product_name");
         store_name = intent.getStringExtra("store_name");
@@ -50,11 +60,16 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
         category = intent.getStringExtra("category");
         image_url = intent.getStringExtra("image_url");
 
+        //The view of the properties of the product
         product_name_tv = (TextView) findViewById(R.id.product_name);
         store_name_tv = (TextView) findViewById(R.id.store_name);
         store_distance_tv = (TextView) findViewById(R.id.store_distance);
         store_price_tv = (TextView) findViewById(R.id.store_price);
+        //To display the image of the product
+        new DownloadImageTask((ImageView) findViewById(R.id.productImage)).execute(image_url);
 
+        //Sets the text for each of the Text Views accordingly to the variables sent from the
+        //previous activity
         product_name_tv.setText(product_name);
         store_name_tv.setText(store_name);
         store_distance_tv.setText(store_distance);
@@ -67,6 +82,7 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
     }
 
     public void goToWishlist(View view){
+        //Creates the wish list when user clicks the button to add to wishlist.
         String url = "https://mobibuddy.herokuapp.com/items.json?";
 
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
@@ -107,6 +123,22 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void processFinish(String output) {
+        //Gives a toast depending if the item is in the wish list or not.
+        JSONObject json;
+        try {
+            json = new JSONObject(output);
+            if (json.getString("success").equals("true"))
+                Toast.makeText(getBaseContext(), "Added to wishlist!", Toast.LENGTH_SHORT).show();
+            else {
+                Toast.makeText(getBaseContext(), "Already in wishlist!", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finish();
+    }
 
     public void goToRouteMe(View view) {
         // invalidEntryAlert(result);
@@ -119,10 +151,6 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
         startActivity(i);
     }
 
-        @Override
-        public void processFinish (String output){
-            Toast.makeText(getBaseContext(), "Added to wishlist!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
+
+}
 
