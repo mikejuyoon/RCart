@@ -14,5 +14,6 @@
     <string name="title_activity_nearby_list">NearbyList</string>
     <string name="title_activity_wish_list">WishList</string>
     <string name="spinner_prompt">select one</string>
+    <string name="title_activity_product_detail">ProductDetail</string>
 
 </resources>

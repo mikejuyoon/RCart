@@ -3,12 +3,17 @@ package com.mobico.rcart;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,7 +34,9 @@ import java.util.List;
 
 public class NearbyList extends Activity implements MyAsyncResponse{
 
-    ArrayList<String> locationList;
+    ArrayList<HashMap<String, String>> storeList;
+    NearbyListAdapter nearbyListAdapter;
+
     ListView listView;
     double latitude, longitude;
     TextView productName;
@@ -46,6 +54,8 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_list);
         productName = (TextView) findViewById(R.id.product_name);
+
+        storeList = new ArrayList<HashMap<String, String>>();
 
         listView = (ListView) findViewById(R.id.myListView);
 
@@ -66,32 +76,20 @@ public class NearbyList extends Activity implements MyAsyncResponse{
 
         listView = (ListView) findViewById(R.id.myListView);
 
-        locationList = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, locationList);
-        locationList.add("Apple");
-        listView.setAdapter(adapter);
+        nearbyListAdapter = new NearbyListAdapter(this, storeList);
+        listView.setAdapter(nearbyListAdapter);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // JSONObject currObject;
-                // try {
-                //     currObject = listJson.getJSONObject(i);
-                //     Intent intent = new Intent(ProductsList.this, NearbyList.class);
-                //     intent.putExtra("lati", latitude);
-                //     intent.putExtra("longi", longitude);
-                //     intent.putExtra("name", currObject.getString("name"));
-                //     intent.putExtra("imgUrl", currObject.getString("thumbnailImage"));
-                //     intent.putExtra("price", currObject.getString("salePrice"));
-                //     intent.putExtra("category", currCategory);
-                //     startActivityForResult(intent, 1234);
 
-                // }catch(Exception e){}
 
             }
         });
 
-        invalidEntryAlert("name: " + name + "\nimageUrl: " + imageUrl + "\nprice: " + price + "\ncategory: " + category);
+        new DownloadImageTask((ImageView) findViewById(R.id.product_thumbnail)).execute(imageUrl);
+        //invalidEntryAlert("name: " + name + "\nimageUrl: " + imageUrl + "\nprice: " + price + "\ncategory: " + category);
     }
 
     @Override
@@ -115,6 +113,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
 
     public void addWishlistItem(View view) {
         String url = "mobibuddy.herokuapp.com/items.json?";
+
 
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("name", name));
@@ -155,14 +154,25 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     }
 
     private void updateLocationsList(){
-        locationList.clear();
+
         for(int i = 0 ; i < resultsJson.length() ; i++){
             try {
-                locationList.add(resultsJson.getJSONObject(i).getString("name"));
+                Double newPrice = (Double.parseDouble(price) - 0.3) + (Double.parseDouble(price) * 0.4 * Math.random());
+
+                HashMap<String, String> storeInfo = new HashMap<String, String>();
+                storeInfo.put("store_name", resultsJson.getJSONObject(i).getString("name"));
+                //storeInfo.put("store_price", String.valueOf(newPrice));
+                storeInfo.put("store_price", String.format("%.2f",newPrice));
+                storeInfo.put("store_distance", "1.5");
+                storeInfo.put("lati", String.valueOf(latitude));
+                storeInfo.put("longi", String.valueOf(longitude));
+                storeInfo.put("category", category);
+                storeList.add(storeInfo);
             }catch (Exception e){}
 
         }
-        adapter.notifyDataSetChanged();
+        nearbyListAdapter = new NearbyListAdapter(this, storeList);
+        listView.setAdapter(nearbyListAdapter);
     }
 
     @Override
@@ -173,4 +183,29 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         }catch(Exception e){}
         updateLocationsList();
     }
+
+    // private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    //     ImageView bmImage;
+
+    //     public DownloadImageTask(ImageView bmImage) {
+    //         this.bmImage = bmImage;
+    //     }
+
+    //     protected Bitmap doInBackground(String... urls) {
+    //         String urldisplay = urls[0];
+    //         Bitmap mIcon11 = null;
+    //         try {
+    //             InputStream in = new java.net.URL(urldisplay).openStream();
+    //             mIcon11 = BitmapFactory.decodeStream(in);
+    //         } catch (Exception e) {
+    //             Log.e("Error", e.getMessage());
+    //             e.printStackTrace();
+    //         }
+    //         return mIcon11;
+    //     }
+
+    //     protected void onPostExecute(Bitmap result) {
+    //         bmImage.setImageBitmap(result);
+    //     }
+    // }
 }
