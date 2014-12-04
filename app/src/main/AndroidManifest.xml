@@ -80,6 +80,10 @@
             android:label="@string/title_activity_wish_list"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ProductDetail"
+            android:label="@string/title_activity_product_detail" >
+        </activity>
     </application>
 
 </manifest>

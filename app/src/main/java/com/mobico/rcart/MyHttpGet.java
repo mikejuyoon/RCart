@@ -43,12 +43,11 @@ public class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse httpResponse = httpclient.execute(getUrl);
             inputStream = httpResponse.getEntity().getContent();
-            if(inputStream != null){
+            if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-            }
-            else{
+            } else {
                 result = "Did not work!";
-            }
+            }    //invalidEntryAlert("GET request error");
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
@@ -56,10 +55,10 @@ public class MyHttpGet extends AsyncTask<HttpGet, Void, String> {
     }
 
     private String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line = "";
         String result = "";
-        while((line = bufferedReader.readLine()) != null)
+        while ((line = bufferedReader.readLine()) != null)
             result += line;
         inputStream.close();
         return result;
