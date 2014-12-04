@@ -14,16 +14,7 @@
     android:id="@+id/productRow"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="$3.33"
-        android:id="@+id/productPrice"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="40dp" />
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,38 +24,43 @@
         android:id="@+id/productName"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textSize="24dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="miles"
-        android:id="@+id/productDistance"
-        android:layout_toEndOf="@+id/productName"
-        android:layout_alignBaseline="@+id/productName"
-        android:layout_alignBottom="@+id/productName"
-        android:layout_toRightOf="@+id/productName"
-        android:layout_marginLeft="3dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="123 Something Avenue\nRiverside, CA 92507"
-        android:id="@+id/productAddress"
-        android:layout_below="@+id/productDistance"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Store"
+        android:id="@+id/productStoreName"
+        android:layout_below="@+id/productName"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textSize="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Updated Time"
-        android:id="@+id/productDate"
-        android:layout_below="@+id/productPrice"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="$3.33"
+        android:id="@+id/productPrice"
+        android:layout_below="@id/productStoreName"
+        android:textSize="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/productButton"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/productImage"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/productButton" />
+
 
 </RelativeLayout>

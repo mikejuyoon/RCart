@@ -20,10 +20,18 @@ import android.provider.Settings;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class SplashScreen extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, MyAsyncResponse {
 
     // locations objects
     LocationClient mLocationClient;
@@ -87,6 +95,19 @@ public class SplashScreen extends Activity implements
         theAlertDialog.show();
     }
 
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //invalidEntryAlert("onresume");
+        savedData = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        if( savedData.contains("auth_token") ){
+            Button login_btn = (Button) findViewById(R.id.login_btn);
+            login_btn.setText("Logout");
+
+        }
+    }
+
     /***********************************************************************************************
      *
      **********************************************************************************************/
@@ -100,9 +121,8 @@ public class SplashScreen extends Activity implements
     @Override
     protected void onDestroy (){
         super.onDestroy();
-        SharedPreferences.Editor preferencesEditor = savedData.edit();
-        preferencesEditor.putString("auth_token", "0");
-        preferencesEditor.apply();
+//        SharedPreferences.Editor preferencesEditor = savedData.edit();
+//        preferencesEditor.apply();
 
         //super.onDestroy();
     }
@@ -126,25 +146,9 @@ public class SplashScreen extends Activity implements
         if(mLocationClient != null)
             mLocationClient.requestLocationUpdates(mLocationRequest,  this);
 
-        //Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
-
         if(mLocationClient != null){
             // get location
             mCurrentLocation = mLocationClient.getLastLocation();
-            /*try{
-
-                // set TextView(s)
-                txtLat.setText(mCurrentLocation.getLatitude()+"");
-                txtLong.setText(mCurrentLocation.getLongitude()+"");
-
-            }catch(NullPointerException npe){
-
-                Toast.makeText(this, "Failed to Connect", Toast.LENGTH_SHORT).show();
-
-                // switch on location service intent
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }*/
         }
 
     }
@@ -185,18 +189,42 @@ public class SplashScreen extends Activity implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void userLogout(){
+
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        String url = "https://mobibuddy.herokuapp.com/users/sign_out.json";
+        String paramString = URLEncodedUtils.format(params, "utf-8");
+        url += paramString;
+        HttpDelete httpDelete = new HttpDelete(url);
+        httpDelete.addHeader("X-API-EMAIL", savedData.getString("email", "DEFAULT"));
+        httpDelete.addHeader("X-API-TOKEN", savedData.getString("auth_token", "DEFAULT"));
+        new MyHttpDelete(this).execute(httpDelete);
+
+        savedData.edit().remove("auth_token").commit();
+        //invalidEntryAlert("loggedout");
+        Button login_btn = (Button) findViewById(R.id.login_btn);
+        login_btn.setText("Login");
+        Toast.makeText(getBaseContext(), "Received!", Toast.LENGTH_LONG).show();
+    }
     /***********************************************************************************************
      *
      **********************************************************************************************/
     public void openLoginActivity(View view){
-        Intent i = new Intent(SplashScreen.this, Login.class);
-        startActivity(i);
+        if( savedData.contains("auth_token") ){
+            userLogout();
+        }
+        else {
+            Intent i = new Intent(SplashScreen.this, Login.class);
+            startActivity(i);
+        }
     }
 
     public void goToGasList(View view){
+
         Intent i = new Intent(SplashScreen.this, GasStationsList.class);
         i.putExtra("lati", mCurrentLocation.getLatitude());
         i.putExtra("longi", mCurrentLocation.getLongitude());
+
         startActivity(i);
     }
 
@@ -205,5 +233,10 @@ public class SplashScreen extends Activity implements
         i.putExtra("lati", mCurrentLocation.getLatitude());
         i.putExtra("longi", mCurrentLocation.getLongitude());
         startActivity(i);
+    }
+
+    @Override
+    public void processFinish(String output) {
+        //invalidEntryAlert(output);
     }
 }

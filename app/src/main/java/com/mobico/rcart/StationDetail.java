@@ -82,8 +82,8 @@ public class StationDetail extends Activity implements MyAsyncResponse {
         carwash = row_intent.getStringExtra("icarwash");
         hours = row_intent.getStringExtra("ihours");
 
-        curlati = row_intent.getDoubleExtra("latitude", 0);
-        curlongi = row_intent.getDoubleExtra("longitude", 0);
+      //  curlati = row_intent.getDoubleExtra("latitude", 0);
+       // curlongi = row_intent.getDoubleExtra("longitude", 0);
 
         //Layouts information for the Gas Detail Activity with the specific inputs
         //Address
@@ -328,9 +328,12 @@ public class StationDetail extends Activity implements MyAsyncResponse {
             json = new JSONObject(result);
             lati = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
             longi = json.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-            Log.d(lati, "latitude = ");
-            Log.d(longi, "longitude = ");
-
+            Log.d("latitude = ", lati);
+            Log.d("longitude = " , longi);
+            curlati = ((globalvariable) this.getApplication()).getGloballati();
+            curlongi = ((globalvariable) this.getApplication()).getGloballongi();
+            Log.d("globallatitude = ", String.valueOf(curlati));
+            Log.d("globallongitude = " , String.valueOf(curlongi));
             String url = "https://www.google.com/maps/dir/" + String.valueOf(curlati)+ "," + String.valueOf(curlongi) + "/" + lati + "," + longi;
             Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(i);

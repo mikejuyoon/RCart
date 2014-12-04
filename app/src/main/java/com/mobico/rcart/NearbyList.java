@@ -38,6 +38,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     NearbyListAdapter nearbyListAdapter;
 
     ListView listView;
+
     double latitude, longitude;
     TextView productName;
     ArrayAdapter<String> adapter;
@@ -65,6 +66,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         Intent intent1 = getIntent();
         latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
+
         name = intent1.getStringExtra("name");
         imageUrl = intent1.getStringExtra("imgUrl");
         price = intent1.getStringExtra("price");
@@ -91,6 +93,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 intent.putExtra("lati", storeList.get(i).get("lati"));
                 intent.putExtra("longi", storeList.get(i).get("longi"));
                 intent.putExtra("category", storeList.get(i).get("category"));
+                intent.putExtra("image_url", storeList.get(i).get("image_url"));
                 startActivity(intent);
 
             }
@@ -172,9 +175,10 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 //storeInfo.put("store_price", String.valueOf(newPrice));
                 storeInfo.put("store_price", String.format("%.2f",newPrice));
                 storeInfo.put("store_distance", "1.5");
-                storeInfo.put("lati", String.valueOf(latitude));
-                storeInfo.put("longi", String.valueOf(longitude));
+                storeInfo.put("lati", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
+                storeInfo.put("longi", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
                 storeInfo.put("category", category);
+                storeInfo.put("image_url", imageUrl);
                 storeList.add(storeInfo);
             }catch (Exception e){}
 
@@ -192,28 +196,4 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         updateLocationsList();
     }
 
-    // private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-    //     ImageView bmImage;
-
-    //     public DownloadImageTask(ImageView bmImage) {
-    //         this.bmImage = bmImage;
-    //     }
-
-    //     protected Bitmap doInBackground(String... urls) {
-    //         String urldisplay = urls[0];
-    //         Bitmap mIcon11 = null;
-    //         try {
-    //             InputStream in = new java.net.URL(urldisplay).openStream();
-    //             mIcon11 = BitmapFactory.decodeStream(in);
-    //         } catch (Exception e) {
-    //             Log.e("Error", e.getMessage());
-    //             e.printStackTrace();
-    //         }
-    //         return mIcon11;
-    //     }
-
-    //     protected void onPostExecute(Bitmap result) {
-    //         bmImage.setImageBitmap(result);
-    //     }
-    // }
 }
