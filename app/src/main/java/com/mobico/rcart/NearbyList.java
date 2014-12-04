@@ -175,8 +175,8 @@ public class NearbyList extends Activity implements MyAsyncResponse{
                 //storeInfo.put("store_price", String.valueOf(newPrice));
                 storeInfo.put("store_price", String.format("%.2f",newPrice));
                 storeInfo.put("store_distance", "1.5");
-                storeInfo.put("lati", String.valueOf(latitude));
-                storeInfo.put("longi", String.valueOf(longitude));
+                storeInfo.put("lati", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
+                storeInfo.put("longi", resultsJson.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
                 storeInfo.put("category", category);
                 storeInfo.put("image_url", imageUrl);
                 storeList.add(storeInfo);
@@ -196,28 +196,4 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         updateLocationsList();
     }
 
-    // private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-    //     ImageView bmImage;
-
-    //     public DownloadImageTask(ImageView bmImage) {
-    //         this.bmImage = bmImage;
-    //     }
-
-    //     protected Bitmap doInBackground(String... urls) {
-    //         String urldisplay = urls[0];
-    //         Bitmap mIcon11 = null;
-    //         try {
-    //             InputStream in = new java.net.URL(urldisplay).openStream();
-    //             mIcon11 = BitmapFactory.decodeStream(in);
-    //         } catch (Exception e) {
-    //             Log.e("Error", e.getMessage());
-    //             e.printStackTrace();
-    //         }
-    //         return mIcon11;
-    //     }
-
-    //     protected void onPostExecute(Bitmap result) {
-    //         bmImage.setImageBitmap(result);
-    //     }
-    // }
 }

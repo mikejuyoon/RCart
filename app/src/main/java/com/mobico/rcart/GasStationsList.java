@@ -64,7 +64,6 @@ public class GasStationsList extends Activity implements MyAsyncResponse{
     private String checkgastype = "" , oldg = "";
     private String checksortby = "", olds = "";
     private int dpos= 0, bpos = 0, gpos =0 , spos =0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +74,14 @@ public class GasStationsList extends Activity implements MyAsyncResponse{
         listAdapter = new GasStationListAdapter(this);
         gasStationList.setAdapter(listAdapter);
 
-        Intent intent1 = getIntent();
-        latitude = intent1.getDoubleExtra("lati", 1.0);
+       Intent intent1 = getIntent();
+       latitude = intent1.getDoubleExtra("lati", 1.0);
         longitude = intent1.getDoubleExtra("longi", 1.0);
 
+       ((globalvariable) this.getApplication()).setGloballati(latitude);
+        ((globalvariable) this.getApplication()).setGloballongi(longitude);
+
+        invalidEntryAlert(String.valueOf(latitude) + String.valueOf(longitude));
         Intent intent2 = getIntent();
         onActivityResult(0, RESULT_OK, intent2);
         if(distance == null) distance = "2";

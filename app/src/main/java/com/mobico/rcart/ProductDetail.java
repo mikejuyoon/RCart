@@ -2,18 +2,22 @@ package com.mobico.rcart;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +28,7 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
     String product_name, store_name, store_distance, store_price, lati, longi, category, image_url;
 
     TextView product_name_tv, store_name_tv, store_distance_tv, store_price_tv;
+    Double curlati, curlongi;
 
     String SHARED_PREFERENCES_NAME = "com.mobico.rcart.savedData";
     SharedPreferences savedData;
@@ -51,6 +56,11 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
         store_price_tv = (TextView) findViewById(R.id.store_price);
 
         product_name_tv.setText(product_name);
+        store_name_tv.setText(store_name);
+        store_distance_tv.setText(store_distance);
+        store_price_tv.setText(store_price);
+        curlati = ((globalvariable) this.getApplication()).getGloballati();
+        curlongi = ((globalvariable) this.getApplication()).getGloballongi();
         store_name_tv.setText("Store: " + store_name);
         store_distance_tv.setText(store_distance + " miles");
         store_price_tv.setText("$" + store_price);
@@ -97,9 +107,22 @@ public class ProductDetail extends Activity implements MyAsyncResponse{
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void processFinish(String output) {
-        Toast.makeText(getBaseContext(), "Added to wishlist!", Toast.LENGTH_SHORT).show();
-        finish();
+
+    public void goToRouteMe(View view) {
+        // invalidEntryAlert(result);
+        Log.d("latitude = ", lati);
+        Log.d("longitude = ", longi);
+        Log.d("globallatitude = ", String.valueOf(curlati));
+        Log.d("globallongitude = ", String.valueOf(curlongi));
+        String url = "https://www.google.com/maps/dir/" + String.valueOf(curlati) + "," + String.valueOf(curlongi) + "/" + lati + "," + longi;
+        Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(i);
     }
-}
+
+        @Override
+        public void processFinish (String output){
+            Toast.makeText(getBaseContext(), "Added to wishlist!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+

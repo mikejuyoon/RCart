@@ -220,9 +220,11 @@ public class SplashScreen extends Activity implements
     }
 
     public void goToGasList(View view){
+
         Intent i = new Intent(SplashScreen.this, GasStationsList.class);
         i.putExtra("lati", mCurrentLocation.getLatitude());
         i.putExtra("longi", mCurrentLocation.getLongitude());
+
         startActivity(i);
     }
 
