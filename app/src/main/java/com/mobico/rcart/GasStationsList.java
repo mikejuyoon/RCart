@@ -81,7 +81,7 @@ public class GasStationsList extends Activity implements MyAsyncResponse{
        ((globalvariable) this.getApplication()).setGloballati(latitude);
         ((globalvariable) this.getApplication()).setGloballongi(longitude);
 
-        invalidEntryAlert(String.valueOf(latitude) + String.valueOf(longitude));
+        //invalidEntryAlert(String.valueOf(latitude) + String.valueOf(longitude));
         Intent intent2 = getIntent();
         onActivityResult(0, RESULT_OK, intent2);
         if(distance == null) distance = "2";
