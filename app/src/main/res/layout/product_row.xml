@@ -47,14 +47,20 @@
         android:layout_below="@id/productStoreName"
         android:textSize="20dp" />
 
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Product Image"
-        android:id="@+id/productImage"
+        android:id="@+id/productButton"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/productImage"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/productButton" />
+
 
 </RelativeLayout>
