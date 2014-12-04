@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -226,8 +227,13 @@ public class ProductsList extends Activity implements MyAsyncResponse {
         JSONObject json;
         try {
             json = new JSONObject(result);
-            listJson = json.getJSONArray("items");
+            if(!json.getString("numItems").equals("0")){
+                listJson = json.getJSONArray("items");
+                updateProductList();
+            }
+            else{
+                invalidEntryAlert("No results found");
+            }
         }catch(Exception e){}
-        updateProductList();
     }
 }
