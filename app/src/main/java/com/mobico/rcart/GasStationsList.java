@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -431,6 +432,31 @@ public class GasStationsList extends Activity {
         Intent i = new Intent(GasStationsList.this, Filter.class);
         //Will return to the onActivityResult function
         startActivityForResult(i, 1);
+    }
+
+    /******************************************************************************************
+     * function goToMap
+     * goes to map activity
+     *
+     */
+    public void goToMap(View view) {
+        //Intent i = new Intent(GasStationsList.this, MyMap.class);
+        //startActivityForResult(i,5);
+
+        //get edge distances
+        MyMap m1 = new MyMap();
+        ArrayList<Pair<String,String>> my_array = new ArrayList<Pair<String, String>>();
+        my_array.add( Pair.create("33.9759789","-117.3259195"));
+        my_array.add( Pair.create("33.9653373","-117.3180231"));
+        my_array.add( Pair.create("33.9622411","-117.5490241"));
+
+        m1.callApi(my_array);
+
+
+        //calculate best route
+
+        //call google maps
+
     }
 
     /***********************************************************************************************

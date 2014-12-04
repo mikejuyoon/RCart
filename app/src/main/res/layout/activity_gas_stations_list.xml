@@ -36,6 +36,20 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/buttonStyleSmall"
+            android:text="Map"
+            android:id="@+id/button2"
+            android:layout_alignTop="@+id/gasPrice"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="330dp"
+            android:onClick="goToMap"
+            />
+
+
     </RelativeLayout>
 
     <RelativeLayout
