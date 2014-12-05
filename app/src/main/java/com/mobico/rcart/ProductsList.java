@@ -170,6 +170,7 @@ public class ProductsList extends Activity implements MyAsyncResponse {
     }
 
 
+
     // ============ HELPER FUNCTIONS =================
 
     private void makeCategoryHashMap(){

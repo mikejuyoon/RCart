@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,7 +75,7 @@ public class NearbyList extends Activity implements MyAsyncResponse{
 
         productName.setText(name);
 
-        googlePlacesPost(latitude, longitude, category);
+        googlePlacesPost(latitude, longitude, category,6000);
 
         listView = (ListView) findViewById(R.id.myListView);
 
@@ -149,12 +150,11 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         theAlertDialog.show();
     }
 
-    private void googlePlacesPost(double lati, double longi, String category){
+    private void googlePlacesPost(double lati, double longi, String category, int distance){
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
-
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("location", lati + "," + longi));
-        params.add(new BasicNameValuePair("radius", "6000"));
+        params.add(new BasicNameValuePair("radius", String.valueOf(distance)));
         params.add(new BasicNameValuePair("keyword", category));
         params.add(new BasicNameValuePair("key", "AIzaSyBkgVMXlCUpP4VJ52vnSzW_v5bD7ZSh6c0"));
         String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -165,8 +165,16 @@ public class NearbyList extends Activity implements MyAsyncResponse{
     }
 
     private void updateLocationsList(){
-
-        for(int i = 0 ; i < resultsJson.length() ; i++){
+        int resultSize = resultsJson.length();
+        if(resultSize > 20){
+            resultSize = 20;
+        }
+        if(resultSize == 0) {
+            invalidEntryAlert("No results!");
+            return;
+        }
+        storeList.clear();
+        for(int i = 0 ; i < resultSize ; i++){
             try {
                 Double newPrice = (Double.parseDouble(price) - 0.3) + (Double.parseDouble(price) * 0.4 * Math.random());
 
@@ -197,13 +205,35 @@ public class NearbyList extends Activity implements MyAsyncResponse{
         listView.setAdapter(nearbyListAdapter);
     }
 
+    public void milesFilter(View view){
+        EditText filterET = (EditText) findViewById(R.id.filter_et);
+        String filterString = filterET.getText().toString();
+
+        int filterDistance;
+        if(filterString.length() == 0){
+            invalidEntryAlert("Please Enter Distance in Miles.");
+            return;
+        }
+        filterDistance = Integer.parseInt(filterString);
+        filterDistance = convertMiToMeters(filterDistance);
+        if(filterDistance > 32180 || filterDistance <= 0){
+            invalidEntryAlert("Please enter a smaller distance amount");
+            return;
+        }
+        googlePlacesPost(latitude,longitude,category,filterDistance);
+    }
+
+    private int convertMiToMeters(int mi){
+        return mi*1609;
+    }
+
     @Override
     public void processFinish(String output) {
         try {
             JSONObject json = new JSONObject(output);
             resultsJson = json.getJSONArray("results");
+            updateLocationsList();
         }catch(Exception e){}
-        updateLocationsList();
     }
 
 }
